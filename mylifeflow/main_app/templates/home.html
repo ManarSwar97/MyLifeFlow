@@ -1,6 +1,6 @@
-{% extends 'base.html' %}
-{% block content %}
-  <h1>Welcome to MyLifeFlow</h1>
-  <a href="{% url 'login' %}" class="btn">Sign In</a>
-  <a href="{% url 'signup' %}" class="btn">Sign Up</a>
-{% endblock %}
+{% extends 'base.html' %} {% block content %} {% if user.is_authenticated %}
+<h1>Welcome {{ user.first_name }}!</h1>
+<a href="{% url 'person_index' %}" class="btn">My People</a>
+{% else %}
+<h1>Welcome to MyLifeFlow!</h1>
+{% endif %} {% endblock %}
