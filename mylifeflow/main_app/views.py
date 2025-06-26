@@ -2,8 +2,13 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-from .forms import NewSignupForm
-from .models import UserProfile 
+from .forms import NewSignupForm, PersonForm
+from .models import UserProfile, Person
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
+
 # Create your views here.
 def home(request):
     return render(request, 'home.html')
@@ -31,3 +36,50 @@ def signup(request):
 
     context = {'form': form, 'error_message': error_message}
     return render(request, 'registration/signup.html', context)
+
+class PersonList(LoginRequiredMixin, ListView):
+    model = Person
+
+    def get_queryset(self):
+        return Person.objects.filter(user=self.request.user)
+
+class PersonDetail(LoginRequiredMixin, DetailView):
+    model = Person
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        if obj.user != self.request.user:
+            raise PermissionDenied
+        return obj
+
+class PersonCreate(LoginRequiredMixin, CreateView):
+    model = Person
+    form_class = PersonForm
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+class PersonUpdate(LoginRequiredMixin, UpdateView):
+    model = Person
+    form_class = PersonForm
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        if obj.user != self.request.user:
+            raise PermissionDenied
+        return obj
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+class PersonDelete(LoginRequiredMixin, DeleteView):
+    model = Person
+    success_url = '/mypeople/'
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        if obj.user != self.request.user:
+            raise PermissionDenied
+        return obj
