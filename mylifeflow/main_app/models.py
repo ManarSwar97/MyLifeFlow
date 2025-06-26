@@ -5,6 +5,15 @@ from datetime import date
 from django.contrib.auth.models import User
 
 # Create your models here.
+#extending the user model by creating another model and make one-to-one relationship between them 
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    birthday = models.DateField()
+    profile_image = models.ImageField(upload_to='main_app/static/uploads/', default="")
+
+    def __str__(self):
+        return self.user.username
+
 class Task(models.Model):
     title = models.CharField(max_length=50)
     description = models.TextField()
