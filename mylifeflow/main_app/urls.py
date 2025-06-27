@@ -15,5 +15,11 @@ urlpatterns = [
     path('mypeople/<int:pk>/', views.PersonDetail.as_view(), name='person_detail'),
     path('mypeople/create/', views.PersonCreate.as_view(), name='person_create'),
     path('mypeople/<int:pk>/update/', views.PersonUpdate.as_view(), name='person_update'),
-    path('mypeople/<int:pk>/delete/', views.PersonDelete.as_view(), name='person_delete')
+    path('mypeople/<int:pk>/delete/', views.PersonDelete.as_view(), name='person_delete'),
+# Daily Tasks feature URLs
+    path('task/', views.TaskList.as_view(), name='task_index'),
+    path('task/<int:pk>/', views.TaskDetail.as_view(), name='task_detail'),
+    path('task/create/', views.TaskCreate.as_view(), name='task_create'),
+    path('task/<int:pk>/update/', views.TaskUpdate.as_view(), name='task_update'),
+    path('task/<int:pk>/delete/', views.TaskDelete.as_view(), name='task_delete'),
 ]

@@ -2,12 +2,13 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-from .forms import NewSignupForm, PersonForm
-from .models import UserProfile, Person
+from .forms import NewSignupForm, PersonForm, TaskForm
+from .models import UserProfile, Person, Task
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
+
 
 # Create your views here.
 def home(request):
@@ -83,3 +84,26 @@ class PersonDelete(LoginRequiredMixin, DeleteView):
         if obj.user != self.request.user:
             raise PermissionDenied
         return obj
+    
+
+class TaskList(LoginRequiredMixin, ListView):
+    model = Task
+
+class TaskDetail(LoginRequiredMixin, DetailView):
+    model = Task
+
+class TaskCreate(LoginRequiredMixin, CreateView):
+    model = Task
+    form_class = TaskForm
+    success_url = '/task/'
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+    
+class TaskUpdate(LoginRequiredMixin, UpdateView):
+    model = Task
+    form_class = TaskForm
+
+class TaskDelete(LoginRequiredMixin, DeleteView):
+    model = Task
+    success_url = '/task/'
