@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+   {% if object %}
+    <h1>Edit <span class="teal-text">{{object.title}}</span></h1>
+  {% else %}
+    <h1>Add Task</h1>
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    
+    <table style="margin-bottom: 30px;">
+      <tr>
+        <td>{{ form.title.label_tag }}</td>
+        <td>{{ form.title }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.description.label_tag }}</td>
+        <td>{{ form.description }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.due_date.label_tag }}</td>
+        <td>{{ form.due_date }}</td>
+      </tr>
+    </table>
+
+    <div style="margin-bottom: 20px;">
+      <label>
+        {{ form.is_completed }}
+        <span>Completed?</span>
+      </label>
+    </div>
+
+    <button type="submit" class="btn">Save</button>
+  </form>
+{% endblock %}

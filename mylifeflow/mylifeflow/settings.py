@@ -76,9 +76,9 @@ WSGI_APPLICATION = 'mylifeflow.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'MyLifeFlow',
+        'NAME': 'life',
         'USER': 'postgres',
-        'PASSWORD': '11223300',
+        'PASSWORD': '1212',
         'PORT': '5432'
     }
 }

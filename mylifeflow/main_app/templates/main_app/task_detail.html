@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Task Details</h1>
+<div class="row">
+  <div class="col s6 offset-s3">
+    <div class="card">
+      <div class="card-content">
+        <span class="card-title">{{ task.title }}</span>
+        <p>Description: {{ task.description }}</p>
+        <p>Due Date: {{ task.due_date }}</p>
+        <p>Completed: {{ task.is_completed|yesno:"Yes,No" }}</p>
+        <p>Created At: {{ task.created_at }}</p>
+      </div>
+      <div class="card-action">
+        <a href="{% url 'task_update' task.id %}">Edit</a>
+        <a href="{% url 'task_delete' task.id %}">Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+<a href="{% url 'task_index' %}">Back to Task List</a>
+{% endblock %}

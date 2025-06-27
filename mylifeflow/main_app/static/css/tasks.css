@@ -1,0 +1,33 @@
+.task-card {
+  padding: 20px;
+  background-color: #fcf5f5;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.task-header {
+  margin-bottom: 25px;
+}
+
+.task-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.task-info {
+  display: flex;
+  align-items: center;
+}
+
+.task-title {
+  font-size: 18px;
+  color: #333;
+  font-weight: 500;
+}
+
+.task-date {
+  color: #888;
+  font-size: 14px;
+}
