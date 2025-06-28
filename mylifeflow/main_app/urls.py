@@ -22,4 +22,11 @@ urlpatterns = [
     path('task/create/', views.TaskCreate.as_view(), name='task_create'),
     path('task/<int:pk>/update/', views.TaskUpdate.as_view(), name='task_update'),
     path('task/<int:pk>/delete/', views.TaskDelete.as_view(), name='task_delete'),
+
+# Item feature URLs
+    path('items/', views.ItemList.as_view(), name='item_index'),
+    path('items/create/', views.ItemCreate.as_view(), name='item_create'),
+    path('items/<int:pk>/', views.ItemDetail.as_view(), name='item_detail'),
+    path('items/<int:pk>/update/', views.ItemUpdate.as_view(), name='item_update'),
+    path('items/<int:pk>/delete/', views.ItemDelete.as_view(), name='item_delete'),
 ]
