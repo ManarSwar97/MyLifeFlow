@@ -189,8 +189,6 @@ class GroceryCreate(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-    def get_success_url(self):
-        return '/groceries/'
 
 class GroceryUpdate(LoginRequiredMixin, UpdateView):
     model = Grocery
@@ -206,17 +204,13 @@ class GroceryUpdate(LoginRequiredMixin, UpdateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-    def get_success_url(self):
-        return '/groceries/'
 
 class GroceryDelete(LoginRequiredMixin, DeleteView):
     model = Grocery
+    success_url = '/groceries/'
 
     def get_object(self, queryset=None):
         obj = super().get_object(queryset)
         if obj.user != self.request.user:
             raise PermissionDenied
         return obj
-
-    def get_success_url(self):
-        return '/groceries/'
