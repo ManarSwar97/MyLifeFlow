@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Budget Details: <span class="teal-text">{{ object.name }}</span></h1>
+
+<div class="budget-info">
+  <p><strong>Total Budget:</strong> {{ object.total_amount }} BHD</p>
+  <p><strong>Saving Goal:</strong> {{ object.saving_goal }} BHD</p>
+  <p><strong>Daily Limit:</strong> {{ object.daily_limit }} BHD</p>
+  <p><strong>Duration:</strong> {{ object.start_date }} to {{ object.end_date }}</p>
+  <p><strong>Status:</strong> 
+        {% if budget.end_date < today %}
+      <span style="color: red">Expired</span>
+      {% else %}
+      <span style="color: green">Active</span>
+      {% endif %}
+  </p>
+  <p><strong>Planned Expenses:</strong> {{ object.total_planned_expenses }} BHD</p>
+</div>
+
+<h2>Expenses</h2>
+
+{% if object.expense_set.all %}
+<table class="highlighted-table">
+  <thead>
+    <tr>
+      <th>Expense</th>
+      <th>Amount (BHD)</th>
+      <th>Frequency</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for expense in object.expense_set.all %}
+      <tr>
+        <td>{{ expense.name }}</td>
+        <td>{{ expense.amount }}</td>
+        <td>{{ expense.get_frequency_display }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No expenses planned yet.</p>
+{% endif %}
+
+<div class="actions" style="margin-top: 20px;">
+  <a href="{% url 'budget_update' object.id %}" class="btn">Edit</a>
+  <a href="{% url 'budget_delete' object.id %}" class="btn red">Delete</a>
+  <a href="{% url 'budget_list' %}" class="btn grey">Back to Budgets</a>
+</div>
+
+{% endblock %}

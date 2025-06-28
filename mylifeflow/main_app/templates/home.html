@@ -2,7 +2,7 @@
 <h1>Welcome {{ user.first_name }}!</h1>
 <a href="{% url 'person_index' %}" class="btn">My People</a>
 <a href="{% url 'task_index' %}" class="btn">Daily Task</a>
-
+<a href="{% url 'budget_list' %}" class="btn">Budget</a>
 {% else %}
 <h1>Welcome to MyLifeFlow!</h1>
 {% endif %} {% endblock %}

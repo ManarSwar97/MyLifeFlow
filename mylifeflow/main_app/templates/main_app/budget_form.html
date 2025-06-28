@@ -1,0 +1,30 @@
+{% extends 'base.html' %}{% block content %} {% if object %}
+<h1>Edit <span class="teal-text">{{ object.name }}</span></h1>
+{% else %}
+<h1>Create Budget</h1>
+{% endif %}
+<form method="post" id="budgetForm">
+  {% csrf_token %}
+  <table>
+    {{ form.as_table }}
+  </table>
+
+  <input type="submit" value="Create Budget" class="btn" />
+</form>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const selects = document.querySelectorAll('select')
+    M.FormSelect.init(selects)
+
+    const dateInputs = document.querySelectorAll('.datepicker')
+    M.Datepicker.init(dateInputs, {
+      format: 'yyyy-mm-dd',
+      defaultDate: new Date(),
+      setDefaultDate: true,
+      autoClose: true
+    })
+
+  })
+</script>
+{% endblock %}
