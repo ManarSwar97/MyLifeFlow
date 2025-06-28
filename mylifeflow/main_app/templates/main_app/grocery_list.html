@@ -1,0 +1,17 @@
+{% extends 'base.html' %} {% block content %}
+<h1>My Groceries</h1>
+{% for grocery in grocery_list %}
+<a href="{% url 'grocery_detail' grocery.id %}">
+  <div class="card">
+    <div class="card-content">
+      <span class="card-title">{{ grocery.name }}</span>
+      <p>Purchase Date: {{ grocery.purchase_date }}</p>
+      <p>Next Restock: {{ grocery.next_restock }}</p>
+    </div>
+  </div>
+</a>
+{% empty %}
+<p>No groceries found.</p>
+{% endfor %}
+<a href="{% url 'grocery_create' %}" class="btn">Add Grocery</a>
+{% endblock %}

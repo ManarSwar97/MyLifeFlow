@@ -29,4 +29,11 @@ urlpatterns = [
     path('items/<int:pk>/', views.ItemDetail.as_view(), name='item_detail'),
     path('items/<int:pk>/update/', views.ItemUpdate.as_view(), name='item_update'),
     path('items/<int:pk>/delete/', views.ItemDelete.as_view(), name='item_delete'),
+
+# Grocery feature URLs
+    path('groceries/', views.GroceryList.as_view(), name='grocery_index'),
+    path('groceries/create/', views.GroceryCreate.as_view(), name='grocery_create'),
+    path('groceries/<int:pk>/', views.GroceryDetail.as_view(), name='grocery_detail'),
+    path('groceries/<int:pk>/update/', views.GroceryUpdate.as_view(), name='grocery_update'),
+    path('groceries/<int:pk>/delete/', views.GroceryDelete.as_view(), name='grocery_delete'),
 ]
