@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Person, Task, Budget, Expense,  Grocery
+from .models import Person, Task, Budget, Expense,  Grocery, Note
 import datetime
 
 class NewSignupForm(UserCreationForm):
@@ -37,6 +37,14 @@ class TaskForm(forms.ModelForm):
         model = Task
         fields = ['title', 'description', 'due_date', 'is_completed']
 
+
+class NoteForm(forms.ModelForm):
+    class Meta:
+        model = Note
+        fields = ['title', 'text', 'image']
+        widgets = {
+            'text': forms.Textarea(attrs={'id': 'text'}),
+        }
 class BudgetForm(forms.ModelForm):
     class Meta:
         model= Budget

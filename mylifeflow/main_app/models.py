@@ -104,14 +104,15 @@ class Expense(models.Model):
     
 class Note(models.Model):
     title = models.CharField(max_length=50)
-    text = models.TextField()
+    text = models.TextField(max_length=1500)
     image = models.ImageField(upload_to='main_app/static/uploads', default="")
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Note: {self.title}"
-    
+    def get_absolute_url(self):
+        return reverse('note_detail', kwargs={'pk': self.id})    
 
 class Grocery(models.Model):
     name = models.CharField(max_length=50)

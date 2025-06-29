@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-from .forms import NewSignupForm, PersonForm, TaskForm, BudgetForm, ExpenseForm, GroceryForm
-from .models import UserProfile, Person, Task, Budget, Expense, Grocery, Item
+from .forms import NewSignupForm, PersonForm, TaskForm, BudgetForm, ExpenseForm, GroceryForm, NoteForm
+from .models import UserProfile, Person, Task, Budget, Expense, Grocery, Item, Note
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -107,6 +107,15 @@ class TaskDelete(LoginRequiredMixin, DeleteView):
     model = Task
     success_url = '/task/'
 
+class NoteList(LoginRequiredMixin, ListView):
+    model = Note
+class NoteDetail(LoginRequiredMixin, DetailView):
+    model = Note
+
+class NoteCreate(LoginRequiredMixin, CreateView):
+    model = Note
+    form_class = NoteForm
+    success_url = '/note/'
 
 #Budget List View
 class BudgetListView(LoginRequiredMixin , ListView):
@@ -151,6 +160,13 @@ class ItemCreate(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
     
+class NoteUpdate(LoginRequiredMixin, UpdateView):
+    model = Note
+    form_class = NoteForm
+
+class NoteDelete(LoginRequiredMixin, DeleteView):
+    model = Note
+    success_url = '/note/'
 #Budget Update View
 class BudgetUpdateView(LoginRequiredMixin, UpdateView):
     model= Budget

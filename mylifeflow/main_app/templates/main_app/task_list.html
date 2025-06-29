@@ -15,9 +15,9 @@
           <div class="task-row">
             <div class="task-info">
               {% if task.is_completed %}
-                <i class="material-icons" style="color: green; margin-right: 10px;">lens</i>
+                <i class="material-icons" style="color: green; margin-right: 10px;">check</i>
               {% else %}
-                <i class="material-icons" style="color: red; margin-right: 10px;">lens</i>
+                <i class="material-icons" style="color: red; margin-right: 10px;">close</i>
               {% endif %}
               <a href="{% url 'task_detail' task.id %}" class="task-title">
                 {{ task.title }}
