@@ -67,11 +67,7 @@ class GroceryForm(forms.ModelForm):
         widget=forms.DateInput(attrs={'type': 'date'}),
         label="Purchase Date"
     )
-    next_restock = forms.DateField(
-        widget=forms.DateInput(attrs={'type': 'date'}),
-        label="Next Restock"
-    )
 
     class Meta:
         model = Grocery
-        fields = ['name', 'purchase_date', 'duration_days', 'next_restock', 'notes']
+        fields = ['name', 'purchase_date', 'duration_days', 'notes', 'is_restocked']
