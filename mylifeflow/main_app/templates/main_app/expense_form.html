@@ -1,0 +1,25 @@
+{% extends 'base.html' %} {% block content %} {% if object %}
+<h1>Edit <span class="teal-text">{{ object.name }}</span></h1>
+{% else %}
+<h1>Add Expense</h1>
+{% endif %}
+
+<form action="" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <table>
+    {{ form.as_table }}
+  </table>
+  <input type="submit" value="Submit" class="btn" />
+</form>
+
+<a href="{% url 'expense_list' %}">Cancel</a>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Init selects
+    const selects = document.querySelectorAll('select')
+    M.FormSelect.init(selects)
+  })
+</script>
+
+{% endblock %}

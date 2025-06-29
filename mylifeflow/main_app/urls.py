@@ -23,6 +23,19 @@ urlpatterns = [
     path('task/<int:pk>/update/', views.TaskUpdate.as_view(), name='task_update'),
     path('task/<int:pk>/delete/', views.TaskDelete.as_view(), name='task_delete'),
 
+#Budget feature URLs
+    path('budget/', views.BudgetListView.as_view(), name='budget_list'),
+    path('budget/<int:pk>/', views.BudgetDetailView.as_view(), name='budget_detail'),
+    path('budget/create/', views.BudgetCreateView.as_view(), name='budget_create'),
+    path('budget/<int:pk>/update/', views.BudgetUpdateView.as_view(), name='budget_update'),
+    path('budget/<int:pk>/delete/', views.BudgetDeleteView.as_view(), name='budget_delete'),
+
+#Expense feature URLs
+    path('expense/', views.ExpenseListView.as_view(), name='expense_list'),
+    path('expense/create/', views.ExpenseCreateView.as_view(), name='expense_create'),
+    path('expense/<int:pk>/update/', views.ExpenseUpdateView.as_view(), name='expense_update'),
+    path('expense/<int:pk>/delete/', views.ExpenseDeleteView.as_view(), name='expense_delete'),
+
 # Item feature URLs
     path('items/', views.ItemList.as_view(), name='item_index'),
     path('items/create/', views.ItemCreate.as_view(), name='item_create'),

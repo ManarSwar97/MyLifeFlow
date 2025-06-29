@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-from .forms import NewSignupForm, PersonForm, TaskForm, GroceryForm
-from .models import UserProfile, Person, Task, Item, Grocery
+from .forms import NewSignupForm, PersonForm, TaskForm, BudgetForm, ExpenseForm, GroceryForm
+from .models import UserProfile, Person, Task, Budget, Expense, Grocery, Item
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -107,6 +107,27 @@ class TaskDelete(LoginRequiredMixin, DeleteView):
     model = Task
     success_url = '/task/'
 
+
+#Budget List View
+class BudgetListView(LoginRequiredMixin , ListView):
+    model= Budget
+    
+    def get_queryset(self):
+        return Budget.objects.filter(user=self.request.user)
+    
+#Budget Detail View
+class BudgetDetailView(LoginRequiredMixin, DetailView):
+    model=Budget
+
+    def get_queryset(self):
+        return Budget.objects.filter(user=self.request.user)
+    
+#Budget Create View
+class BudgetCreateView(LoginRequiredMixin, CreateView):
+    model= Budget
+    form_class= BudgetForm
+    success_url= '/budget/'
+    
 class ItemList(LoginRequiredMixin, ListView):
     model = Item
 
@@ -129,6 +150,50 @@ class ItemCreate(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+    
+#Budget Update View
+class BudgetUpdateView(LoginRequiredMixin, UpdateView):
+    model= Budget
+    form_class= BudgetForm
+    success_url= '/budget/'
+
+    def get_queryset(self):
+        return Budget.objects.filter(user= self.request.user)
+    
+#Budget Delete View
+class BudgetDeleteView(LoginRequiredMixin, DeleteView):
+    model=Budget
+    success_url='/budget/'
+
+    def get_queryset(self):
+        return Budget.objects.filter(user=self.request.user)
+    
+#Expense List View
+class ExpenseListView(LoginRequiredMixin, ListView):
+    model= Expense
+
+    def get_queryset(self):
+        return Expense.objects.filter(user=self.request.user)
+    
+#Expense Create View
+class ExpenseCreateView(LoginRequiredMixin, CreateView):
+    model= Expense
+    form_class= ExpenseForm
+    success_url= '/expense/'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+    
+#Expense Update View
+class ExpenseUpdateView(LoginRequiredMixin, UpdateView):
+    model = Expense
+    form_class = ExpenseForm
+    success_url = '/expense/'
+
+    def get_queryset(self):
+        return Expense.objects.filter(user=self.request.user)
+
 
 class ItemUpdate(LoginRequiredMixin, UpdateView):
     model = Item
@@ -189,6 +254,13 @@ class GroceryCreate(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+#Expense Delete View
+class ExpenseDeleteView(LoginRequiredMixin, DeleteView):
+    model= Expense
+    success_url= '/expense/'
+
+    def get_queryset(self):
+        return Expense.objects.filter(user=self.request.user)
 
 class GroceryUpdate(LoginRequiredMixin, UpdateView):
     model = Grocery
