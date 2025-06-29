@@ -1,0 +1,29 @@
+.note-card {
+  background-color: #fdfdfd;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.note-header {
+  margin-bottom: 25px;
+}
+
+.note-row {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.note-title {
+  font-size: 18px;
+  color: #333;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.note-row i.material-icons {
+  color: #265f8d;
+  margin-right: 10px;
+}

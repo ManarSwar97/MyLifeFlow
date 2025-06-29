@@ -22,4 +22,11 @@ urlpatterns = [
     path('task/create/', views.TaskCreate.as_view(), name='task_create'),
     path('task/<int:pk>/update/', views.TaskUpdate.as_view(), name='task_update'),
     path('task/<int:pk>/delete/', views.TaskDelete.as_view(), name='task_delete'),
+# Journal feature URLs
+    path('note/', views.NoteList.as_view(), name='note_index'),
+    path('note/<int:pk>/', views.NoteDetail.as_view(), name='note_detail'),
+    path('note/create/', views.NoteCreate.as_view(), name='note_create'),
+    path('note/<int:pk>/update/', views.NoteUpdate.as_view(), name='note_update'),
+    path('note/<int:pk>/delete/', views.NoteDelete.as_view(), name='note_delete'),
+
 ]

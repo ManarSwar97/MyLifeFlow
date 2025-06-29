@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-from .forms import NewSignupForm, PersonForm, TaskForm
-from .models import UserProfile, Person, Task
+from .forms import NewSignupForm, PersonForm, TaskForm, NoteForm
+from .models import UserProfile, Person, Task, Note
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -107,3 +107,25 @@ class TaskUpdate(LoginRequiredMixin, UpdateView):
 class TaskDelete(LoginRequiredMixin, DeleteView):
     model = Task
     success_url = '/task/'
+
+class NoteList(LoginRequiredMixin, ListView):
+    model = Note
+class NoteDetail(LoginRequiredMixin, DetailView):
+    model = Note
+
+class NoteCreate(LoginRequiredMixin, CreateView):
+    model = Note
+    form_class = NoteForm
+    success_url = '/note/'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+    
+class NoteUpdate(LoginRequiredMixin, UpdateView):
+    model = Note
+    form_class = NoteForm
+
+class NoteDelete(LoginRequiredMixin, DeleteView):
+    model = Note
+    success_url = '/note/'

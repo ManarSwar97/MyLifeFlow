@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+   {% if object %}
+    <h1>Edit <span class="teal-text">{{object.title}}</span></h1>
+  {% else %}
+    <h1>Add Note</h1>
+  {% endif %}
+<form method="POST" enctype="multipart/form-data" id="noteForm">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+    <button type="button" onclick="startRecognition()">🎤 Speak</button>
+    <button type="button" onclick="stopRecognition()">🛑 Stop</button>
+    <input type="submit" value="Save Note">
+  </form>
+
+<!--Source:https://www.youtube.com/watch?v=0mJC0A72Fnw-->
+<script>
+    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.interimResults = true;
+
+    let finalTranscript = '';
+    let lastFinalTranscript = '';
+
+    recognition.addEventListener('result', e => {
+        const transcript = Array.from(e.results)
+            .map(result => result[0])
+            .map(result => result.transcript)
+            .join('');
+
+        if (e.results[0].isFinal) {
+            if (transcript !== lastFinalTranscript) {
+                finalTranscript += transcript + ' ';
+                document.getElementById('text').value = finalTranscript;
+                lastFinalTranscript = transcript;
+            }
+        }
+    });
+
+    recognition.addEventListener('end', () => {
+        if (!recognition.stoppedManually) {
+            recognition.start(); 
+        }    });
+
+    const startRecognition = () => {
+        recognition.stoppedManually = false;  
+        finalTranscript = document.getElementById('text').value || '';
+        lastFinalTranscript = '';
+        recognition.start();
+    }
+    const stopRecognition = () => {
+        recognition.stoppedManually = true;
+        recognition.stop();
+    }
+</script>
+
+{% endblock %}
