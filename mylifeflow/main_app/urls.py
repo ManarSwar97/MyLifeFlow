@@ -22,4 +22,18 @@ urlpatterns = [
     path('task/create/', views.TaskCreate.as_view(), name='task_create'),
     path('task/<int:pk>/update/', views.TaskUpdate.as_view(), name='task_update'),
     path('task/<int:pk>/delete/', views.TaskDelete.as_view(), name='task_delete'),
+
+# Item feature URLs
+    path('items/', views.ItemList.as_view(), name='item_index'),
+    path('items/create/', views.ItemCreate.as_view(), name='item_create'),
+    path('items/<int:pk>/', views.ItemDetail.as_view(), name='item_detail'),
+    path('items/<int:pk>/update/', views.ItemUpdate.as_view(), name='item_update'),
+    path('items/<int:pk>/delete/', views.ItemDelete.as_view(), name='item_delete'),
+
+# Grocery feature URLs
+    path('groceries/', views.GroceryList.as_view(), name='grocery_index'),
+    path('groceries/create/', views.GroceryCreate.as_view(), name='grocery_create'),
+    path('groceries/<int:pk>/', views.GroceryDetail.as_view(), name='grocery_detail'),
+    path('groceries/<int:pk>/update/', views.GroceryUpdate.as_view(), name='grocery_update'),
+    path('groceries/<int:pk>/delete/', views.GroceryDelete.as_view(), name='grocery_delete'),
 ]

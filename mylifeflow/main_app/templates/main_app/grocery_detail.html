@@ -1,0 +1,12 @@
+{% extends 'base.html' %} {% block content %}
+<h1>{{ grocery.name }}</h1>
+<p><strong>Purchase Date:</strong> {{ grocery.purchase_date }}</p>
+<p><strong>Duration (days):</strong> {{ grocery.duration_days }}</p>
+<p><strong>Next Restock:</strong> {{ grocery.next_restock }}</p>
+{% if grocery.notes %}
+<p><strong>Notes:</strong> {{ grocery.notes }}</p>
+{% endif %}
+<a href="{% url 'grocery_update' grocery.id %}" class="btn">Edit</a>
+<a href="{% url 'grocery_delete' grocery.id %}" class="btn red">Delete</a>
+<a href="{% url 'grocery_index' %}" class="btn">Back to List</a>
+{% endblock %}

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Person, Task
+from .models import Person, Task, Grocery
 import datetime
 
 class NewSignupForm(UserCreationForm):
@@ -36,3 +36,17 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = ['title', 'description', 'due_date', 'is_completed']
+
+class GroceryForm(forms.ModelForm):
+    purchase_date = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        label="Purchase Date"
+    )
+    next_restock = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        label="Next Restock"
+    )
+
+    class Meta:
+        model = Grocery
+        fields = ['name', 'purchase_date', 'duration_days', 'next_restock', 'notes']
