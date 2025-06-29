@@ -1,14 +1,23 @@
 {% extends 'base.html' %} {% block content %}
 <h1>People List</h1>
 {% for person in person_list %}
-<a href="{% url 'person_detail' person.id %}">
-  <div class="card">
-    <div class="card-content">
-      <span class="card-title">{{ person.name }}</span>
-      <p>Next Contact Date: {{ person.contact_date }}</p>
-    </div>
+<div class="card">
+  <div class="card-content">
+    <a href="{% url 'person_detail' person.id %}">
+      <span class="card-title">{{ person.name }}</span></a
+    >
+    <p>
+      Email: {{ person.email }}
+      <a
+        href="https://mail.google.com/mail/?view=cm&fs=1&to={{ person.email }}"
+        target="_blank"
+      >
+        Send mail
+      </a>
+    </p>
+    <p>Next Contact Date: {{ person.contact_date }}</p>
   </div>
-</a>
+</div>
 {% empty %}
 <p>No people found.</p>
 {% endfor %}

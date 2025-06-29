@@ -54,7 +54,7 @@ class PersonDetail(LoginRequiredMixin, DetailView):
 
 class PersonCreate(LoginRequiredMixin, CreateView):
     model = Person
-    form_class = PersonForm
+    form_class = PersonForm  # or fields = ['name', 'relationship', 'email', 'contact_date', 'notes']
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -62,7 +62,7 @@ class PersonCreate(LoginRequiredMixin, CreateView):
 
 class PersonUpdate(LoginRequiredMixin, UpdateView):
     model = Person
-    form_class = PersonForm
+    form_class = PersonForm  # or fields = ['name', 'relationship', 'email', 'contact_date', 'notes']
 
     def get_object(self, queryset=None):
         obj = super().get_object(queryset)

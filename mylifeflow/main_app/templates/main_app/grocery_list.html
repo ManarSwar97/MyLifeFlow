@@ -7,6 +7,7 @@
       <span class="card-title">{{ grocery.name }}</span>
       <p>Purchase Date: {{ grocery.purchase_date }}</p>
       <p>Next Restock: {{ grocery.next_restock }}</p>
+      <p>Restocked? {{ grocery.is_restocked|yesno:"Yes,No" }}</p>
     </div>
   </div>
 </a>

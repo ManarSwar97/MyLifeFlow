@@ -3,6 +3,7 @@
 <p><strong>Purchase Date:</strong> {{ grocery.purchase_date }}</p>
 <p><strong>Duration (days):</strong> {{ grocery.duration_days }}</p>
 <p><strong>Next Restock:</strong> {{ grocery.next_restock }}</p>
+<p><strong>Restocked?</strong> {{ grocery.restocked|yesno:"Yes,No" }}</p>
 {% if grocery.notes %}
 <p><strong>Notes:</strong> {{ grocery.notes }}</p>
 {% endif %}

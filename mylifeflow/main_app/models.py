@@ -1,7 +1,7 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
-from datetime import date
+from datetime import date, timedelta
 from django.utils import timezone
 from django.contrib.auth.models import User
 
@@ -118,8 +118,8 @@ class Grocery(models.Model):
     name = models.CharField(max_length=50)
     purchase_date = models.DateField()
     duration_days = models.IntegerField()
-    next_restock= models.DateField()
     notes = models.TextField(blank=True)
+    is_restocked = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -127,6 +127,10 @@ class Grocery(models.Model):
     
     def get_absolute_url(self):
         return reverse('grocery_detail', kwargs={'pk': self.id})
+
+    @property
+    def next_restock(self):
+        return self.purchase_date + timedelta(days=self.duration_days)
 
 
 class Item(models.Model):
@@ -152,10 +156,11 @@ class Item(models.Model):
 class Person(models.Model):
     name = models.CharField(max_length=50)
     relationship = models.CharField(max_length=50)
+    email = models.EmailField()  # <-- Add this line
     contact_date = models.DateField()
     notes = models.TextField(blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
+    
     def __str__(self):
         return f"{self.name}"
     
