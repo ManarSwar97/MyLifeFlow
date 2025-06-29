@@ -146,11 +146,18 @@ class Item(models.Model):
         blank=True,
         default=list
     )
+
+    def save(self, *args, **kwargs):
+        if self.location:
+            self.qr_code_url = f"https://qr.example.com/{self.location}"
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"Item: {self.name}"
-    
+
     def get_absolute_url(self):
         return reverse('item_detail', kwargs={'pk': self.id})
+
 
 
 class Person(models.Model):

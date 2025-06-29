@@ -55,4 +55,7 @@ urlpatterns = [
     path('groceries/<int:pk>/', views.GroceryDetail.as_view(), name='grocery_detail'),
     path('groceries/<int:pk>/update/', views.GroceryUpdate.as_view(), name='grocery_update'),
     path('groceries/<int:pk>/delete/', views.GroceryDelete.as_view(), name='grocery_delete'),
+
+# Location feature URLs
+    path('locations/<str:location>/', views.location_items, name='location_items'),
 ]

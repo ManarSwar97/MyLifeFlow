@@ -1,11 +1,44 @@
 {% extends 'base.html' %} {% block content %}
 <h1>{% if object %}Edit{% else %}Add{% endif %} Item</h1>
-<form method="post">
+<form method="post" id="item-form">
   {% csrf_token %}
   <table>
-    {{ form.as_table }}
+    <tr>
+      <th>{{ form.name.label_tag }}</th>
+      <td>{{ form.name }}</td>
+    </tr>
+    <tr>
+      <th>{{ form.location.label_tag }}</th>
+      <td>
+        {{ form.location }}
+        <input
+          type="text"
+          id="new-location-input"
+          name="new_location"
+          style="display: none"
+          placeholder="Enter new location"
+        />
+      </td>
+    </tr>
+    <tr>
+      <th>{{ form.description.label_tag }}</th>
+      <td>{{ form.description }}</td>
+    </tr>
   </table>
   <input type="submit" value="Add" class="btn" />
 </form>
 <a href="{% url 'item_index' %}">Cancel</a>
+<script>
+  const locationSelect = document.getElementById('id_location')
+  const newLocationInput = document.getElementById('new-location-input')
+  locationSelect.addEventListener('change', function () {
+    if (this.value === '{{ form.NEW_LOCATION_VALUE }}') {
+      newLocationInput.style.display = 'inline'
+      newLocationInput.required = true
+    } else {
+      newLocationInput.style.display = 'none'
+      newLocationInput.required = false
+    }
+  })
+</script>
 {% endblock %}
