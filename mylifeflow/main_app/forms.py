@@ -20,7 +20,7 @@ class PersonForm(forms.ModelForm):
 
     class Meta:
         model = Person
-        fields = ['name', 'relationship', 'contact_date', 'notes']
+        fields = ['name', 'relationship', 'email', 'contact_date', 'notes']
 
     def clean_contact_date(self):
         contact_date = self.cleaned_data['contact_date']
