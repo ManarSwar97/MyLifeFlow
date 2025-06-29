@@ -26,6 +26,7 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+    
     def get_absolute_url(self):
         return reverse('task_detail', kwargs={'pk': self.id})
     
@@ -122,6 +123,9 @@ class Grocery(models.Model):
 
     def __str__(self):
         return f"Grocery: {self.name}"
+    
+    def get_absolute_url(self):
+        return reverse('grocery_detail', kwargs={'pk': self.id})
 
 
 class Item(models.Model):
@@ -139,6 +143,9 @@ class Item(models.Model):
     )
     def __str__(self):
         return f"Item: {self.name}"
+    
+    def get_absolute_url(self):
+        return reverse('item_detail', kwargs={'pk': self.id})
 
 
 class Person(models.Model):

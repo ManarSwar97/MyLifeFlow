@@ -36,4 +36,17 @@ urlpatterns = [
     path('expense/<int:pk>/update/', views.ExpenseUpdateView.as_view(), name='expense_update'),
     path('expense/<int:pk>/delete/', views.ExpenseDeleteView.as_view(), name='expense_delete'),
 
+# Item feature URLs
+    path('items/', views.ItemList.as_view(), name='item_index'),
+    path('items/create/', views.ItemCreate.as_view(), name='item_create'),
+    path('items/<int:pk>/', views.ItemDetail.as_view(), name='item_detail'),
+    path('items/<int:pk>/update/', views.ItemUpdate.as_view(), name='item_update'),
+    path('items/<int:pk>/delete/', views.ItemDelete.as_view(), name='item_delete'),
+
+# Grocery feature URLs
+    path('groceries/', views.GroceryList.as_view(), name='grocery_index'),
+    path('groceries/create/', views.GroceryCreate.as_view(), name='grocery_create'),
+    path('groceries/<int:pk>/', views.GroceryDetail.as_view(), name='grocery_detail'),
+    path('groceries/<int:pk>/update/', views.GroceryUpdate.as_view(), name='grocery_update'),
+    path('groceries/<int:pk>/delete/', views.GroceryDelete.as_view(), name='grocery_delete'),
 ]
