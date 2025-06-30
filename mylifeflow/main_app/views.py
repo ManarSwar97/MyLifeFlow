@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-from .forms import NewSignupForm, PersonForm, TaskForm, BudgetForm, ExpenseForm, GroceryForm, NoteForm
-from .models import UserProfile, Person, Task, Budget, Expense, Grocery, Item, Note
+from .forms import NewSignupForm, PersonForm, TaskForm, BudgetForm, ExpenseForm, GroceryForm, NoteForm, VoiceForm
+from .models import UserProfile, Person, Task, Budget, Expense, Grocery, Item, Note, Voice
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -87,6 +87,8 @@ class PersonDelete(LoginRequiredMixin, DeleteView):
 
 class TaskList(LoginRequiredMixin, ListView):
     model = Task
+    def get_queryset(self):
+        return Task.objects.filter(user=self.request.user)
 
 class TaskDetail(LoginRequiredMixin, DetailView):
     model = Task
@@ -109,6 +111,9 @@ class TaskDelete(LoginRequiredMixin, DeleteView):
 
 class NoteList(LoginRequiredMixin, ListView):
     model = Note
+    def get_queryset(self):
+        return Note.objects.filter(user=self.request.user)
+    
 class NoteDetail(LoginRequiredMixin, DetailView):
     model = Note
 
@@ -116,6 +121,9 @@ class NoteCreate(LoginRequiredMixin, CreateView):
     model = Note
     form_class = NoteForm
     success_url = '/note/'
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
 #Budget List View
 class BudgetListView(LoginRequiredMixin , ListView):
@@ -302,3 +310,27 @@ class GroceryDelete(LoginRequiredMixin, DeleteView):
         if obj.user != self.request.user:
             raise PermissionDenied
         return obj
+
+class VoiceList(LoginRequiredMixin, ListView):
+    model = Voice
+    def get_queryset(self):
+        return Voice.objects.filter(user=self.request.user)
+    
+class VoiceDetail(LoginRequiredMixin, DetailView):
+    model = Voice
+
+class VoiceCreate(LoginRequiredMixin, CreateView):
+    model = Voice
+    form_class = VoiceForm
+    success_url = '/voice/'
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+class VoiceUpdate(LoginRequiredMixin, UpdateView):
+    model = Voice
+    form_class = VoiceForm
+
+class VoiceDelete(LoginRequiredMixin, DeleteView):
+    model = Voice
+    success_url = '/voice/'

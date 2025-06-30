@@ -5,7 +5,6 @@
   <link rel="stylesheet" href="{% static 'css/tasks.css' %}">
 
   <h1 class="center-align">Tasks List</h1>
-
   <div class="row">
     <div class="col s12 m8 l6 offset-m2 offset-l3">
       <div class="card task-card">
@@ -23,8 +22,15 @@
                 {{ task.title }}
               </a>
             </div>
-            <span class="task-date">{{ task.due_date }}</span>
-          </div>
+            {% now "Y-m-d" as today %}
+            <span class="task-date">
+              {% if task.due_date|date:"Y-m-d" == today %}
+                Today
+              {% else %}
+                {{ task.due_date|date:"F j, Y" }}
+              {% endif %}
+            </span>        
+           </div>
         {% empty %}
           <p class="center-align grey-text">No tasks found.</p>
         {% endfor %}
@@ -35,4 +41,18 @@
   <div class="center-align">
     <a href="{% url 'task_create' %}" class="btn teal">Add Task</a>
   </div>
+
+  <body>
+    <!--source: https://dashboard.kommunicate.io/onboarding-->
+    <script type="text/javascript">
+    (function(d, m){
+        var kommunicateSettings = 
+            {"appId":"cc9f527723fd05bf5ed3b094d29d49f4","popupWidget":true,"automaticChatOpenOnNavigation":true};
+        var s = document.createElement("script"); s.type = "text/javascript"; s.async = true;
+        s.src = "https://widget.kommunicate.io/v2/kommunicate.app";
+        var h = document.getElementsByTagName("head")[0]; h.appendChild(s);
+        window.kommunicate = m; m._globals = kommunicateSettings;
+    })(document, window.kommunicate || {});
+</script>
+  </body>
 {% endblock %}

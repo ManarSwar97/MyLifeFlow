@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Person, Task, Budget, Expense,  Grocery, Note
+from .models import Person, Task, Budget, Expense,  Grocery, Note, Voice
 import datetime
 
 class NewSignupForm(UserCreationForm):
@@ -83,3 +83,15 @@ class GroceryForm(forms.ModelForm):
     class Meta:
         model = Grocery
         fields = ['name', 'purchase_date', 'duration_days', 'next_restock', 'notes']
+
+
+
+class VoiceForm(forms.ModelForm):
+    class Meta:
+        model = Voice
+        fields = ['title', 'audio', 'image']
+        success_url = '/voice/'
+
+        def form_valid(self, form):
+            form.instance.user = self.request.user
+            return super().form_valid(form)
