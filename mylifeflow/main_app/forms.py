@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Person, Task, Budget, Expense,  Grocery, Note, Item
+from .models import Person, Task, Budget, Expense,  Grocery, Note, Item, Voice
 import datetime
 
 class NewSignupForm(UserCreationForm):
