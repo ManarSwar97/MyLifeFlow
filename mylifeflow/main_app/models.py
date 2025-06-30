@@ -137,7 +137,6 @@ class Item(models.Model):
     name = models.CharField(max_length=50)
     location = models.CharField(max_length=100)
     description = models.TextField()
-    qr_code_url = models.URLField(max_length=200, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -146,11 +145,6 @@ class Item(models.Model):
         blank=True,
         default=list
     )
-
-    def save(self, *args, **kwargs):
-        if self.location:
-            self.qr_code_url = f"https://qr.example.com/{self.location}"
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Item: {self.name}"
