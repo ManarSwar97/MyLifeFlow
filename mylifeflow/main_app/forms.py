@@ -78,9 +78,7 @@ class GroceryForm(forms.ModelForm):
 
     class Meta:
         model = Grocery
-        fields = ['name', 'purchase_date', 'duration_days', 'next_restock', 'notes']
-
-
+        fields = ['name', 'purchase_date', 'duration_days', 'notes', 'is_restocked']
 
 class VoiceForm(forms.ModelForm):
     class Meta:
@@ -91,7 +89,6 @@ class VoiceForm(forms.ModelForm):
         def form_valid(self, form):
             form.instance.user = self.request.user
             return super().form_valid(form)
-        fields = ['name', 'purchase_date', 'duration_days', 'notes', 'is_restocked']
 
 class ItemForm(forms.ModelForm):
     NEW_LOCATION_VALUE = '__new__'

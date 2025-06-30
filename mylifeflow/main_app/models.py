@@ -133,6 +133,7 @@ class Grocery(models.Model):
     duration_days = models.IntegerField()
     notes = models.TextField(blank=True)
     is_restocked = models.BooleanField(default=False)
+    restock_date = models.DateField(null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -140,6 +141,13 @@ class Grocery(models.Model):
     
     def get_absolute_url(self):
         return reverse('grocery_detail', kwargs={'pk': self.id})
+    
+    def save(self, *args, **kwargs):
+        if self.is_restocked and not self.restock_date:
+            self.restock_date = timezone.now().date()
+        elif not self.is_restocked:
+            self.restock_date = None
+        super().save(*args, **kwargs)
 
     @property
     def next_restock(self):
