@@ -78,6 +78,19 @@ class GroceryForm(forms.ModelForm):
 
     class Meta:
         model = Grocery
+        fields = ['name', 'purchase_date', 'duration_days', 'next_restock', 'notes']
+
+
+
+class VoiceForm(forms.ModelForm):
+    class Meta:
+        model = Voice
+        fields = ['title', 'audio', 'image']
+        success_url = '/voice/'
+
+        def form_valid(self, form):
+            form.instance.user = self.request.user
+            return super().form_valid(form)
         fields = ['name', 'purchase_date', 'duration_days', 'notes', 'is_restocked']
 
 class ItemForm(forms.ModelForm):

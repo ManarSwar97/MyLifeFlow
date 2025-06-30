@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -58,4 +60,13 @@ urlpatterns = [
 
 # Location feature URLs
     path('locations/<str:location>/', views.location_items, name='location_items'),
-]
+
+# Voice feature URLs
+    path('voice/', views.VoiceList.as_view(), name='voice_index'),
+    path('voice/create/', views.VoiceCreate.as_view(), name='voice_create'),
+    path('voice/<int:pk>/', views.VoiceDetail.as_view(), name='voice_detail'),
+    path('voice/<int:pk>/update/', views.VoiceUpdate.as_view(), name='voice_update'),
+    path('voice/<int:pk>/delete/', views.VoiceDelete.as_view(), name='voice_delete'),
+]+  static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
