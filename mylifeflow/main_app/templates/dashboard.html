@@ -1,0 +1,170 @@
+{% extends 'base.html' %} {% block content %} {% if user.is_authenticated %}
+<h1>Welcome back, {{ user.first_name }}!</h1>
+<p>Track you daily habits and progress to keep your life flowing smoothly.</p>
+
+<!-- for weather -->
+{% if weather %}
+  <div class="weather-widget">
+    <h3>Weather in {{ weather.sys.country}}</h3>
+    <p>Temp: {{ weather.main.temp }} °{% if units == 'metric' %}F{% else %}C{% endif %}</p>
+    <p>Feels like: {{ weather.main.feels_like }} °{% if units == 'metric' %}F{% else %}C{% endif %}</p>
+    <p>Wind speed: {{ weather.wind.speed }}
+      {% if units == "metric" %}
+        m/s
+      {% else %}
+        mph
+      {% endif %}
+    </p>
+    <a href="?units={% if units == 'metric' %}imperial{% else %}metric{% endif %}" style="cursor:pointer;">
+      Switch to °{% if units == 'metric' %}F{% else %}C{% endif %}
+    </a>
+  </div>
+{% else %}
+  <p>Could not get weather data.</p>
+{% endif %}
+
+
+<!-- for quotes -->
+{% if quotes %}
+  <div class="quotes-widget">
+    <h3>Today's quote</h3>
+    <p>{{quotes.quote}}</p>
+    <p>by: {{quotes.author}}</p>
+  </div>
+{% else %}
+  <p>Could not get quotes data.</p>
+{% endif %}
+
+
+
+
+<!-- Daily Tasks part -->
+<h3>Today's Tasks</h3>
+{% for task in task_list %}
+<div class="task-row">
+  <div class="task-info">
+    {% if task.is_completed %}
+    <i class="material-icons" style="color: green; margin-right: 10px">check</i>
+    {% else %}
+    <i class="material-icons" style="color: red; margin-right: 10px">close</i>
+    {% endif %}
+    <a href="{% url 'task_detail' task.id %}" class="task-title">
+      {{ task.title }}
+    </a>
+  </div>
+  <span class="task-date">{{ task.due_date }}</span>
+</div>
+{% empty %}
+<p class="center-align grey-text">No tasks found.</p>
+{% endfor %}
+
+<!-- Budget part -->
+<h3>Today's Budget</h3>
+<!-- Dropdown box -->
+<label for="budgetDropdown">Choose a budget:</label>
+<select id="budgetDropdown" onchange="showBudget(this.value)">
+  <option value="">-- Select a Budget --</option>
+  {% for budget in budget_list %}
+    <option value="budget-{{ budget.id }}">{{ budget.name }}</option>
+  {% endfor %}
+</select>
+
+
+{% for budget in budget_list %}
+<div
+  id="budget-{{ budget.id }}"
+  class="budget-card"
+  style="
+  display: none;
+    width: 300px;
+    padding: 1rem;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  "
+>
+  <h3 style="color: #00796b">{{ budget.name }}</h3>
+
+  <p><strong>Total Budget:</strong> BHD{{ budget.total_amount }}</p>
+  <p><strong>Saving Goal:</strong> BHD{{ budget.saving_goal }}</p>
+  <p>
+    <strong>Planned Expenses:</strong> BHD{{ budget.total_planned_expenses }}
+  </p>
+  <p><strong>Daily Limit:</strong> BHD{{ budget.daily_limit }}</p>
+  <p>
+    <strong>Duration:</strong> {{ budget.start_date }} → {{ budget.end_date }}
+  </p>
+
+  <p>
+    <strong>Status:</strong>
+    {% if budget.end_date < today %}
+    <span style="color: red">Expired</span>
+    {% else %}
+    <span style="color: green">Active</span>
+    {% endif %}
+  </p>
+    </div>
+  {% empty %}
+  <p>No budgets created yet.</p>
+  {% endfor %}
+</div>
+
+<!-- to show selected budget -->
+<script>
+  function showBudget(selectedId) {
+    document.querySelectorAll('.budget-card').forEach(el => el.style.display = 'none');
+    
+    if (selectedId) {
+      const el = document.getElementById(selectedId);
+      if (el) el.style.display = 'block';
+    }
+  }
+    document.addEventListener('DOMContentLoaded', function () {
+    const selects = document.querySelectorAll('select')
+    M.FormSelect.init(selects)})
+</script>
+
+
+  <!-- Restock Reminders part -->
+  <h3>Restock Reminders</h3>
+  <h5>My Groceries</h5>
+  {% for grocery in grocery_list %}
+  <a href="{% url 'grocery_detail' grocery.id %}">
+    <div class="card">
+      <div class="card-content">
+        <span class="card-title">{{ grocery.name }}</span>
+        <p>Purchase Date: {{ grocery.purchase_date }}</p>
+        <p>Next Restock: {{ grocery.next_restock }}</p>
+      </div>
+    </div>
+  </a>
+  {% empty %}
+  <p>No groceries found.</p>
+  {% endfor %}
+
+
+  <!-- My People Part -->
+<h3>My People</h3>
+  {% for person in person_list %}
+<a href="{% url 'person_detail' person.id %}">
+  <div class="card">
+    <div class="card-content">
+      <span class="card-title">{{ person.name }}</span>
+      <p>Next Contact Date: {{ person.contact_date }}</p>
+    </div>
+  </div>
+</a>
+{% empty %}
+<p>No people found.</p>
+{% endfor %}
+
+  <a href="{% url 'person_index' %}" class="btn">My People</a>
+  <a href="{% url 'task_index' %}" class="btn">Daily Task</a>
+  <a href="{% url 'note_index' %}" class="btn">Journaling</a>
+  <a href="{% url 'budget_list' %}" class="btn">Budget</a>
+  <a href="{% url 'item_index' %}" class="btn">My Items</a>
+  <a href="{% url 'grocery_index' %}" class="btn">My Groceries</a>
+  {% else %}
+  <h1>Welcome to MyLifeFlow!</h1>
+  {% endif %} {% endblock %}
+</div>

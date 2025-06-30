@@ -1,11 +1,3 @@
-{% extends 'base.html' %} {% block content %} {% if user.is_authenticated %}
-<h1>Welcome {{ user.first_name }}!</h1>
-<a href="{% url 'person_index' %}" class="btn">My People</a>
-<a href="{% url 'task_index' %}" class="btn">Daily Task</a>
-<a href="{% url 'note_index' %}" class="btn">Journaling</a>
-<a href="{% url 'budget_list' %}" class="btn">Budget</a>
-<a href="{% url 'item_index' %}" class="btn">My Items</a>
-<a href="{% url 'grocery_index' %}" class="btn">My Groceries</a>
-{% else %}
-<h1>Welcome to MyLifeFlow!</h1>
-{% endif %} {% endblock %}
+{% extends 'base.html' %} {% block content %}
+<h1>welcome home page</h1>
+{% endblock %}

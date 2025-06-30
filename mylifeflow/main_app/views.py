@@ -8,10 +8,75 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
+import requests
+from django.http import HttpResponse
+import os 
+from dotenv import load_dotenv
+load_dotenv()
+
 
 # Create your views here.
 def home(request):
     return render(request, 'home.html')
+
+def dashboard(request):
+    #for the weather api 
+    if request.user.is_authenticated: #to check if the user authenticated (exist)
+        profile = request.user.userprofile #get thee user profile since its contain the latitude and longitude for the location
+        lat = profile.latitude
+        lon = profile.longitude
+    else:
+        lat = None
+        lon = None
+
+    units = request.GET.get('units', 'metric')
+    API_KEY = os.getenv('WEATHER_API_KEY')
+
+    #initialize the weather variable
+    weather = None
+
+    #to check if the latitude and longitude is not empty and the api exist
+    if lat is not None and lon is not None and API_KEY:
+        url = f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units={units}&appid={API_KEY}'
+        
+        response = requests.get(url)
+
+        if response.status_code == 200: #in case there was an error and it sends staus 200
+            weather = response.json()
+        else:
+            print("Failed to get weather data:", response.text) #if there is no weather data
+    else:
+        print("Missing lat/lon or API_KEY") #if latitude and longitude empty and the api does not exist
+
+
+    #for the quotes api 
+    quotes= None
+    url = f'https://dummyjson.com/quotes/random'
+        
+    response = requests.get(url)
+
+    if response.status_code == 200: #in case there was an error and it sends staus 200
+            quotes = response.json()
+            print(quotes)
+    else:
+        print("Failed to get quotes data:", response.text) #if there is no weather data
+
+    task_list = Task.objects.filter(user=request.user)
+    grocery_list = Grocery.objects.filter(user=request.user)
+    budget_list = Budget.objects.filter(user=request.user)
+    person_list = Person.objects.filter(user=request.user)
+
+    return render(request, 'dashboard.html', {
+        'task_list': task_list,
+        'grocery_list': grocery_list,
+        'budget_list': budget_list,
+        'person_list': person_list,
+        'weather': weather,
+        'units': units,
+        'quotes': quotes
+    })
+
+
 
 def about(request):
     return render(request, 'about.html')
@@ -22,10 +87,16 @@ def signup(request):
         form = NewSignupForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
+            #to get them from the inputs
+            latitude = float(request.POST.get('latitude', 0.0))
+            longitude = float(request.POST.get('longitude', 0.0))
+
             UserProfile.objects.create(
                 user=user,
                 birthday=form.cleaned_data.get('birthday'),
-                profile_image=request.FILES.get('profile_image')
+                profile_image=request.FILES.get('profile_image'),
+                latitude=latitude,
+                longitude= longitude
             )
             login(request, user)
             return redirect('login')
@@ -88,6 +159,9 @@ class PersonDelete(LoginRequiredMixin, DeleteView):
 class TaskList(LoginRequiredMixin, ListView):
     model = Task
 
+    def get_queryset(self):
+        return Task.objects.filter(user=self.request.user)
+
 class TaskDetail(LoginRequiredMixin, DetailView):
     model = Task
 
@@ -136,6 +210,10 @@ class BudgetCreateView(LoginRequiredMixin, CreateView):
     model= Budget
     form_class= BudgetForm
     success_url= '/budget/'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
     
 class ItemList(LoginRequiredMixin, ListView):
     model = Item
@@ -197,6 +275,18 @@ class ExpenseCreateView(LoginRequiredMixin, CreateView):
     form_class= ExpenseForm
     success_url= '/expense/'
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user 
+        return kwargs
+    
+    def get_initial(self):
+        initial = super().get_initial()
+        budget_id = self.request.GET.get('budget_id')
+        if budget_id:
+            initial['budget'] = budget_id
+        return initial
+    
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
@@ -206,6 +296,18 @@ class ExpenseUpdateView(LoginRequiredMixin, UpdateView):
     model = Expense
     form_class = ExpenseForm
     success_url = '/expense/'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user 
+        return kwargs
+    
+    def get_initial(self):
+        initial = super().get_initial()
+        budget_id = self.request.GET.get('budget_id')
+        if budget_id:
+            initial['budget'] = budget_id
+        return initial
 
     def get_queryset(self):
         return Expense.objects.filter(user=self.request.user)

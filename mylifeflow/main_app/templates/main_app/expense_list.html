@@ -3,7 +3,7 @@
 <h2>Your Expenses</h2>
 <a href="{% url 'expense_create' %}">+ Add Expense</a>
 <ul>
-  {% for expense in object_list %}
+  {% for expense in expense_list %}
   <li>
     {{ expense.name }} - {{ expense.amount }}
     <a href="{% url 'expense_update' expense.id %}">Edit</a> |

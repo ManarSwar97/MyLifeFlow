@@ -12,7 +12,9 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     birthday = models.DateField()
     profile_image = models.ImageField(upload_to='main_app/static/uploads/', default="")
-
+    latitude= models.FloatField(default=0.0)
+    longitude= models.FloatField(default=0.0)
+    
     def __str__(self):
         return self.user.username
 
