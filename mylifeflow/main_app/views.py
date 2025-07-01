@@ -7,9 +7,13 @@ from .models import UserProfile, Person, Task, Budget, Expense, Grocery, Item, N
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from datetime import date
+from datetime import timedelta
+from django.utils import timezone
+from django.db.models import Sum
 import requests
-from django.http import HttpResponse
 import os 
 from dotenv import load_dotenv
 load_dotenv()
@@ -19,6 +23,8 @@ load_dotenv()
 def home(request):
     return render(request, 'home.html')
 
+
+@login_required
 def dashboard(request):
     #for the weather api 
     if request.user.is_authenticated: #to check if the user authenticated (exist)
@@ -61,19 +67,49 @@ def dashboard(request):
     else:
         print("Failed to get quotes data:", response.text) #if there is no weather data
 
-    task_list = Task.objects.filter(user=request.user)
-    grocery_list = Grocery.objects.filter(user=request.user)
+
+    #for the list some calculations 
+    today_tasks= Task.objects.filter(user=request.user, due_date= date.today())
+    completed= today_tasks.filter(is_completed=True).count()
+    total= today_tasks.count()
+    percentage= int((completed/total)*100) if total else 0
+    pending= total- completed
+
     budget_list = Budget.objects.filter(user=request.user)
     person_list = Person.objects.filter(user=request.user)
 
+    #for grocieries 
+    next_day= timezone.localdate() + timedelta(days=1)
+    grocery_list = Grocery.objects.filter(user=request.user, next_restock__lte=next_day).order_by('next_restock')
+
+
+    #for budgets
+    budgets = [
+        {
+            'budget': budget,
+            'spent': budget.expense_set.aggregate(total_spent=Sum('amount'))['total_spent'] or 0,
+            'today_spent': budget.expense_set.filter(created_at__date=timezone.now().date()).aggregate(today_total=Sum('amount'))['today_total'] or 0,
+            'remaining': float(budget.total_amount) - float(budget.expense_set.aggregate(total_spent=Sum('amount'))['total_spent'] or 0),
+            'daily_limit': budget.daily_limit(),
+            'remaining_daily_limit': max(budget.daily_limit() - (budget.expense_set.filter(created_at__date=timezone.now().date()).aggregate(today_total=Sum('amount'))['today_total'] or 0), 0),
+            'expenses': budget.expense_set.order_by('-created_at')
+        }
+        for budget in budget_list
+    ]
+
+
     return render(request, 'dashboard.html', {
-        'task_list': task_list,
+        'task_list': today_tasks,
         'grocery_list': grocery_list,
         'budget_list': budget_list,
+        'budgets':budgets,
         'person_list': person_list,
         'weather': weather,
         'units': units,
-        'quotes': quotes
+        'quotes': quotes,
+        'completed': completed,
+        'pending': pending,
+        'percentage': percentage,
     })
 
 
@@ -180,6 +216,21 @@ class TaskUpdate(LoginRequiredMixin, UpdateView):
 class TaskDelete(LoginRequiredMixin, DeleteView):
     model = Task
     success_url = '/task/'
+
+def dashboard_add_task(request):
+    if request.method == 'POST':
+        #strip() string methed to delete spaces
+        title = request.POST.get('title', '').strip()
+        if title:
+            Task.objects.create(
+                title=title,
+                description='',
+                due_date=date.today(),
+                is_completed=False,
+                user=request.user
+            )
+    return redirect('home')  
+    
 
 class NoteList(LoginRequiredMixin, ListView):
     model = Note
@@ -291,6 +342,26 @@ class ExpenseCreateView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
     
+
+def dashboard_add_expense(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        amount = request.POST.get('amount')
+        budget_id = request.POST.get('budget_id')
+
+        budget = Budget.objects.get(id=budget_id, user=request.user)
+
+#adjust the default values for the dashboard form
+        Expense.objects.create(
+            name=title,
+            amount=amount,
+            frequency='one-time',  
+            budget=budget,
+            user=request.user
+        )
+        return redirect('home') 
+    
+
 #Expense Update View
 class ExpenseUpdateView(LoginRequiredMixin, UpdateView):
     model = Expense

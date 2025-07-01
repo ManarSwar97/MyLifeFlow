@@ -2,150 +2,290 @@
 <h1>Welcome back, {{ user.first_name }}!</h1>
 <p>Track you daily habits and progress to keep your life flowing smoothly.</p>
 
+<button id="enableAssistant">Enable Voice Assistant</button>
+
+<script>
+  function speak(text) {
+    const msg = new SpeechSynthesisUtterance(text);
+    window.speechSynthesis.speak(msg);
+  }
+
+  function wishUser(username, first_name, last_name, weather, tempWithUnit, feelWithUnit, quote, author, pending) {
+    const now = new Date();
+    const hour = now.getHours();
+
+    if (hour < 12) {
+      speak(`Good Morning, ${username}!`);
+    } else if (hour < 18) {
+      speak(`Good Afternoon!, ${first_name}${last_name}`);
+    } else {
+      speak("Good Evening!");
+    }
+
+    speak(`I am your My Life Flow assistant, here to help you stay on top of your day. The weater in ${weather}, is ${tempWithUnit}, feeling like ${feelWithUnit}. Here’s a little inspiration for you: ${quote}, by ${author}. I hope that brightens your day! You have ${pending} tasks pending today; let’s try to complete them or add new ones to stay on track. Don’t forget to check in with your loved ones — you currently have 3 contacts.  Also, keep an eye on your groceries — you have 2 items needing restock soon.  And remember, taking a moment to journal can help you reflect and recharge. I’m here to support you every step of the way — let’s make today a great one!` )
+  }
+
+  document.getElementById("enableAssistant").addEventListener("click", function () {
+    const username = "{{ request.user.username|escapejs }}";
+    const first_name = "{{ request.user.first_name|escapejs }}";
+    const last_name = "{{ request.user.last_name|escapejs }}";
+    const weather= "{{ weather.sys.country|escapejs }}"
+    const tempWithUnit = `{{ weather.main.temp|default:"null" }} °{% if units == 'metric' %}C{% else %}F{% endif %}`
+    const feelWithUnit = `{{ weather.main.feels_like|default:"null" }} °{% if units == 'metric' %}C{% else %}F{% endif %}`
+    const quote = "{{ quotes.quote|default:''|escapejs }}";
+    const author = "{{ quotes.author|default:''|escapejs }}";
+    const pending= "{{ pending |escapejs }}"
+    const restockCount=""
+    const peopleCount=""
+    
+    
+
+    wishUser(username, first_name, last_name, weather, tempWithUnit, feelWithUnit, quote, author, pending);
+  });
+</script>
+
+
+
 <!-- for weather -->
 {% if weather %}
-<div class="weather-widget">
-  <h3>Weather in {{ weather.sys.country}}</h3>
-  <p>
-    Temp: {{ weather.main.temp }} °{% if units == 'metric' %}F{% else %}C{%
-    endif %}
-  </p>
-  <p>
-    Feels like: {{ weather.main.feels_like }} °{% if units == 'metric' %}F{%
-    else %}C{% endif %}
-  </p>
-  <p>
-    Wind speed: {{ weather.wind.speed }} {% if units == "metric" %} m/s {% else
-    %} mph {% endif %}
-  </p>
-  <a
-    href="?units={% if units == 'metric' %}imperial{% else %}metric{% endif %}"
-    style="cursor: pointer"
-  >
-    Switch to °{% if units == 'metric' %}F{% else %}C{% endif %}
-  </a>
-</div>
+  <div class="weather-widget">
+    <h3>Weather in {{ weather.sys.country}}</h3>
+    <p>Temp: {{ weather.main.temp }} °{% if units == 'metric' %}C{% else %}F{% endif %}</p>
+    <p>Feels like: {{ weather.main.feels_like }} °{% if units == 'metric' %}C{% else %}F{% endif %}</p>
+    <p>Wind speed: {{ weather.wind.speed }}
+      {% if units == "metric" %}
+        m/s
+      {% else %}
+        mph
+      {% endif %}
+    </p>
+    <a href="?units={% if units == 'metric' %}imperial{% else %}metric{% endif %}" style="cursor:pointer;">
+      Switch to °{% if units == 'metric' %}F{% else %}C{% endif %}
+    </a>
+  </div>
 {% else %}
-<p>Could not get weather data.</p>
+  <p>Could not get weather data.</p>
 {% endif %}
+
 
 <!-- for quotes -->
 {% if quotes %}
-<div class="quotes-widget">
-  <h3>Today's quote</h3>
-  <p>{{quotes.quote}}</p>
-  <p>by: {{quotes.author}}</p>
-</div>
+  <div class="quotes-widget">
+    <h3>Today's quote</h3>
+    <p>{{quotes.quote}}</p>
+    <p>by: {{quotes.author}}</p>
+  </div>
 {% else %}
-<p>Could not get quotes data.</p>
+  <p>Could not get quotes data.</p>
 {% endif %}
+
 
 <!-- Daily Tasks part -->
 <h3>Today's Tasks</h3>
-{% for task in task_list %}
-<div class="task-row">
-  <div class="task-info">
-    {% if task.is_completed %}
-    <i class="material-icons" style="color: green; margin-right: 10px">check</i>
-    {% else %}
-    <i class="material-icons" style="color: red; margin-right: 10px">close</i>
-    {% endif %}
-    <a href="{% url 'task_detail' task.id %}" class="task-title">
-      {{ task.title }}
-    </a>
-  </div>
-  <span class="task-date">{{ task.due_date }}</span>
+<h4>{{ percentage }}%</h4>
+
+<div style="display: flex; gap: 20px; margin-bottom: 20px;">
+  <p>
+    <span style="color: green; font-size: 20px;">&#9679;</span> Completed ({{ completed }})
+  </p>
+  <p>
+    <span style="color: red; font-size: 20px;">&#9679;</span> Pending ({{ pending }})
+  </p>
 </div>
-{% empty %}
-<p class="center-align grey-text">No tasks found.</p>
-{% endfor %}
+
+<div id="task-cards-container" ">
+  {% for task in task_list %}
+    <div class="task-card">
+      <h4>{{ task.title }}</h4>
+      <p>Due: {{ task.due_date }}</p>
+      <p>Status: 
+        {% if task.is_completed %}
+          <span style="color: green;">&#9679;</span> Completed
+        {% else %}
+          <span style="color: red;">&#9679;</span> Pending
+        {% endif %}
+      </p>
+    </div>
+  {% endfor %}
+</div>
+
+<button id="add-task-btn">+ Add Task</button>
+
+<form id="dashboard-task-form" method="POST" action="{% url 'dashboard_add_task' %}" style="display:none; margin-top:10px;">
+  {% csrf_token %}
+  <input type="text" name="title" id="new-task-title" placeholder="Enter task title" required />
+  <button type="submit">Save</button>
+  <button type="button" id="cancel-task-btn">Cancel</button>
+</form>
+
+<a href="{% url 'task_index' %}" class="btn btn-primary">View All Tasks</a>
+
+<!-- script for the add task in the dashboard -->
+<script>
+  const addButton = document.getElementById('add-task-btn')
+  const form = document.getElementById('dashboard-task-form')
+  const cancelButton = document.getElementById('cancel-task-btn')
+  const input = document.getElementById('new-task-title')
+
+  addButton.onclick = () => {
+    form.style.display = 'block'
+    addButton.style.display = 'none'
+  }
+
+  cancelButton.onclick = () => {
+    form.style.display = 'none'
+    addButton.style.display = 'inline-block'
+    input.value = ''
+  }
+</script>
+
 
 <!-- Budget part -->
-<h3>Today's Budget</h3>
+
+<h3>Budgets</h3>
+
 <!-- Dropdown box -->
 <label for="budgetDropdown">Choose a budget:</label>
 <select id="budgetDropdown" onchange="showBudget(this.value)">
   <option value="">-- Select a Budget --</option>
   {% for budget in budget_list %}
-  <option value="budget-{{ budget.id }}">{{ budget.name }}</option>
+    <option value="budget-{{ budget.id }}">{{ budget.name }}</option>
   {% endfor %}
 </select>
 
-{% for budget in budget_list %}
-<div
-  id="budget-{{ budget.id }}"
+
+{% for item in budgets %}
+  <div class="budget-card" id="budget-{{ item.budget.id }}"
   class="budget-card"
   style="
-    display: none;
+  display: none;
     width: 300px;
     padding: 1rem;
     border-radius: 10px;
     background-color: #f9f9f9;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  "
->
-  <h3 style="color: #00796b">{{ budget.name }}</h3>
+  ">
+    <h3>{{ item.budget.name }}</h3>
+    <p>Total Amount: BHD{{ item.budget.total_amount }}</p>
+    <p>Remaining: BHD{{ item.remaining }}</p>
+    <h4>Today's Budget</h4>
+    <h5>BHD{{ item.daily_limit|floatformat:2  }}</h5>
+  <p>Total Spent: BHD{{ item.spent }}</p>
+  <p>Spent Today: BHD{{ item.today_spent|floatformat:2  }}</p>
 
-  <p><strong>Total Budget:</strong> BHD{{ budget.total_amount }}</p>
-  <p><strong>Saving Goal:</strong> BHD{{ budget.saving_goal }}</p>
-  <p>
-    <strong>Planned Expenses:</strong> BHD{{ budget.total_planned_expenses }}
-  </p>
-  <p><strong>Daily Limit:</strong> BHD{{ budget.daily_limit }}</p>
-  <p>
-    <strong>Duration:</strong> {{ budget.start_date }} → {{ budget.end_date }}
-  </p>
+{% if item.today_spent >= item.daily_limit %}
+  <p style="color: red; font-weight: bold;">You have reached your daily limit!</p>
+{% else %}
+<p>You can still spend up to BHD{{ item.remaining_daily_limit|floatformat:2 }} today.</p>
+{% endif %}
 
-  <p>
-    <strong>Status:</strong>
-    {% if budget.end_date < today %}
-    <span style="color: red">Expired</span>
-    {% else %}
-    <span style="color: green">Active</span>
-    {% endif %}
-  </p>
-</div>
-{% empty %}
-<p>No budgets created yet.</p>
+<!-- Expenses part -->
+<h4>Expenses:</h4>
+<ul>
+  {% for expense in item.expenses %}
+    <li>
+      {{ expense.name }} — BHD{{ expense.amount|floatformat:2 }}
+      <small>({{ expense.created_at|date:"M d, Y" }})</small>
+    </li>
+  {% empty %}
+    <li>No expenses added yet.</li>
+  {% endfor %}
+</ul>
+
+<button class="add-expense-btn" data-budget-id="{{ item.budget.id }}">Add Expense</button>
+    <form class="dashboard-expense-form" method="POST" action="{% url 'dashboard_add_expense' %}" style="display: none;">
+      {% csrf_token %}
+      <input type="hidden" name="budget_id" value="{{ item.budget.id }}">
+
+      <input type="text" name="title" placeholder="Expense Title" required>
+      <input type="number" name="amount" placeholder="Amount" step="0.01" required>
+
+      <button type="submit">Add Expense</button>
+      <button type="button" class="cancel-expense-btn">Cancel</button>
+    </form>
+  </div>
 {% endfor %}
+
+<script>
+  const addButtons = document.querySelectorAll('.add-expense-btn')
+  const expenseForms = document.querySelectorAll('.dashboard-expense-form')
+
+  addButtons.forEach((btn, index) => {
+    btn.addEventListener('click', () => {
+      expenseForms[index].style.display = 'block'
+      btn.style.display = 'none'
+    })
+  })
+
+  document.querySelectorAll('.cancel-expense-btn').forEach((cancelBtn, index) => {
+    cancelBtn.addEventListener('click', () => {
+      expenseForms[index].style.display = 'none'
+      addButtons[index].style.display = 'inline-block'
+
+      const inputs = expenseForms[index].querySelectorAll('input[type="text"], input[type="number"]')
+      inputs.forEach(input => input.value = '')
+    })
+  })
+</script>
 
 <!-- to show selected budget -->
 <script>
-  function showBudget(selectedId) {
-    document
-      .querySelectorAll('.budget-card')
-      .forEach((el) => (el.style.display = 'none'))
+  const budgetDropdown = document.getElementById('budgetDropdown');
 
+  function showBudget(selectedId) {
+    document.querySelectorAll('.budget-card').forEach(el => el.style.display = 'none')
+    
     if (selectedId) {
-      const el = document.getElementById(selectedId)
+      const el = document.getElementById(selectedId);
       if (el) el.style.display = 'block'
     }
   }
+
+  budgetDropdown.addEventListener('change', () => {
+    const selectedValue = budgetDropdown.value;
+    localStorage.setItem('selectedBudget', selectedValue);
+    showBudget(selectedValue);
+  })
+
+  //to save the selecetd budget so its stay even if i reload
   document.addEventListener('DOMContentLoaded', function () {
+    const saved = localStorage.getItem('selectedBudget')
+    if (saved) {
+      budgetDropdown.value = saved
+      showBudget(saved)
+    }
+
     const selects = document.querySelectorAll('select')
     M.FormSelect.init(selects)
   })
 </script>
 
-<!-- Restock Reminders part -->
-<h5>Today you have to restock these groceries</h5>
-<h3>Add Groceries</h3>
-{% for grocery in grocery_list %}
-<a href="{% url 'grocery_detail' grocery.id %}">
-  <div class="card">
-    <div class="card-content">
-      <span class="card-title">{{ grocery.name }}</span>
-      <p>Restock Date: {{ grocery.next_restock }}</p>
-    </div>
-  </div>
-</a>
-{% empty %}
-<p>No groceries found.</p>
-{% endfor %}
 
-<!-- My People Part -->
+  <!-- Restock Reminders part -->
+<h5>Restock Reminders</h5>
+<p>Here are the groceries you need to restock very soon — keep an eye on these to stay stocked up!</p>
+
+{% if grocery_list %}
+  {% for grocery in grocery_list %}
+  <a href="{% url 'grocery_detail' grocery.id %}">
+    <div class="card">
+      <div class="card-content">
+        <span class="card-title">{{ grocery.name }}</span>
+        <p>Restock Date: {{ grocery.next_restock }}</p>
+      </div>
+    </div>
+  </a>
+  {% endfor %}
+{% else %}
+  <p>You're all stocked up for now! No groceries need restocking in the next day.</p>
+{% endif %}
+
+
+
+
+  <!-- My People Part -->
 <h3>My People</h3>
-{% for person in person_list %}
+  {% for person in person_list %}
 <a href="{% url 'person_detail' person.id %}">
   <div class="card">
     <div class="card-content">
@@ -158,15 +298,16 @@
 <p>No people found.</p>
 {% endfor %}
 
-<a href="{% url 'person_index' %}" class="btn">My People</a>
-<a href="{% url 'task_index' %}" class="btn">Daily Task</a>
-<a href="{% url 'note_index' %}" class="btn">Journaling</a>
-<a href="{% url 'budget_list' %}" class="btn">Budget</a>
-<a href="{% url 'item_index' %}" class="btn">My Items</a>
-<a href="{% url 'grocery_index' %}" class="btn">My Groceries</a>
-{% else %}
-<h1>Welcome to MyLifeFlow!</h1>
-{% endif %}
+  <a href="{% url 'person_index' %}" class="btn">My People</a>
+  <a href="{% url 'task_index' %}" class="btn">Daily Task</a>
+  <a href="{% url 'note_index' %}" class="btn">Journaling</a>
+  <a href="{% url 'budget_list' %}" class="btn">Budget</a>
+  <a href="{% url 'item_index' %}" class="btn">My Items</a>
+  <a href="{% url 'grocery_index' %}" class="btn">My Groceries</a>
+  {% else %}
+  <h1>Welcome to MyLifeFlow!</h1>
+  {% endif %} 
+
 
 <!-- add notifications (just for test now! try it hehe!) -->
 <script>
@@ -194,4 +335,10 @@
 
 <button onclick="sendTestNotification()">🔔 Test Notification</button>
 
-{% endblock %}
+
+
+  {% endblock %}
+</div>
+
+
+
