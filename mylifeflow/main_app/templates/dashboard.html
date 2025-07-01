@@ -4,39 +4,41 @@
 
 <!-- for weather -->
 {% if weather %}
-  <div class="weather-widget">
-    <h3>Weather in {{ weather.sys.country}}</h3>
-    <p>Temp: {{ weather.main.temp }} °{% if units == 'metric' %}F{% else %}C{% endif %}</p>
-    <p>Feels like: {{ weather.main.feels_like }} °{% if units == 'metric' %}F{% else %}C{% endif %}</p>
-    <p>Wind speed: {{ weather.wind.speed }}
-      {% if units == "metric" %}
-        m/s
-      {% else %}
-        mph
-      {% endif %}
-    </p>
-    <a href="?units={% if units == 'metric' %}imperial{% else %}metric{% endif %}" style="cursor:pointer;">
-      Switch to °{% if units == 'metric' %}F{% else %}C{% endif %}
-    </a>
-  </div>
+<div class="weather-widget">
+  <h3>Weather in {{ weather.sys.country}}</h3>
+  <p>
+    Temp: {{ weather.main.temp }} °{% if units == 'metric' %}F{% else %}C{%
+    endif %}
+  </p>
+  <p>
+    Feels like: {{ weather.main.feels_like }} °{% if units == 'metric' %}F{%
+    else %}C{% endif %}
+  </p>
+  <p>
+    Wind speed: {{ weather.wind.speed }} {% if units == "metric" %} m/s {% else
+    %} mph {% endif %}
+  </p>
+  <a
+    href="?units={% if units == 'metric' %}imperial{% else %}metric{% endif %}"
+    style="cursor: pointer"
+  >
+    Switch to °{% if units == 'metric' %}F{% else %}C{% endif %}
+  </a>
+</div>
 {% else %}
-  <p>Could not get weather data.</p>
+<p>Could not get weather data.</p>
 {% endif %}
-
 
 <!-- for quotes -->
 {% if quotes %}
-  <div class="quotes-widget">
-    <h3>Today's quote</h3>
-    <p>{{quotes.quote}}</p>
-    <p>by: {{quotes.author}}</p>
-  </div>
+<div class="quotes-widget">
+  <h3>Today's quote</h3>
+  <p>{{quotes.quote}}</p>
+  <p>by: {{quotes.author}}</p>
+</div>
 {% else %}
-  <p>Could not get quotes data.</p>
+<p>Could not get quotes data.</p>
 {% endif %}
-
-
-
 
 <!-- Daily Tasks part -->
 <h3>Today's Tasks</h3>
@@ -65,17 +67,16 @@
 <select id="budgetDropdown" onchange="showBudget(this.value)">
   <option value="">-- Select a Budget --</option>
   {% for budget in budget_list %}
-    <option value="budget-{{ budget.id }}">{{ budget.name }}</option>
+  <option value="budget-{{ budget.id }}">{{ budget.name }}</option>
   {% endfor %}
 </select>
-
 
 {% for budget in budget_list %}
 <div
   id="budget-{{ budget.id }}"
   class="budget-card"
   style="
-  display: none;
+    display: none;
     width: 300px;
     padding: 1rem;
     border-radius: 10px;
@@ -103,49 +104,48 @@
     <span style="color: green">Active</span>
     {% endif %}
   </p>
-    </div>
-  {% empty %}
-  <p>No budgets created yet.</p>
-  {% endfor %}
 </div>
+{% empty %}
+<p>No budgets created yet.</p>
+{% endfor %}
 
 <!-- to show selected budget -->
 <script>
   function showBudget(selectedId) {
-    document.querySelectorAll('.budget-card').forEach(el => el.style.display = 'none');
-    
+    document
+      .querySelectorAll('.budget-card')
+      .forEach((el) => (el.style.display = 'none'))
+
     if (selectedId) {
-      const el = document.getElementById(selectedId);
-      if (el) el.style.display = 'block';
+      const el = document.getElementById(selectedId)
+      if (el) el.style.display = 'block'
     }
   }
-    document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', function () {
     const selects = document.querySelectorAll('select')
-    M.FormSelect.init(selects)})
+    M.FormSelect.init(selects)
+  })
 </script>
 
-
-  <!-- Restock Reminders part -->
-  <h3>Restock Reminders</h3>
-  <h5>My Groceries</h5>
-  {% for grocery in grocery_list %}
-  <a href="{% url 'grocery_detail' grocery.id %}">
-    <div class="card">
-      <div class="card-content">
-        <span class="card-title">{{ grocery.name }}</span>
-        <p>Purchase Date: {{ grocery.purchase_date }}</p>
-        <p>Next Restock: {{ grocery.next_restock }}</p>
-      </div>
+<!-- Restock Reminders part -->
+<h5>Today you have to restock these groceries</h5>
+<h3>Add Groceries</h3>
+{% for grocery in grocery_list %}
+<a href="{% url 'grocery_detail' grocery.id %}">
+  <div class="card">
+    <div class="card-content">
+      <span class="card-title">{{ grocery.name }}</span>
+      <p>Restock Date: {{ grocery.next_restock }}</p>
     </div>
-  </a>
-  {% empty %}
-  <p>No groceries found.</p>
-  {% endfor %}
+  </div>
+</a>
+{% empty %}
+<p>No groceries found.</p>
+{% endfor %}
 
-
-  <!-- My People Part -->
+<!-- My People Part -->
 <h3>My People</h3>
-  {% for person in person_list %}
+{% for person in person_list %}
 <a href="{% url 'person_detail' person.id %}">
   <div class="card">
     <div class="card-content">
@@ -158,13 +158,40 @@
 <p>No people found.</p>
 {% endfor %}
 
-  <a href="{% url 'person_index' %}" class="btn">My People</a>
-  <a href="{% url 'task_index' %}" class="btn">Daily Task</a>
-  <a href="{% url 'note_index' %}" class="btn">Journaling</a>
-  <a href="{% url 'budget_list' %}" class="btn">Budget</a>
-  <a href="{% url 'item_index' %}" class="btn">My Items</a>
-  <a href="{% url 'grocery_index' %}" class="btn">My Groceries</a>
-  {% else %}
-  <h1>Welcome to MyLifeFlow!</h1>
-  {% endif %} {% endblock %}
-</div>
+<a href="{% url 'person_index' %}" class="btn">My People</a>
+<a href="{% url 'task_index' %}" class="btn">Daily Task</a>
+<a href="{% url 'note_index' %}" class="btn">Journaling</a>
+<a href="{% url 'budget_list' %}" class="btn">Budget</a>
+<a href="{% url 'item_index' %}" class="btn">My Items</a>
+<a href="{% url 'grocery_index' %}" class="btn">My Groceries</a>
+{% else %}
+<h1>Welcome to MyLifeFlow!</h1>
+{% endif %}
+
+<!-- add notifications (just for test now! try it hehe!) -->
+<script>
+  function sendTestNotification() {
+    // it will ask the user for permission to recieve notifications
+    Notification.requestPermission().then(function (permission) {
+      if (permission === 'granted') {
+        const notification = new Notification('Task Reminder', {
+          body: 'Don’t forget to complete your daily goal!',
+          icon: '/static/img/notify.png'
+        })
+
+        const audio = new Audio('/static/sound/notify.mp3')
+        audio.play()
+      }
+    })
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    setTimeout(() => {
+      sendTestNotification()
+    }, 3000)
+  })
+</script>
+
+<button onclick="sendTestNotification()">🔔 Test Notification</button>
+
+{% endblock %}
