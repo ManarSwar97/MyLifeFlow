@@ -1,7 +1,7 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
-from datetime import date
+from datetime import date, timedelta
 from django.utils import timezone
 from django.contrib.auth.models import User
 
@@ -102,8 +102,6 @@ class Expense(models.Model):
         return reverse('expense_detail', kwargs={'pk': self.pk})
 
 
-
-    
 class Note(models.Model):
     title = models.CharField(max_length=50)
     text = models.TextField(max_length=1500)
@@ -116,12 +114,38 @@ class Note(models.Model):
     def get_absolute_url(self):
         return reverse('note_detail', kwargs={'pk': self.id})    
 
+
+class Voice(models.Model):
+    EMOTION_CHOICES = [
+        ('happy', 'Happy'),
+        ('sad', 'Sad'),
+        ('angry', 'Angry'),
+        ('calm', 'Calm'),
+        ('excited', 'Excited'),
+        ('anxious', 'Anxious'),
+        ('tired', 'Tired'),
+        ('neutral', 'Neutral'),
+    ]
+    title = models.CharField(max_length=50)
+    audio = models.FileField(upload_to='audio/', blank=True, null=True)
+    image = models.ImageField(upload_to='main_app/static/uploads', default="")
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    emotion = models.CharField(max_length=20, choices=EMOTION_CHOICES, default='neutral')
+
+    def __str__(self):
+        return f"Voicenote: {self.title}"
+    def get_absolute_url(self):
+        return reverse('voice_detail', kwargs={'pk': self.id})   
+    
+
 class Grocery(models.Model):
     name = models.CharField(max_length=50)
     purchase_date = models.DateField()
     duration_days = models.IntegerField()
-    next_restock= models.DateField()
     notes = models.TextField(blank=True)
+    is_restocked = models.BooleanField(default=False)
+    restock_date = models.DateField(null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -129,13 +153,23 @@ class Grocery(models.Model):
     
     def get_absolute_url(self):
         return reverse('grocery_detail', kwargs={'pk': self.id})
+    
+    def save(self, *args, **kwargs):
+        if self.is_restocked and not self.restock_date:
+            self.restock_date = timezone.now().date()
+        elif not self.is_restocked:
+            self.restock_date = None
+        super().save(*args, **kwargs)
+
+    @property
+    def next_restock(self):
+        return self.purchase_date + timedelta(days=self.duration_days)
 
 
 class Item(models.Model):
     name = models.CharField(max_length=50)
     location = models.CharField(max_length=100)
     description = models.TextField()
-    qr_code_url = models.URLField(max_length=200, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -144,20 +178,24 @@ class Item(models.Model):
         blank=True,
         default=list
     )
+
     def __str__(self):
         return f"Item: {self.name}"
-    
+
     def get_absolute_url(self):
         return reverse('item_detail', kwargs={'pk': self.id})
+
 
 
 class Person(models.Model):
     name = models.CharField(max_length=50)
     relationship = models.CharField(max_length=50)
+    email = models.EmailField()
     contact_date = models.DateField()
     notes = models.TextField(blank=True)
+    interact_times = models.IntegerField(default=0)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
+    
     def __str__(self):
         return f"{self.name}"
     

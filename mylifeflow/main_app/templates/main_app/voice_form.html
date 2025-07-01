@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  {% if object %}
+    <h1>Edit <span class="teal-text">{{ object.title }}</span></h1>
+  {% else %}
+    <h1>Add Voice Note</h1>
+  {% endif %}
+
+  <form method="POST" enctype="multipart/form-data" id="voiceForm">
+    {% csrf_token %}
+
+    <p>{{ form.title.label_tag }} {{ form.title }}</p>
+
+    <div style="display: none;">
+      {{ form.audio }}
+    </div>
+
+    <p>{{ form.image.label_tag }} {{ form.image }}</p>
+
+    <p>{{ form.emotion.label_tag }} {{ form.emotion }}</p>
+
+
+    <div class="display"></div>
+    <div class="controllers"></div>
+    <input type="submit" value="Save Voice Note">
+  </form>
+<!--source: https://github.com/davidsproject/VRecorder/blob/main/vrecorder.js-->
+  <script>
+    const display = document.querySelector('.display')
+    const controllerWrapper = document.querySelector('.controllers')
+
+    const State = ['Initial', 'Record', 'Download']
+    let stateIndex = 0
+    let mediaRecorder, chunks = [], audioURL = ''
+
+    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
+        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+            mediaRecorder = new MediaRecorder(stream)
+
+            mediaRecorder.ondataavailable = (e) => {
+                chunks.push(e.data)
+            }
+
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(chunks, {'type': 'audio/ogg; codecs=opus'})
+                chunks = []
+                audioURL = window.URL.createObjectURL(blob)
+
+                const file = new File([blob], 'voice_note.ogg', { type: 'audio/ogg' })
+                const dataTransfer = new DataTransfer()
+                dataTransfer.items.add(file)
+                document.querySelector('input[type="file"][name$="audio"]').files = dataTransfer.files
+
+                document.querySelector('audio')?.remove()
+                const audio = document.createElement('audio')
+                audio.controls = true
+                audio.src = audioURL
+                display.append(audio)
+            }
+        }).catch(error => {
+            console.log('Following error has occurred: ', error)
+        })
+    } else {
+        stateIndex = ''
+        application(stateIndex)
+    }
+
+    const clearDisplay = () => display.textContent = ''
+    const clearControls = () => controllerWrapper.textContent = ''
+
+    const startRecording = () => {
+        stateIndex = 1
+        mediaRecorder.start()
+        application(stateIndex)
+    }
+
+    const stopRecording = () => {
+        stateIndex = 2
+        mediaRecorder.stop()
+        application(stateIndex)
+    }
+
+    const addButton = (id, funString, text) => {
+        const btn = document.createElement('button')
+        btn.id = id
+        btn.setAttribute('onclick', funString)
+        btn.textContent = text
+        controllerWrapper.append(btn)
+    }
+
+    const addMessage = (text) => {
+        const msg = document.createElement('p')
+        msg.textContent = text
+        display.append(msg)
+    }
+
+    const application = (index) => {
+        switch (State[index]) {
+            case 'Initial':
+                clearDisplay()
+                clearControls()
+                addButton('record', 'startRecording()', 'Start Recording')
+                break
+            case 'Record':
+                clearDisplay()
+                clearControls()
+                addMessage('Recording...')
+                addButton('stop', 'stopRecording()', 'Stop Recording')
+                break
+            case 'Download':
+                clearDisplay()
+                clearControls()
+                addButton('record', 'startRecording()', 'Record Again')
+                break
+            default:
+                clearDisplay()
+                clearControls()
+                addMessage('Your browser does not support mediaDevices')
+                break
+        }
+    }
+
+    application(stateIndex)
+  </script>
+{% endblock %}

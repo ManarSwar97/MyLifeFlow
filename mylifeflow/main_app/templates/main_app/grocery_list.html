@@ -1,17 +1,33 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+{% block content %}
 <h1>My Groceries</h1>
-{% for grocery in grocery_list %}
-<a href="{% url 'grocery_detail' grocery.id %}">
-  <div class="card">
-    <div class="card-content">
-      <span class="card-title">{{ grocery.name }}</span>
-      <p>Purchase Date: {{ grocery.purchase_date }}</p>
-      <p>Next Restock: {{ grocery.next_restock }}</p>
-    </div>
-  </div>
-</a>
-{% empty %}
-<p>No groceries found.</p>
-{% endfor %}
+<table class="striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Purchase Date</th>
+      <th>Next Restock</th>
+      <th>Restocked?</th>
+      <th>Details</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for grocery in grocery_list %}
+    <tr>
+      <td>{{ grocery.name }}</td>
+      <td>{{ grocery.purchase_date }}</td>
+      <td>{{ grocery.next_restock }}</td>
+      <td>{{ grocery.is_restocked|yesno:"Yes,No" }}</td>
+      <td>
+        <a href="{% url 'grocery_detail' grocery.id %}" class="btn">View</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="5">No groceries found.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 <a href="{% url 'grocery_create' %}" class="btn">Add Grocery</a>
 {% endblock %}

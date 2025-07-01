@@ -16,7 +16,7 @@
     <input type="submit" value="Save Note">
   </form>
 
-<!--Source:https://www.youtube.com/watch?v=0mJC0A72Fnw-->
+<!--Source: https://www.youtube.com/watch?v=0mJC0A72Fnw-->
 <script>
     window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
@@ -46,7 +46,6 @@
         }    });
 
     const startRecognition = () => {
-        recognition.stoppedManually = false;  
         finalTranscript = document.getElementById('text').value || '';
         lastFinalTranscript = '';
         recognition.start();

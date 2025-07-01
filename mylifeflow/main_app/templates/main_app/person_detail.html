@@ -1,22 +1,15 @@
 {% extends 'base.html' %} {% block content %}
 <h1>Person Details</h1>
-<div class="row">
-  <div class="col s6 col-offset-3">
-    <div class="card">
-      <div class="card-content">
-        <span class="card-title">{{ person.name }}</span>
-        <p>Relationship: {{ person.relationship }}</p>
-        <p>Last Contact: {{ person.contact_date }}</p>
-        {% if person.notes %}
-        <p>Notes: {{ person.notes }}</p>
-        {% endif %}
-      </div>
-      <div class="card-action">
-        <a href="{% url 'person_update' person.id %}">Edit</a>
-        <a href="{% url 'person_delete' person.id %}">Delete</a>
-      </div>
-    </div>
-  </div>
+<p><strong>Name:</strong> {{ person.name }}</p>
+<p><strong>Email:</strong> {{ person.email }}</p>
+<p><strong>Relationship:</strong> {{ person.relationship }}</p>
+<p><strong>Next Contact Date:</strong> {{ person.contact_date }}</p>
+{% if person.notes %}
+<p><strong>Notes:</strong> {{ person.notes }}</p>
+{% endif %}
+<div class="card-action">
+  <a href="{% url 'person_update' person.id %}">Edit</a>
+  <a href="{% url 'person_delete' person.id %}">Delete</a>
 </div>
 <a href="{% url 'person_index' %}">Back to List</a>
 {% endblock %}
