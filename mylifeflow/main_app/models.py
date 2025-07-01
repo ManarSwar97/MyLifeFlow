@@ -191,6 +191,7 @@ class Person(models.Model):
     name = models.CharField(max_length=50)
     relationship = models.CharField(max_length=50)
     email = models.EmailField()
+    phone_number = models.CharField(max_length=20, null=True, blank=True)
     contact_date = models.DateField()
     notes = models.TextField(blank=True)
     interact_times = models.IntegerField(default=0)

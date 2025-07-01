@@ -5,6 +5,7 @@
     <tr>
       <th>Name</th>
       <th>Email</th>
+      <th>Phone Number</th>
       <th>Next Contact Date</th>
       <th>Details</th>
     </tr>
@@ -19,6 +20,7 @@
           >Send mail</a
         >
       </td>
+      <td>{{ person.phone_number }}</td>
       <td>{{ person.contact_date }}</td>
       <td>
         <a href="{% url 'person_detail' person.id %}" class="btn">View</a>
@@ -26,7 +28,7 @@
     </tr>
     {% empty %}
     <tr>
-      <td colspan="4">No people found.</td>
+      <td colspan="5">No people found.</td>
     </tr>
     {% endfor %}
   </tbody>

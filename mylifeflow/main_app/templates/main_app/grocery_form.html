@@ -1,11 +1,38 @@
- {% block content %}
-<h1>{% if object %}Edit{% else %}Add{% endif %} Grocery</h1>
-<form method="post">
-  {% csrf_token %}
-  <table>
-    {{ form.as_table }}
-  </table>
-  <input type="submit" value="Save" class="btn" />
-</form>
-<a href="{% url 'grocery_index' %}">Cancel</a>
-{% endblock %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/eb-style.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+<div class="form-container">
+  <h1 class="form-title">{% if object %}Edit{% else %}Add{% endif %} Grocery</h1>
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-wrapper">
+      <label for="{{ form.name.id_for_label }}"><i class="fa fa-shopping-basket"></i> Name</label>
+      {{ form.name }}
+    </div>
+
+    <div class="form-wrapper">
+      <label for="{{ form.purchase_date.id_for_label }}"><i class="fa fa-calendar"></i> Purchase Date</label>
+      {{ form.purchase_date }}
+    </div>
+
+    <div class="form-wrapper">
+      <label for="{{ form.duration_days.id_for_label }}"><i class="fa fa-clock"></i> Duration (in days)</label>
+      {{ form.duration_days }}
+    </div>
+
+    <div class="form-wrapper">
+      <label for="{{ form.is_restocked.id_for_label }}"><i class="fa fa-check"></i> Is Restocked?</label>
+      {{ form.is_restocked }}
+    </div>
+
+    <div class="form-wrapper">
+      <label for="{{ form.notes.id_for_label }}"><i class="fa fa-pencil-alt"></i> Notes</label>
+      {{ form.notes }}
+    </div>
+
+    <input type="submit" value="Save" class="btn" />
+    <a href="{% url 'grocery_index' %}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>

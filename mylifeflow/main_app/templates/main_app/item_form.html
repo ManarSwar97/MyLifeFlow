@@ -1,33 +1,48 @@
-{% extends 'base.html' %} {% block content %}
-<h1>{% if object %}Edit{% else %}Add{% endif %} Item</h1>
-<form method="post" id="item-form">
-  {% csrf_token %}
-  <table>
-    <tr>
-      <th>{{ form.name.label_tag }}</th>
-      <td>{{ form.name }}</td>
-    </tr>
-    <tr>
-      <th>{{ form.location.label_tag }}</th>
-      <td>
-        {{ form.location }}
-        <input
-          type="text"
-          id="new-location-input"
-          name="new_location"
-          style="display: none"
-          placeholder="Enter new location"
-        />
-      </td>
-    </tr>
-    <tr>
-      <th>{{ form.description.label_tag }}</th>
-      <td>{{ form.description }}</td>
-    </tr>
-  </table>
-  <input type="submit" value="Save" class="btn" />
-</form>
-<a href="{% url 'item_index' %}">Cancel</a>
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/eb-style.css' %}" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+
+<div class="form-container">
+  <h1 class="form-title">{% if object %}Edit{% else %}Add{% endif %} Item</h1>
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-wrapper">
+      <label for="{{ form.name.id_for_label }}"
+        ><i class="fa fa-box"></i> Name</label
+      >
+      {{ form.name }}
+    </div>
+
+    <div class="form-wrapper">
+      <label for="{{ form.location.id_for_label }}"
+        ><i class="fa fa-map-marker-alt"></i> Location</label
+      >
+      {{ form.location }}
+      <input
+        type="text"
+        id="new-location-input"
+        name="new_location"
+        placeholder="Enter new location"
+        style="display: none"
+      />
+    </div>
+
+    <div class="form-wrapper">
+      <label for="{{ form.description.id_for_label }}"
+        ><i class="fa fa-align-left"></i> Description</label
+      >
+      {{ form.description }}
+    </div>
+
+    <input type="submit" value="Save" class="btn" />
+    <a href="{% url 'item_index' %}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+
 <script>
   const locationSelect = document.getElementById('id_location')
   const newLocationInput = document.getElementById('new-location-input')
@@ -41,4 +56,3 @@
     }
   })
 </script>
-{% endblock %}
