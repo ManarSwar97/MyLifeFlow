@@ -7,19 +7,19 @@
 <script>
   function speak(text) {
     const msg = new SpeechSynthesisUtterance(text);
-    window.speechSynthesis.speak(msg);
+    window.speechSynthesis.speak(msg)
   }
 
   function wishUser(username, first_name, last_name, weather, tempWithUnit, feelWithUnit, quote, author, pending) {
-    const now = new Date();
-    const hour = now.getHours();
+    const now = new Date()
+    const hour = now.getHours()
 
     if (hour < 12) {
-      speak(`Good Morning, ${username}!`);
+      speak(`Good Morning, ${username}!`)
     } else if (hour < 18) {
-      speak(`Good Afternoon!, ${first_name}${last_name}`);
+      speak(`Good Afternoon!, ${first_name}${last_name}`)
     } else {
-      speak("Good Evening!");
+      speak("Good Evening!")
     }
 
     speak(`I am your My Life Flow assistant, here to help you stay on top of your day. The weater in ${weather}, is ${tempWithUnit}, feeling like ${feelWithUnit}. Here’s a little inspiration for you: ${quote}, by ${author}. I hope that brightens your day! You have ${pending} tasks pending today; let’s try to complete them or add new ones to stay on track. Don’t forget to check in with your loved ones — you currently have 3 contacts.  Also, keep an eye on your groceries — you have 2 items needing restock soon.  And remember, taking a moment to journal can help you reflect and recharge. I’m here to support you every step of the way — let’s make today a great one!` )
@@ -27,21 +27,21 @@
 
   document.getElementById("enableAssistant").addEventListener("click", function () {
     const username = "{{ request.user.username|escapejs }}";
-    const first_name = "{{ request.user.first_name|escapejs }}";
-    const last_name = "{{ request.user.last_name|escapejs }}";
+    const first_name = "{{ request.user.first_name|escapejs }}"
+    const last_name = "{{ request.user.last_name|escapejs }}"
     const weather= "{{ weather.sys.country|escapejs }}"
     const tempWithUnit = `{{ weather.main.temp|default:"null" }} °{% if units == 'metric' %}C{% else %}F{% endif %}`
     const feelWithUnit = `{{ weather.main.feels_like|default:"null" }} °{% if units == 'metric' %}C{% else %}F{% endif %}`
     const quote = "{{ quotes.quote|default:''|escapejs }}";
-    const author = "{{ quotes.author|default:''|escapejs }}";
+    const author = "{{ quotes.author|default:''|escapejs }}"
     const pending= "{{ pending |escapejs }}"
     const restockCount=""
     const peopleCount=""
     
     
 
-    wishUser(username, first_name, last_name, weather, tempWithUnit, feelWithUnit, quote, author, pending);
-  });
+    wishUser(username, first_name, last_name, weather, tempWithUnit, feelWithUnit, quote, author, pending)
+  })
 </script>
 
 
@@ -114,7 +114,7 @@
 <form id="dashboard-task-form" method="POST" action="{% url 'dashboard_add_task' %}" style="display:none; margin-top:10px;">
   {% csrf_token %}
   <input type="text" name="title" id="new-task-title" placeholder="Enter task title" required />
-  <button type="submit">Save</button>
+  <button class="add-task-btn" type="submit">Save</button>
   <button type="button" id="cancel-task-btn">Cancel</button>
 </form>
 
@@ -200,7 +200,7 @@
       <input type="text" name="title" placeholder="Expense Title" required>
       <input type="number" name="amount" placeholder="Amount" step="0.01" required>
 
-      <button type="submit">Add Expense</button>
+      <button class="add-expense-btn-submit" type="submit">Add Expense</button>
       <button type="button" class="cancel-expense-btn">Cancel</button>
     </form>
   </div>
@@ -271,7 +271,7 @@
     <div class="card">
       <div class="card-content">
         <span class="card-title">{{ grocery.name }}</span>
-        <p>Restock Date: {{ grocery.restock_date }}</p>
+        <p>Next Restock: {{ grocery.next_restock|date:"F j, Y" }}</p>
       </div>
     </div>
   </a>
@@ -311,29 +311,43 @@
 
 <!-- add notifications (just for test now! try it hehe!) -->
 <script>
-  function sendTestNotification() {
-    // it will ask the user for permission to recieve notifications
+  function sendNotification(title, message) {
     Notification.requestPermission().then(function (permission) {
       if (permission === 'granted') {
-        const notification = new Notification('Task Reminder', {
-          body: 'Don’t forget to complete your daily goal!',
-          icon: '/static/img/notify.png'
+        const notification = new Notification(title, {
+          body: message,
+          icon: '/static/img/notify.png',
+          requireInteraction: true
+
         })
 
-        const audio = new Audio('/static/sound/notify.mp3')
-        audio.play()
+        const audio = new Audio('/static/sound/notify.mp3');
+        audio.play();
       }
     })
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    setTimeout(() => {
-      sendTestNotification()
-    }, 3000)
-  })
+    // For task 
+    const taskBtn = document.querySelector('.add-task-btn');
+    if (taskBtn) {
+      taskBtn.addEventListener('click', function () {
+        sendNotification('Task Added', 'Your new task has been added successfully!');
+      }, 3000)
+    }
+
+    // For expense 
+    const expenseBtn = document.querySelector('.add-expense-btn-submit');
+    if (expenseBtn) {
+      expenseBtn.addEventListener('click', function () {
+        sendNotification('Expense Added', 'New expense recorded. Stay on budget!');
+      },3000)
+    }
+  },3000)
 </script>
 
-<button onclick="sendTestNotification()">🔔 Test Notification</button>
+
+<button onclick="sendNotification('Test Notification', 'This is a test!')">🔔 Test Notification</button>
 
 
 

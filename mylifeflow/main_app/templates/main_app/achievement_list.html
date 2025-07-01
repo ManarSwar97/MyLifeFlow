@@ -6,7 +6,7 @@
   .cards-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px; /* space between cards */
+    gap: 20px; 
   }
   .card {
     background: #fff;
@@ -14,22 +14,96 @@
     box-shadow: 0 2px 5px rgb(0 0 0 / 0.1);
     padding: 20px;
     margin-bottom: 30px;
-    flex: 1 1 calc(50% - 20px); /* half width minus gap */
+    flex: 1 1 calc(50% - 20px); 
     box-sizing: border-box;
-    min-width: 300px; /* prevent too narrow */
+    min-width: 300px;
   }
   .card h2 {
     margin-top: 0;
     margin-bottom: 15px;
   }
+  .top-people-container {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.top-people-heading {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
+  text-align: center;
+}
+
+.top-people-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.top-person-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  transition: box-shadow 0.2s ease;
+}
+
+.top-person-item:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.person-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.person-name {
+  font-weight: 600;
+  color: #222;
+}
+
+.person-interactions {
+  font-size: 0.9rem;
+  color: #777;
+}
+
+.email-button {
+  background-color: #007BFF;
+  color: white;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.email-button:hover {
+  background-color: #0056b3;
+}
+
+.no-interactions {
+  color: #999;
+  font-style: italic;
+  text-align: center;
+}
+
 </style>
 
 <div class="cards-container">
 
-  <!-- Task Completion Card -->
   <div class="card">
     <h2>Task Completion</h2>
-    <h3>You have completed {{ completed_percentage }}% tasks 🎉</h3>
+    <h3>You have completed {{ completed_percentage }}% tasks </h3>
     <canvas id="taskChart" width="100" height="100"></canvas>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
@@ -64,7 +138,6 @@
     </script>
   </div>
 
-  <!-- Saving and Expense Summary Card -->
   <div class="card">
     <h2>Saving and Expense Summary</h2>
     <p><strong>Total Savings:</strong> {{ total_saving }}</p>
@@ -99,7 +172,6 @@
     </script>
   </div>
 
-  <!-- Grocery Restock Summary Card -->
   <div class="card">
     <h2>Grocery Restock Summary</h2>
     <p style="font-weight: bold;">You have restocked {{ percentage }}% during this year!</p>
@@ -135,7 +207,6 @@
     </script>
   </div>
 
-  <!-- Voice Journaling Summary Card -->
   <div class="card">
     <h2>Voice Journaling Summary</h2>
     <p>Total voice notes recorded: {{ voice_note_count }}</p>
@@ -182,5 +253,27 @@
   </div>
 
 </div>
+<div class="top-people-container">
+  <h3 class="top-people-heading">Top People You Interacted With</h3>
+
+  <ul class="top-people-list">
+    {% for person in top_people %}
+      <li class="top-person-item">
+        <div class="person-info">
+          <p class="person-name">{{ person.name }}</p>
+          <p class="person-interactions">{{ person.interact_times }} interactions</p>
+        </div>
+        <a href="{% url 'send_mail_and_increment' person.pk %}" 
+           target="_blank" 
+           class="email-button">
+          Send Email
+        </a>
+      </li>
+    {% empty %}
+      <li class="no-interactions">No interactions yet.</li>
+    {% endfor %}
+  </ul>
+</div>
+
 
 {% endblock %}
