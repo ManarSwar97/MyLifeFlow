@@ -87,7 +87,7 @@ def dashboard(request):
 
     #for grocieries 
     next_day= timezone.localdate() + timedelta(days=1)
-    grocery_list = Grocery.objects.filter(user=request.user, next_restock__lte=next_day).order_by('next_restock')
+    grocery_list = Grocery.objects.filter(user=request.user, restock_date__lte=next_day).order_by('restock_date')
 
 
     #for budgets

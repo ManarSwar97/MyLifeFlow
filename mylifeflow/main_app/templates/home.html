@@ -1,7 +1,6 @@
 {% extends 'base.html' %} {% block content %}
 <h1>welcome home page</h1>
-{% endblock %}
-{% extends 'base.html' %} {% block content %} {% if user.is_authenticated %}
+{% if user.is_authenticated %}
 <h1>Welcome {{ user.first_name }}!</h1>
 <a href="{% url 'person_index' %}" class="btn">My People</a>
 <a href="{% url 'task_index' %}" class="btn">Daily Task</a>
