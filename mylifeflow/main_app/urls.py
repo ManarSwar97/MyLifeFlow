@@ -58,6 +58,9 @@ urlpatterns = [
     path('groceries/<int:pk>/update/', views.GroceryUpdate.as_view(), name='grocery_update'),
     path('groceries/<int:pk>/delete/', views.GroceryDelete.as_view(), name='grocery_delete'),
 
+# Location feature URLs
+    path('locations/<str:location>/', views.location_items, name='location_items'),
+
 # Voice feature URLs
     path('voice/', views.VoiceList.as_view(), name='voice_index'),
     path('voice/create/', views.VoiceCreate.as_view(), name='voice_create'),
@@ -71,9 +74,7 @@ urlpatterns = [
     path('groceries_chart/', views.get_groceries_top, name='get_groceries_top'),
     path('voice_chart/', views.get_voice_emotion_counts, name='get_voice_emotion_counts'),
 
-
-
-
-
+    path('person/<int:pk>/send_mail/', views.send_mail_and_increment, name='send_mail_and_increment'),
 ]+  static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 

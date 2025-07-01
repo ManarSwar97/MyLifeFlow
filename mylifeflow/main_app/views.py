@@ -1,9 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-from .forms import NewSignupForm, PersonForm, TaskForm, BudgetForm, ExpenseForm, GroceryForm, NoteForm, VoiceForm
+from .forms import NewSignupForm, PersonForm, TaskForm, BudgetForm, ExpenseForm, GroceryForm, NoteForm, VoiceForm, ItemForm
 from .models import UserProfile, Person, Task, Budget, Expense, Grocery, Item, Note, Voice
+from .forms import NewSignupForm, PersonForm, TaskForm, BudgetForm, ExpenseForm, GroceryForm, NoteForm, ItemForm
+from .models import UserProfile, Person, Task, Budget, Expense, Grocery, Item, Note
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.decorators import login_required
@@ -155,29 +157,7 @@ class BudgetCreateView(LoginRequiredMixin, CreateView):
             return super().form_valid(form)
 
     
-class ItemList(LoginRequiredMixin, ListView):
-    model = Item
 
-    def get_queryset(self):
-        return Item.objects.filter(user=self.request.user)
-
-class ItemDetail(LoginRequiredMixin, DetailView):
-    model = Item
-
-    def get_object(self, queryset=None):
-        obj = super().get_object(queryset)
-        if obj.user != self.request.user:
-            raise PermissionDenied
-        return obj
-
-class ItemCreate(LoginRequiredMixin, CreateView):
-    model = Item
-    fields = ['name', 'location', 'description']
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-    
 class NoteUpdate(LoginRequiredMixin, UpdateView):
     model = Note
     form_class = NoteForm
@@ -228,10 +208,23 @@ class ExpenseUpdateView(LoginRequiredMixin, UpdateView):
     def get_queryset(self):
         return Expense.objects.filter(user=self.request.user)
 
-
-class ItemUpdate(LoginRequiredMixin, UpdateView):
+class ItemList(LoginRequiredMixin, ListView):
     model = Item
-    fields = ['name', 'location', 'description'] 
+
+    def get_queryset(self):
+        return Item.objects.filter(user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        items = context['object_list']
+        locations = set()
+        for item in items:
+            locations.add(item.location)
+        context['unique_locations'] = sorted(locations)
+        return context
+
+class ItemDetail(LoginRequiredMixin, DetailView):
+    model = Item
 
     def get_object(self, queryset=None):
         obj = super().get_object(queryset)
@@ -239,19 +232,42 @@ class ItemUpdate(LoginRequiredMixin, UpdateView):
             raise PermissionDenied
         return obj
 
-    def get_form(self, form_class=None):
-        # Store the old location before the form is bound and the instance is updated
-        self.old_location = self.get_object().location
-        return super().get_form(form_class)
+class ItemCreate(LoginRequiredMixin, CreateView):
+    model = Item
+    form_class = ItemForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def form_valid(self, form):
-        # self.object is the instance being updated, but not yet saved
-        new_location = form.cleaned_data['location']
-        if self.old_location != new_location:
-            if self.old_location:
-                if not self.object.movement:
-                    self.object.movement = []
-                self.object.movement.append(self.old_location)
+        new_location = self.request.POST.get('new_location')
+        if new_location:
+            form.instance.location = new_location
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+    
+
+class ItemUpdate(LoginRequiredMixin, UpdateView):
+    model = Item
+    form_class = ItemForm
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        if obj.user != self.request.user:
+            raise PermissionDenied
+        return obj
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        new_location = self.request.POST.get('new_location')
+        if new_location:
+            form.instance.location = new_location
         form.instance.user = self.request.user
         return super().form_valid(form)
 
@@ -453,3 +469,16 @@ def achievement_summary(request):
     context.update(get_voice())
 
     return render(request, 'main_app/achievement_list.html', context)
+def location_items(request, location):
+    items = Item.objects.filter(location=location)
+    return render(request, 'main_app/location_items.html', {
+        'location': location,
+        'items': items,
+    })
+
+def send_mail_and_increment(request, pk):
+    person = get_object_or_404(Person, pk=pk)
+    person.interact_times += 1
+    person.save(update_fields=['interact_times'])
+    gmail_url = f"https://mail.google.com/mail/?view=cm&fs=1&to={person.email}"
+    return redirect(gmail_url)
