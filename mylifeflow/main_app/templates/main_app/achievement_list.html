@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+  .cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* space between cards */
+  }
+  .card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgb(0 0 0 / 0.1);
+    padding: 20px;
+    margin-bottom: 30px;
+    flex: 1 1 calc(50% - 20px); /* half width minus gap */
+    box-sizing: border-box;
+    min-width: 300px; /* prevent too narrow */
+  }
+  .card h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+  }
+</style>
+
+<div class="cards-container">
+
+  <!-- Task Completion Card -->
+  <div class="card">
+    <h2>Task Completion</h2>
+    <h3>You have completed {{ completed_percentage }}% tasks 🎉</h3>
+    <canvas id="taskChart" width="100" height="100"></canvas>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script>
+      const completed = "{{ completed_percentage }}";
+      const remaining = 100 - completed;
+
+      new Chart(document.getElementById("taskChart"), {
+        type: "pie",
+        data: {
+          labels: ["Completed", "Remaining"],
+          datasets: [{
+            data: [completed, remaining],
+            backgroundColor: ["#4CAF50", "#F44336"]
+          }]
+        },
+        options: {
+          plugins: {
+            datalabels: {
+              formatter: value => value + '%',
+              color: '#fff',
+              font: { weight: 'bold', size: 14 }
+            },
+            title: {
+              display: true,
+              text: "Task Completion"
+            }
+          }
+        },
+        plugins: [ChartDataLabels]
+      });
+    </script>
+  </div>
+
+  <!-- Saving and Expense Summary Card -->
+  <div class="card">
+    <h2>Saving and Expense Summary</h2>
+    <p><strong>Total Savings:</strong> {{ total_saving }}</p>
+    <p><strong>Total Expenses:</strong> {{ total_expenses }}</p>
+    <p style="font-weight: bold;">{{ saving_message }}</p>
+    <canvas id="expenseChart" width="300" height="200"></canvas>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        fetch("{% url 'get_expense' %}")
+          .then(res => res.json())
+          .then(data => {
+            const sortedData = data.data.sort((a, b) => b.amount - a.amount);
+            const points = sortedData.map((e, i) => ({ x: i + 1, y: e.amount }));
+
+            new Chart(document.getElementById("expenseChart"), {
+              type: 'scatter',
+              data: {
+                datasets: [{
+                  label: 'Expenses (BD)',
+                  data: points,
+                  backgroundColor: '#f44336'
+                }]
+              },
+              options: {
+                scales: {
+                  y: { beginAtZero: true }
+                }
+              }
+            });
+          });
+      });
+    </script>
+  </div>
+
+  <!-- Grocery Restock Summary Card -->
+  <div class="card">
+    <h2>Grocery Restock Summary</h2>
+    <p style="font-weight: bold;">You have restocked {{ percentage }}% during this year!</p>
+    <canvas id="groceryChart" width="400" height="200"></canvas>
+    <script>
+      fetch("{% url 'get_groceries_top' %}")
+        .then(res => res.json())
+        .then(data => {
+          const labels = data.grocery.map(e => e.name);
+          const counts = data.grocery.map(e => e.restock_count);
+
+          new Chart(document.getElementById('groceryChart'), {
+            type: 'bar',
+            data: {
+              labels: labels,
+              datasets: [{
+                label: 'Restocked',
+                data: counts,
+                backgroundColor: 'green'
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  precision: 0
+                }
+              }
+            }
+          });
+        })
+        .catch(console.error);
+    </script>
+  </div>
+
+  <!-- Voice Journaling Summary Card -->
+  <div class="card">
+    <h2>Voice Journaling Summary</h2>
+    <p>Total voice notes recorded: {{ voice_note_count }}</p>
+    <p>Voice journaling completion: {{ voice_note_percentage }}%</p>
+    <canvas id="emotionChart" width="400" height="200"></canvas>
+    <script>
+      fetch("{% url 'get_voice_emotion_counts' %}")
+        .then(res => res.json())
+        .then(data => {
+          const emotions = data.voice_emotions.map(e => e.emotion);
+          const counts = data.voice_emotions.map(e => e.count);
+
+          new Chart(document.getElementById('emotionChart'), {
+            type: 'bar',
+            data: {
+              labels: emotions,
+              datasets: [{
+                label: 'Number of Voice Notes',
+                data: counts,
+                backgroundColor: 'teal'
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  precision: 0
+                }
+              },
+              plugins: {
+                title: {
+                  display: true,
+                  text: 'Voice Notes by Emotion'
+                },
+                legend: {
+                  display: false
+                }
+              }
+            }
+          });
+        })
+        .catch(err => console.error('Error loading emotion data:', err));
+    </script>
+  </div>
+
+</div>
+
+{% endblock %}

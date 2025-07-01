@@ -6,8 +6,13 @@ from .forms import NewSignupForm, PersonForm, TaskForm, BudgetForm, ExpenseForm,
 from .models import UserProfile, Person, Task, Budget, Expense, Grocery, Item, Note, Voice
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
+from django.contrib.auth.decorators import login_required
+from django.db.models import Count, Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
+from datetime import datetime
+from django.http import JsonResponse
+
 
 # Create your views here.
 def home(request):
@@ -144,6 +149,11 @@ class BudgetCreateView(LoginRequiredMixin, CreateView):
     model= Budget
     form_class= BudgetForm
     success_url= '/budget/'
+
+    def form_valid(self, form):
+            form.instance.user = self.request.user
+            return super().form_valid(form)
+
     
 class ItemList(LoginRequiredMixin, ListView):
     model = Item
@@ -334,3 +344,112 @@ class VoiceUpdate(LoginRequiredMixin, UpdateView):
 class VoiceDelete(LoginRequiredMixin, DeleteView):
     model = Voice
     success_url = '/voice/'
+
+
+def get_tasks():
+    total_count = Task.objects.count()
+    completed_count = Task.objects.filter(is_completed=True).count()
+    completed_percentage = round((completed_count / total_count) * 100) if total_count > 0 else 0
+
+    return {
+        'completed_percentage': completed_percentage,
+        'total_tasks': total_count,
+        'completed_tasks': completed_count,
+    }
+
+def get_saving():
+    savings = Budget.objects.filter(type='saving')
+    expenses = Expense.objects.all()
+
+    total_saving = sum(s.saving_goal for s in savings)
+    total_expenses = sum(e.amount for e in expenses)
+
+    if total_saving > total_expenses:
+        saving_message = f"🎉 Congrats! You saved {total_saving - total_expenses:.2f} BD this year."
+    else:
+        saving_message = f"💸 You spent more than you saved by {total_expenses - total_saving:.2f} BD this year."
+
+    return {
+        'total_saving': total_saving,
+        'total_expenses': total_expenses,
+        'saving_message': saving_message,
+        'savings_list': savings,
+        'expenses_list': expenses,
+    }
+
+def get_expense(request):
+    if request.method == 'GET':
+        expenses = Expense.objects.all()
+        data_list = [
+            {
+                'name': e.name,
+                'amount': float(e.amount),
+            }
+            for e in expenses
+        ]
+        return JsonResponse({'data': data_list})
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+def get_groceries():
+    total_items = Grocery.objects.count()
+    restocked_items = Grocery.objects.filter(is_restocked=True).count()
+
+    percentage = round((restocked_items / total_items) * 100) if total_items > 0 else 0
+
+    return {
+        'total_items': total_items,
+        'restocked_items': restocked_items,
+        'percentage': percentage
+    }
+
+
+def get_groceries_top(request):
+    if request.method == 'GET':
+        grocery_counts = Grocery.objects.values('name').annotate(
+            restock_count=Count('id', filter=Q(is_restocked=True))
+        )
+
+        data_grocery = [
+            {
+                'name': entry['name'],
+                'restock_count': entry['restock_count'],
+            }
+            for entry in grocery_counts
+        ]
+
+        return JsonResponse({'grocery': data_grocery})
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+def get_voice():
+    current_year = datetime.now().year
+    voice_note_count = Voice.objects.filter(created_at__year=current_year).count()
+    voice_note_percentage = round((voice_note_count / 365) * 100)
+
+    return {
+        'voice_note_count': voice_note_count,
+        'voice_note_percentage': voice_note_percentage,
+    }
+def get_voice_emotion_counts(request):
+    if request.method == 'GET':
+        emotion_counts = Voice.objects.values('emotion').annotate(
+            count=Count('id')
+        ).order_by('emotion')
+
+        data = [
+            {'emotion': entry['emotion'], 'count': entry['count']}
+            for entry in emotion_counts
+        ]
+
+        return JsonResponse({'voice_emotions': data})
+
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+def achievement_summary(request):
+    context = {}
+    context.update(get_tasks())
+    context.update(get_saving())
+    context.update(get_groceries())
+    context.update(get_voice())
+
+    return render(request, 'main_app/achievement_list.html', context)

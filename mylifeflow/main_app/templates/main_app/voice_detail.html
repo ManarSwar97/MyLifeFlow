@@ -8,6 +8,8 @@
     <div class="card">
       <div class="card-content">
         <span class="card-title">{{ voice.title }}</span>
+        
+        <p><strong>Emotion:</strong> {{ voice.emotion|title }}</p>
 
         {% if voice.audio %}
           <audio controls style="margin-top: 15px; width: 100%;">

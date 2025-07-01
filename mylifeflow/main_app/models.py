@@ -100,8 +100,6 @@ class Expense(models.Model):
         return reverse('expense_detail', kwargs={'pk': self.pk})
 
 
-
-    
 class Note(models.Model):
     title = models.CharField(max_length=50)
     text = models.TextField(max_length=1500)
@@ -116,11 +114,23 @@ class Note(models.Model):
 
 
 class Voice(models.Model):
+    EMOTION_CHOICES = [
+        ('happy', 'Happy'),
+        ('sad', 'Sad'),
+        ('angry', 'Angry'),
+        ('calm', 'Calm'),
+        ('excited', 'Excited'),
+        ('anxious', 'Anxious'),
+        ('tired', 'Tired'),
+        ('neutral', 'Neutral'),
+    ]
     title = models.CharField(max_length=50)
     audio = models.FileField(upload_to='audio/', blank=True, null=True)
     image = models.ImageField(upload_to='main_app/static/uploads', default="")
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    emotion = models.CharField(max_length=20, choices=EMOTION_CHOICES, default='neutral')
+
     def __str__(self):
         return f"Voicenote: {self.title}"
     def get_absolute_url(self):

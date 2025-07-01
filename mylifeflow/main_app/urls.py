@@ -64,4 +64,16 @@ urlpatterns = [
     path('voice/<int:pk>/', views.VoiceDetail.as_view(), name='voice_detail'),
     path('voice/<int:pk>/update/', views.VoiceUpdate.as_view(), name='voice_update'),
     path('voice/<int:pk>/delete/', views.VoiceDelete.as_view(), name='voice_delete'),
+
+# achievement feature URLs
+    path('achievement/', views.achievement_summary, name='achievement_index'),
+    path('expenses/', views.get_expense, name='get_expense'),
+    path('groceries_chart/', views.get_groceries_top, name='get_groceries_top'),
+    path('voice_chart/', views.get_voice_emotion_counts, name='get_voice_emotion_counts'),
+
+
+
+
+
 ]+  static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
