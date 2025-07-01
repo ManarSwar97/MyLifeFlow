@@ -7,19 +7,19 @@
 <script>
   function speak(text) {
     const msg = new SpeechSynthesisUtterance(text);
-    window.speechSynthesis.speak(msg);
+    window.speechSynthesis.speak(msg)
   }
 
   function wishUser(username, first_name, last_name, weather, tempWithUnit, feelWithUnit, quote, author, pending) {
-    const now = new Date();
-    const hour = now.getHours();
+    const now = new Date()
+    const hour = now.getHours()
 
     if (hour < 12) {
-      speak(`Good Morning, ${username}!`);
+      speak(`Good Morning, ${username}!`)
     } else if (hour < 18) {
-      speak(`Good Afternoon!, ${first_name}${last_name}`);
+      speak(`Good Afternoon!, ${first_name}${last_name}`)
     } else {
-      speak("Good Evening!");
+      speak("Good Evening!")
     }
 
     speak(`I am your My Life Flow assistant, here to help you stay on top of your day. The weater in ${weather}, is ${tempWithUnit}, feeling like ${feelWithUnit}. Here’s a little inspiration for you: ${quote}, by ${author}. I hope that brightens your day! You have ${pending} tasks pending today; let’s try to complete them or add new ones to stay on track. Don’t forget to check in with your loved ones — you currently have 3 contacts.  Also, keep an eye on your groceries — you have 2 items needing restock soon.  And remember, taking a moment to journal can help you reflect and recharge. I’m here to support you every step of the way — let’s make today a great one!` )
@@ -27,21 +27,21 @@
 
   document.getElementById("enableAssistant").addEventListener("click", function () {
     const username = "{{ request.user.username|escapejs }}";
-    const first_name = "{{ request.user.first_name|escapejs }}";
-    const last_name = "{{ request.user.last_name|escapejs }}";
+    const first_name = "{{ request.user.first_name|escapejs }}"
+    const last_name = "{{ request.user.last_name|escapejs }}"
     const weather= "{{ weather.sys.country|escapejs }}"
     const tempWithUnit = `{{ weather.main.temp|default:"null" }} °{% if units == 'metric' %}C{% else %}F{% endif %}`
     const feelWithUnit = `{{ weather.main.feels_like|default:"null" }} °{% if units == 'metric' %}C{% else %}F{% endif %}`
     const quote = "{{ quotes.quote|default:''|escapejs }}";
-    const author = "{{ quotes.author|default:''|escapejs }}";
+    const author = "{{ quotes.author|default:''|escapejs }}"
     const pending= "{{ pending |escapejs }}"
     const restockCount=""
     const peopleCount=""
     
     
 
-    wishUser(username, first_name, last_name, weather, tempWithUnit, feelWithUnit, quote, author, pending);
-  });
+    wishUser(username, first_name, last_name, weather, tempWithUnit, feelWithUnit, quote, author, pending)
+  })
 </script>
 
 
