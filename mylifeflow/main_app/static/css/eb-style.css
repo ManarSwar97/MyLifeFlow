@@ -1,0 +1,85 @@
+body {
+  background: #080F26;
+  color: #bfc9db;
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.form-container {
+  background: #091638;
+  border-radius: 16px;
+  padding: 2em 2em 1em 2em;
+  max-width: 500px;
+  margin: 2em auto;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
+}
+
+.form-title {
+  color: #fff;
+  margin-bottom: 1.5em;
+}
+
+.form-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5em;
+}
+
+.form-wrapper label {
+  color: #bfc9db;
+  font-weight: 500;
+  margin-bottom: 0.5em;
+  font-size: 1em;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.form-wrapper input,
+.form-wrapper textarea,
+.form-wrapper select {
+  background: #1e2746;
+  color: #fff;
+  border: 1px solid #28304a;
+  border-radius: 6px;
+  padding: 0.7em 1em;
+  font-size: 1em;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.form-wrapper textarea {
+  resize: none;
+}
+
+.form-wrapper input:focus,
+.form-wrapper textarea:focus,
+.form-wrapper select:focus {
+  border: 1.5px solid #1976d2;
+}
+
+.btn,
+.btn-secondary {
+  border: none;
+  border-radius: 6px;
+  padding: 0.7em 1.5em;
+  font-size: 1em;
+  cursor: pointer;
+  margin-right: 0.5em;
+  margin-top: 0.5em;
+  transition: background 0.2s;
+}
+
+.btn {
+  background: #1976d2;
+  color: #fff;
+}
+
+.btn-secondary {
+  background: #28304a;
+  color: #bfc9db;
+}
+
+.teal-text {
+  color: #1de9b6;
+}
