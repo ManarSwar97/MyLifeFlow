@@ -2,7 +2,6 @@
 <h1>{{ item.name }}</h1>
 <p><strong>Location:</strong> {{ item.location }}</p>
 <p><strong>Description:</strong> {{ item.description }}</p>
-<p><strong>QR Code URL:</strong> {{ item.qr_code_url }}</p>
 <p><strong>Previous Locations:</strong> {{ item.movement|join:" -> " }}</p>
 <a href="{% url 'item_update' item.id %}" class="btn">Edit</a>
 <a href="{% url 'item_delete' item.id %}" class="btn red">Delete</a>

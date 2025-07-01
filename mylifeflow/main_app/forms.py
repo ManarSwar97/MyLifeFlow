@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Person, Task, Budget, Expense,  Grocery, Note, Voice
+from .models import Person, Task, Budget, Expense,  Grocery, Note, Item, Voice
 import datetime
 
 class NewSignupForm(UserCreationForm):
@@ -78,9 +78,7 @@ class GroceryForm(forms.ModelForm):
 
     class Meta:
         model = Grocery
-        fields = ['name', 'purchase_date', 'duration_days', 'next_restock', 'notes']
-
-
+        fields = ['name', 'purchase_date', 'duration_days', 'notes', 'is_restocked']
 
 class VoiceForm(forms.ModelForm):
     class Meta:
@@ -91,4 +89,20 @@ class VoiceForm(forms.ModelForm):
         def form_valid(self, form):
             form.instance.user = self.request.user
             return super().form_valid(form)
-        fields = ['name', 'purchase_date', 'duration_days', 'notes', 'is_restocked']
+
+class ItemForm(forms.ModelForm):
+    NEW_LOCATION_VALUE = '__new__'
+
+    location = forms.ChoiceField(choices=[], required=True, label='Location')
+
+    class Meta:
+        model = Item
+        fields = ['name', 'location', 'description']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        existing_locations = Item.objects.values_list('location', flat=True).distinct()
+        choices = [(loc, loc) for loc in existing_locations if loc]
+        choices.append((self.NEW_LOCATION_VALUE, 'Add new location'))
+        self.fields['location'].choices = choices

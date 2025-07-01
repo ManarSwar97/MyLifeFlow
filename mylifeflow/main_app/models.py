@@ -133,6 +133,7 @@ class Grocery(models.Model):
     duration_days = models.IntegerField()
     notes = models.TextField(blank=True)
     is_restocked = models.BooleanField(default=False)
+    restock_date = models.DateField(null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -140,6 +141,13 @@ class Grocery(models.Model):
     
     def get_absolute_url(self):
         return reverse('grocery_detail', kwargs={'pk': self.id})
+    
+    def save(self, *args, **kwargs):
+        if self.is_restocked and not self.restock_date:
+            self.restock_date = timezone.now().date()
+        elif not self.is_restocked:
+            self.restock_date = None
+        super().save(*args, **kwargs)
 
     @property
     def next_restock(self):
@@ -150,7 +158,6 @@ class Item(models.Model):
     name = models.CharField(max_length=50)
     location = models.CharField(max_length=100)
     description = models.TextField()
-    qr_code_url = models.URLField(max_length=200, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -159,19 +166,22 @@ class Item(models.Model):
         blank=True,
         default=list
     )
+
     def __str__(self):
         return f"Item: {self.name}"
-    
+
     def get_absolute_url(self):
         return reverse('item_detail', kwargs={'pk': self.id})
+
 
 
 class Person(models.Model):
     name = models.CharField(max_length=50)
     relationship = models.CharField(max_length=50)
-    email = models.EmailField()  # <-- Add this line
+    email = models.EmailField()
     contact_date = models.DateField()
     notes = models.TextField(blank=True)
+    interact_times = models.IntegerField(default=0)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     def __str__(self):

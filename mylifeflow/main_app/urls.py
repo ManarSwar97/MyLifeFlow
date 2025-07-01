@@ -58,10 +58,16 @@ urlpatterns = [
     path('groceries/<int:pk>/update/', views.GroceryUpdate.as_view(), name='grocery_update'),
     path('groceries/<int:pk>/delete/', views.GroceryDelete.as_view(), name='grocery_delete'),
 
+# Location feature URLs
+    path('locations/<str:location>/', views.location_items, name='location_items'),
+
 # Voice feature URLs
     path('voice/', views.VoiceList.as_view(), name='voice_index'),
     path('voice/create/', views.VoiceCreate.as_view(), name='voice_create'),
     path('voice/<int:pk>/', views.VoiceDetail.as_view(), name='voice_detail'),
     path('voice/<int:pk>/update/', views.VoiceUpdate.as_view(), name='voice_update'),
     path('voice/<int:pk>/delete/', views.VoiceDelete.as_view(), name='voice_delete'),
+    path('person/<int:pk>/send_mail/', views.send_mail_and_increment, name='send_mail_and_increment'),
 ]+  static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
