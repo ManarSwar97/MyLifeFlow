@@ -11,7 +11,17 @@ from django.views.generic import ListView, DetailView
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from datetime import date
+from datetime import timedelta
+from django.utils import timezone
+from django.db.models import Sum
+import requests
+import os 
+from dotenv import load_dotenv
+load_dotenv()
+
 from datetime import datetime
 from django.http import JsonResponse
 
@@ -19,6 +29,97 @@ from django.http import JsonResponse
 # Create your views here.
 def home(request):
     return render(request, 'home.html')
+
+
+@login_required
+def dashboard(request):
+    #for the weather api 
+    if request.user.is_authenticated: #to check if the user authenticated (exist)
+        profile = request.user.userprofile #get thee user profile since its contain the latitude and longitude for the location
+        lat = profile.latitude
+        lon = profile.longitude
+    else:
+        lat = None
+        lon = None
+
+    units = request.GET.get('units', 'metric')
+    API_KEY = os.getenv('WEATHER_API_KEY')
+
+    #initialize the weather variable
+    weather = None
+
+    #to check if the latitude and longitude is not empty and the api exist
+    if lat is not None and lon is not None and API_KEY:
+        url = f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units={units}&appid={API_KEY}'
+        
+        response = requests.get(url)
+
+        if response.status_code == 200: #in case there was an error and it sends staus 200
+            weather = response.json()
+        else:
+            print("Failed to get weather data:", response.text) #if there is no weather data
+    else:
+        print("Missing lat/lon or API_KEY") #if latitude and longitude empty and the api does not exist
+
+
+    #for the quotes api 
+    quotes= None
+    url = f'https://dummyjson.com/quotes/random'
+        
+    response = requests.get(url)
+
+    if response.status_code == 200: #in case there was an error and it sends staus 200
+            quotes = response.json()
+            print(quotes)
+    else:
+        print("Failed to get quotes data:", response.text) #if there is no weather data
+
+
+    #for the list some calculations 
+    today_tasks= Task.objects.filter(user=request.user, due_date= date.today())
+    completed= today_tasks.filter(is_completed=True).count()
+    total= today_tasks.count()
+    percentage= int((completed/total)*100) if total else 0
+    pending= total- completed
+
+    budget_list = Budget.objects.filter(user=request.user)
+    person_list = Person.objects.filter(user=request.user)
+
+    #for grocieries 
+    next_day= timezone.localdate() + timedelta(days=1)
+    grocery_list = Grocery.objects.filter(user=request.user, next_restock__lte=next_day).order_by('next_restock')
+
+
+    #for budgets
+    budgets = [
+        {
+            'budget': budget,
+            'spent': budget.expense_set.aggregate(total_spent=Sum('amount'))['total_spent'] or 0,
+            'today_spent': budget.expense_set.filter(created_at__date=timezone.now().date()).aggregate(today_total=Sum('amount'))['today_total'] or 0,
+            'remaining': float(budget.total_amount) - float(budget.expense_set.aggregate(total_spent=Sum('amount'))['total_spent'] or 0),
+            'daily_limit': budget.daily_limit(),
+            'remaining_daily_limit': max(budget.daily_limit() - (budget.expense_set.filter(created_at__date=timezone.now().date()).aggregate(today_total=Sum('amount'))['today_total'] or 0), 0),
+            'expenses': budget.expense_set.order_by('-created_at')
+        }
+        for budget in budget_list
+    ]
+
+
+    return render(request, 'dashboard.html', {
+        'task_list': today_tasks,
+        'grocery_list': grocery_list,
+        'budget_list': budget_list,
+        'budgets':budgets,
+        'person_list': person_list,
+        'weather': weather,
+        'units': units,
+        'quotes': quotes,
+        'completed': completed,
+        'pending': pending,
+        'percentage': percentage,
+    })
+
+
 
 def about(request):
     return render(request, 'about.html')
@@ -29,10 +130,16 @@ def signup(request):
         form = NewSignupForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
+            #to get them from the inputs
+            latitude = float(request.POST.get('latitude', 0.0))
+            longitude = float(request.POST.get('longitude', 0.0))
+
             UserProfile.objects.create(
                 user=user,
                 birthday=form.cleaned_data.get('birthday'),
-                profile_image=request.FILES.get('profile_image')
+                profile_image=request.FILES.get('profile_image'),
+                latitude=latitude,
+                longitude= longitude
             )
             login(request, user)
             return redirect('login')
@@ -97,6 +204,9 @@ class TaskList(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Task.objects.filter(user=self.request.user)
 
+    def get_queryset(self):
+        return Task.objects.filter(user=self.request.user)
+
 class TaskDetail(LoginRequiredMixin, DetailView):
     model = Task
 
@@ -115,6 +225,21 @@ class TaskUpdate(LoginRequiredMixin, UpdateView):
 class TaskDelete(LoginRequiredMixin, DeleteView):
     model = Task
     success_url = '/task/'
+
+def dashboard_add_task(request):
+    if request.method == 'POST':
+        #strip() string methed to delete spaces
+        title = request.POST.get('title', '').strip()
+        if title:
+            Task.objects.create(
+                title=title,
+                description='',
+                due_date=date.today(),
+                is_completed=False,
+                user=request.user
+            )
+    return redirect('home')  
+    
 
 class NoteList(LoginRequiredMixin, ListView):
     model = Note
@@ -151,6 +276,30 @@ class BudgetCreateView(LoginRequiredMixin, CreateView):
     model= Budget
     form_class= BudgetForm
     success_url= '/budget/'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+    
+class ItemList(LoginRequiredMixin, ListView):
+    model = Item
+
+    def get_queryset(self):
+        return Item.objects.filter(user=self.request.user)
+
+class ItemDetail(LoginRequiredMixin, DetailView):
+    model = Item
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        if obj.user != self.request.user:
+            raise PermissionDenied
+        return obj
+
+class ItemCreate(LoginRequiredMixin, CreateView):
+    model = Item
+    fields = ['name', 'location', 'description']
+
 
     def form_valid(self, form):
             form.instance.user = self.request.user
@@ -195,15 +344,59 @@ class ExpenseCreateView(LoginRequiredMixin, CreateView):
     form_class= ExpenseForm
     success_url= '/expense/'
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user 
+        return kwargs
+    
+    def get_initial(self):
+        initial = super().get_initial()
+        budget_id = self.request.GET.get('budget_id')
+        if budget_id:
+            initial['budget'] = budget_id
+        return initial
+    
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
     
+
+def dashboard_add_expense(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        amount = request.POST.get('amount')
+        budget_id = request.POST.get('budget_id')
+
+        budget = Budget.objects.get(id=budget_id, user=request.user)
+
+#adjust the default values for the dashboard form
+        Expense.objects.create(
+            name=title,
+            amount=amount,
+            frequency='one-time',  
+            budget=budget,
+            user=request.user
+        )
+        return redirect('home') 
+    
+
 #Expense Update View
 class ExpenseUpdateView(LoginRequiredMixin, UpdateView):
     model = Expense
     form_class = ExpenseForm
     success_url = '/expense/'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user 
+        return kwargs
+    
+    def get_initial(self):
+        initial = super().get_initial()
+        budget_id = self.request.GET.get('budget_id')
+        if budget_id:
+            initial['budget'] = budget_id
+        return initial
 
     def get_queryset(self):
         return Expense.objects.filter(user=self.request.user)

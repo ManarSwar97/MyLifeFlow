@@ -7,6 +7,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.home, name='home'),
+    path('dashboard/', views.dashboard, name='home'),
     path('about/', views.about, name='about'),
     path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
@@ -24,6 +25,8 @@ urlpatterns = [
     path('task/create/', views.TaskCreate.as_view(), name='task_create'),
     path('task/<int:pk>/update/', views.TaskUpdate.as_view(), name='task_update'),
     path('task/<int:pk>/delete/', views.TaskDelete.as_view(), name='task_delete'),
+    path('dashboard/add-task/', views.dashboard_add_task, name='dashboard_add_task'),
+
 # Journal feature URLs
     path('note/', views.NoteList.as_view(), name='note_index'),
     path('note/<int:pk>/', views.NoteDetail.as_view(), name='note_detail'),
@@ -43,6 +46,7 @@ urlpatterns = [
     path('expense/create/', views.ExpenseCreateView.as_view(), name='expense_create'),
     path('expense/<int:pk>/update/', views.ExpenseUpdateView.as_view(), name='expense_update'),
     path('expense/<int:pk>/delete/', views.ExpenseDeleteView.as_view(), name='expense_delete'),
+    path('dashboard/add-expense/', views.dashboard_add_expense, name='dashboard_add_expense'),
 
 # Item feature URLs
     path('items/', views.ItemList.as_view(), name='item_index'),

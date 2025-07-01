@@ -1,6 +1,6 @@
 {% extends 'base.html' %} {% block content %}
 <h2>Delete Expense</h2>
-<p>Are you sure you want to delete "{{ object.name }}"?</p>
+<p>Are you sure you want to delete "{{ expense.name }}"?</p>
 <form method="post">
   {% csrf_token %}
   <button type="submit">Yes, delete</button>

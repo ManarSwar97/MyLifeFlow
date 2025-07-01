@@ -13,56 +13,68 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" />
 
     <link
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
     />
   </head>
+  
   <body>
-    <header class="navbar-fixed">
-      <nav>
-        <div class="nav-wrapper">
-          <ul>
-            <li>
-              <a href="{% url 'home' %}" class="left brand-logo"
-                >&nbsp;&nbsp;MyLifeFlow</a
-              >
-            </li>
-          </ul>
-          <ul class="right">
-            {% if user.is_authenticated %}
-            <li><a href="{% url 'about' %}">About</a></li>
-            <li>
-              <form
-                method="post"
-                action="{% url 'logout' %}"
-                style="display: inline"
-              >
-                {% csrf_token %}
-                <button
-                  type="submit"
-                  class="btn-flat white-text"
-                  style="margin: 0 15px"
-                >
-                  Logout
-                </button>
-              </form>
-            </li>
-            {% else %}
-            <li><a href="{% url 'login' %}">Sign In</a></li>
-            <li><a href="{% url 'signup' %}">Sign Up</a></li>
-            {% endif %}
-          </ul>
-        </div>
-      </nav>
-    </header>
-    <main class="container">{% block content %} {% endblock %}</main>
-    <footer class="page-footer">
-      <div class="right">
-        All Rights Reserved, &copy; 2025 My Life Flow &nbsp;
-      </div>
-    </footer>
+  <style>
+    body {
+      display: flex;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .sidebar {
+      width: 220px;
+      background-color: #db80b1;
+      color: white;
+      padding-top: 20px;
+      flex-shrink: 0;
+    }
+    .sidebar a {
+      color: white;
+      display: block;
+      padding: 12px 20px;
+      text-decoration: none;
+    }
+    .sidebar a:hover {
+      background-color: #37474f;
+    }
+    main {
+      flex-grow: 1;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h5 class="center-align" style="margin-bottom: 30px;">MyLifeFlow</h5>
+    <a href="{% url 'home' %}">Dashboard</a>
+    <a href="{% url 'task_index' %}">Tasks</a>
+    <a href="{% url 'grocery_index' %}">Groceries</a>
+    <a href="{% url 'budget_list' %}">Budgets</a>
+    <a href="{% url 'person_index' %}">People</a>
+    <a href="{% url 'note_index' %}">Journal</a>
+    {% if user.is_authenticated %}
+    <a href="{% url 'about' %}">About</a>
+    <form method="post" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="btn red darken-2" style="margin: 10px 20px;">Logout</button>
+    </form>
+    {% else %}
+    <a href="{% url 'login' %}">Sign In</a>
+    <a href="{% url 'signup' %}">Sign Up</a>
+    {% endif %}
+  </div>
+
+  <main>
+    {% block content %} {% endblock %}
+  </main>
   </body>
 </html>

@@ -1,14 +1,28 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 
 <h1>Sign Up</h1>
 
-{% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
+{% if error_message %}
+<p class="red-text">{{ error_message }}</p>
+{% endif %}
 
 <form method="post" action="{% url 'signup' %}" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" class="btn" value="signup">
+  {% csrf_token %} {{ form.as_p }}
+
+  <!-- for location -->
+  <input type="hidden" name="latitude" id="latitude" />
+  <input type="hidden" name="longitude" id="longitude" />
+
+  <input type="submit" class="btn" value="signup" />
 </form>
+
+<script>
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function (position) {
+      document.getElementById('latitude').value = position.coords.latitude
+      document.getElementById('longitude').value = position.coords.longitude
+    })
+  }
+</script>
 
 {% endblock %}
