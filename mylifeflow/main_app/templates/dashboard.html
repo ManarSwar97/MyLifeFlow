@@ -271,7 +271,7 @@
     <div class="card">
       <div class="card-content">
         <span class="card-title">{{ grocery.name }}</span>
-        <p>Restock Date: {{ grocery.restock_date }}</p>
+        <p>Next Restock: {{ grocery.next_restock|date:"F j, Y" }}</p>
       </div>
     </div>
   </a>
