@@ -555,9 +555,9 @@ class VoiceDelete(LoginRequiredMixin, DeleteView):
     success_url = '/voice/'
 
 
-def get_tasks():
+def get_tasks(user):
     total_count = Task.objects.count()
-    completed_count = Task.objects.filter(is_completed=True).count()
+    completed_count = Task.objects.filter(user=user, is_completed=True).count()
     completed_percentage = round((completed_count / total_count) * 100) if total_count > 0 else 0
 
     return {
@@ -566,9 +566,10 @@ def get_tasks():
         'completed_tasks': completed_count,
     }
 
-def get_saving():
-    savings = Budget.objects.filter(type='saving')
-    expenses = Expense.objects.all()
+
+def get_saving(user):
+    savings = Budget.objects.filter(user=user, type='saving')
+    expenses = Expense.objects.filter(user=user)
 
     total_saving = sum(s.saving_goal for s in savings)
     total_expenses = sum(e.amount for e in expenses)
@@ -586,9 +587,11 @@ def get_saving():
         'expenses_list': expenses,
     }
 
+@login_required
 def get_expense(request):
+    user = request.user
     if request.method == 'GET':
-        expenses = Expense.objects.all()
+        expenses = Expense.objects.filter(user=user)
         data_list = [
             {
                 'name': e.name,
@@ -599,9 +602,9 @@ def get_expense(request):
         return JsonResponse({'data': data_list})
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
-def get_groceries():
+def get_groceries(user):
     total_items = Grocery.objects.count()
-    restocked_items = Grocery.objects.filter(is_restocked=True).count()
+    restocked_items = Grocery.objects.filter(user=user, is_restocked=True).count()
 
     percentage = round((restocked_items / total_items) * 100) if total_items > 0 else 0
 
@@ -611,12 +614,11 @@ def get_groceries():
         'percentage': percentage
     }
 
-
+@login_required
 def get_groceries_top(request):
+    user = request.user
     if request.method == 'GET':
-        grocery_counts = Grocery.objects.values('name').annotate(
-            restock_count=Count('id', filter=Q(is_restocked=True))
-        )
+        grocery_counts = Grocery.objects.filter(user=user, is_restocked=True).values('name').annotate(restock_count=Count('id'))
 
         data_grocery = [
             {
@@ -629,22 +631,21 @@ def get_groceries_top(request):
         return JsonResponse({'grocery': data_grocery})
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
-
-def get_voice():
+def get_voice(user):
     current_year = datetime.now().year
-    voice_note_count = Voice.objects.filter(created_at__year=current_year).count()
+    voice_note_count = Voice.objects.filter(user=user, created_at__year=current_year).count()
     voice_note_percentage = round((voice_note_count / 365) * 100)
 
     return {
         'voice_note_count': voice_note_count,
         'voice_note_percentage': voice_note_percentage,
     }
-def get_voice_emotion_counts(request):
-    if request.method == 'GET':
-        emotion_counts = Voice.objects.values('emotion').annotate(
-            count=Count('id')
-        ).order_by('emotion')
 
+@login_required
+def get_voice_emotion_counts(request):
+    user = request.user
+    if request.method == 'GET':
+        emotion_counts = Voice.objects.filter(user=user).values('emotion').annotate(count=Count('id')).order_by('emotion')
         data = [
             {'emotion': entry['emotion'], 'count': entry['count']}
             for entry in emotion_counts
@@ -654,14 +655,9 @@ def get_voice_emotion_counts(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
-def achievement_summary(request):
-    context = {}
-    context.update(get_tasks())
-    context.update(get_saving())
-    context.update(get_groceries())
-    context.update(get_voice())
 
-    return render(request, 'main_app/achievement_list.html', context)
+
+
 def location_items(request, location):
     items = Item.objects.filter(location=location)
     return render(request, 'main_app/location_items.html', {
@@ -675,3 +671,15 @@ def send_mail_and_increment(request, pk):
     person.save(update_fields=['interact_times'])
     gmail_url = f"https://mail.google.com/mail/?view=cm&fs=1&to={person.email}"
     return redirect(gmail_url)
+
+@login_required
+def achievement_summary(request):
+    user = request.user
+    context = {}
+    context.update(get_tasks(user))
+    context.update(get_saving(user))
+    context.update(get_groceries(user))
+    context.update(get_voice(user))
+    top_people = Person.objects.order_by('-interact_times')[:5]
+    context['top_people'] = top_people
+    return render(request, 'main_app/achievement_list.html', context)
