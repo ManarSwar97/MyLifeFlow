@@ -45,6 +45,7 @@ class NoteForm(forms.ModelForm):
         widgets = {
             'text': forms.Textarea(attrs={'id': 'text'}),
         }
+        
 class BudgetForm(forms.ModelForm):
     class Meta:
         model= Budget
@@ -78,12 +79,12 @@ class GroceryForm(forms.ModelForm):
 
     class Meta:
         model = Grocery
-        fields = ['name', 'purchase_date', 'duration_days', 'notes', 'is_restocked']
+        fields = ['name', 'purchase_date', 'duration_days', 'is_restocked', 'notes']
 
 class VoiceForm(forms.ModelForm):
     class Meta:
         model = Voice
-        fields = ['title', 'audio', 'image']
+        fields = ['title', 'audio', 'image', 'emotion']
         success_url = '/voice/'
 
         def form_valid(self, form):
