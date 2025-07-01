@@ -114,7 +114,7 @@
 <form id="dashboard-task-form" method="POST" action="{% url 'dashboard_add_task' %}" style="display:none; margin-top:10px;">
   {% csrf_token %}
   <input type="text" name="title" id="new-task-title" placeholder="Enter task title" required />
-  <button type="submit">Save</button>
+  <button class="add-task-btn" type="submit">Save</button>
   <button type="button" id="cancel-task-btn">Cancel</button>
 </form>
 
@@ -200,7 +200,7 @@
       <input type="text" name="title" placeholder="Expense Title" required>
       <input type="number" name="amount" placeholder="Amount" step="0.01" required>
 
-      <button type="submit">Add Expense</button>
+      <button class="add-expense-btn-submit" type="submit">Add Expense</button>
       <button type="button" class="cancel-expense-btn">Cancel</button>
     </form>
   </div>
@@ -311,29 +311,43 @@
 
 <!-- add notifications (just for test now! try it hehe!) -->
 <script>
-  function sendTestNotification() {
-    // it will ask the user for permission to recieve notifications
+  function sendNotification(title, message) {
     Notification.requestPermission().then(function (permission) {
       if (permission === 'granted') {
-        const notification = new Notification('Task Reminder', {
-          body: 'Don’t forget to complete your daily goal!',
-          icon: '/static/img/notify.png'
+        const notification = new Notification(title, {
+          body: message,
+          icon: '/static/img/notify.png',
+          requireInteraction: true
+
         })
 
-        const audio = new Audio('/static/sound/notify.mp3')
-        audio.play()
+        const audio = new Audio('/static/sound/notify.mp3');
+        audio.play();
       }
     })
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    setTimeout(() => {
-      sendTestNotification()
-    }, 3000)
-  })
+    // For task 
+    const taskBtn = document.querySelector('.add-task-btn');
+    if (taskBtn) {
+      taskBtn.addEventListener('click', function () {
+        sendNotification('Task Added', 'Your new task has been added successfully!');
+      }, 3000)
+    }
+
+    // For expense 
+    const expenseBtn = document.querySelector('.add-expense-btn-submit');
+    if (expenseBtn) {
+      expenseBtn.addEventListener('click', function () {
+        sendNotification('Expense Added', 'New expense recorded. Stay on budget!');
+      },3000)
+    }
+  },3000)
 </script>
 
-<button onclick="sendTestNotification()">🔔 Test Notification</button>
+
+<button onclick="sendNotification('Test Notification', 'This is a test!')">🔔 Test Notification</button>
 
 
 
