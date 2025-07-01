@@ -67,6 +67,7 @@ urlpatterns = [
     path('voice/<int:pk>/', views.VoiceDetail.as_view(), name='voice_detail'),
     path('voice/<int:pk>/update/', views.VoiceUpdate.as_view(), name='voice_update'),
     path('voice/<int:pk>/delete/', views.VoiceDelete.as_view(), name='voice_delete'),
+    path('person/<int:pk>/send_mail/', views.send_mail_and_increment, name='send_mail_and_increment'),
 ]+  static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

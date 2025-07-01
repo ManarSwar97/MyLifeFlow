@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
@@ -350,10 +350,17 @@ class VoiceUpdate(LoginRequiredMixin, UpdateView):
 class VoiceDelete(LoginRequiredMixin, DeleteView):
     model = Voice
     success_url = '/voice/'
-    
+
 def location_items(request, location):
     items = Item.objects.filter(location=location)
     return render(request, 'main_app/location_items.html', {
         'location': location,
         'items': items,
     })
+
+def send_mail_and_increment(request, pk):
+    person = get_object_or_404(Person, pk=pk)
+    person.interact_times += 1
+    person.save(update_fields=['interact_times'])
+    gmail_url = f"https://mail.google.com/mail/?view=cm&fs=1&to={person.email}"
+    return redirect(gmail_url)

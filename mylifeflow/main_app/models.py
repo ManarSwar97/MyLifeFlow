@@ -178,9 +178,10 @@ class Item(models.Model):
 class Person(models.Model):
     name = models.CharField(max_length=50)
     relationship = models.CharField(max_length=50)
-    email = models.EmailField()  # <-- Add this line
+    email = models.EmailField()
     contact_date = models.DateField()
     notes = models.TextField(blank=True)
+    interact_times = models.IntegerField(default=0)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     def __str__(self):

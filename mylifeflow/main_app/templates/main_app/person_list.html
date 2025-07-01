@@ -1,5 +1,4 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 <h1>People List</h1>
 <table class="striped">
   <thead>
@@ -13,12 +12,12 @@
   <tbody>
     {% for person in person_list %}
     <tr>
-      <td>
-        {{ person.name }}
-      </td>
+      <td>{{ person.name }}</td>
       <td>
         {{ person.email }}
-        <a href="https://mail.google.com/mail/?view=cm&fs=1&to={{ person.email }}" target="_blank">Send mail</a>
+        <a href="{% url 'send_mail_and_increment' person.id %}" target="_blank"
+          >Send mail</a
+        >
       </td>
       <td>{{ person.contact_date }}</td>
       <td>
