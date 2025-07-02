@@ -1,9 +1,24 @@
 {% extends 'base.html' %} {% block content %}
-<h1>Delete Grocery</h1>
-<p>Are you sure you want to delete "{{ object.name }}"?</p>
-<form method="post">
-  {% csrf_token %}
-  <button type="submit" class="btn red">Yes, delete</button>
-  <a href="{% url 'grocery_detail' object.id %}" class="btn">Cancel</a>
-</form>
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/eb-style.css' %}" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+
+<div class="delete-container">
+  <h1 class="form-title"><i class="fa fa-trash"></i> Delete Grocery</h1>
+  <h4>
+    Are you sure you want to delete
+    <span class="teal-text">"{{ object.name }}"</span>?
+  </h4>
+  <form method="post">
+    {% csrf_token %}
+    <input type="submit" value="Yes, delete" class="btn" />
+    <a href="{% url 'grocery_detail' object.id %}" class="btn btn-secondary"
+      >Cancel</a
+    >
+  </form>
+</div>
 {% endblock %}

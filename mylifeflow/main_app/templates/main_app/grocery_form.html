@@ -1,4 +1,6 @@
+{% extends 'base.html' %}{% block content %}
 {% load static %}
+
 
 <link rel="stylesheet" href="{% static 'css/eb-style.css' %}" />
 <link
@@ -51,3 +53,4 @@
     <a href="{% url 'grocery_index' %}" class="btn btn-secondary">Cancel</a>
   </form>
 </div>
+{% endblock content %}

@@ -1,9 +1,39 @@
 {% extends 'base.html' %} {% block content %}
-<h1>{{ item.name }}</h1>
-<p><strong>Location:</strong> {{ item.location }}</p>
-<p><strong>Description:</strong> {{ item.description }}</p>
-<p><strong>Previous Locations:</strong> {{ item.movement|join:" -> " }}</p>
-<a href="{% url 'item_update' item.id %}" class="btn">Edit</a>
-<a href="{% url 'item_delete' item.id %}" class="btn red">Delete</a>
-<a href="{% url 'item_index' %}" class="btn">Back to List</a>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/eb-style.css' %}" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+
+<div class="detail-container">
+  <h1 class="form-title"><i class="fa fa-box"></i> {{ item.name }}</h1>
+
+  <div class="detail-row">
+    <div class="detail-label"><i class="fa fa-map-marker-alt"></i> Location:</div>
+    <div class="detail-value">{{ item.location }}</div>
+  </div>
+
+  <div class="detail-row">
+    <div class="detail-label"><i class="fa fa-align-left"></i> Description:</div>
+    <div class="detail-value">{{ item.description }}</div>
+  </div>
+
+  <div class="detail-row">
+    <div class="detail-label"><i class="fa fa-history"></i> Previous Locations:</div>
+    <div class="detail-value">{{ item.movement|join:" -> " }}</div>
+  </div>
+
+  <div class="detail-actions">
+    <a href="{% url 'item_update' item.id %}" class="btn"
+      ><i class="fa fa-edit"></i> Edit</a
+    >
+    <a href="{% url 'item_delete' item.id %}" class="btn btn-secondary"
+      ><i class="fa fa-trash"></i> Delete</a
+    >
+    <a href="{% url 'item_index' %}" class="btn"
+      ><i class="fa fa-arrow-left"></i> Back to List</a
+    >
+  </div>
+</div>
 {% endblock %}

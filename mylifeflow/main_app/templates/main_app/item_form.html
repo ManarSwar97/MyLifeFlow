@@ -1,3 +1,4 @@
+{% extends 'base.html' %} {% block content %}
 {% load static %}
 
 <link rel="stylesheet" href="{% static 'css/eb-style.css' %}" />
@@ -10,6 +11,7 @@
   <h1 class="form-title">{% if object %}Edit{% else %}Add{% endif %} Item</h1>
   <form method="post">
     {% csrf_token %}
+
     <div class="form-wrapper">
       <label for="{{ form.name.id_for_label }}"
         ><i class="fa fa-box"></i> Name</label
@@ -22,13 +24,11 @@
         ><i class="fa fa-map-marker-alt"></i> Location</label
       >
       {{ form.location }}
-      <input
-        type="text"
-        id="new-location-input"
-        name="new_location"
-        placeholder="Enter new location"
-        style="display: none"
-      />
+      <datalist id="location-options">
+        {% for loc in location_choices %}
+        <option value="{{ loc }}"></option>
+        {% endfor %}
+      </datalist>
     </div>
 
     <div class="form-wrapper">
@@ -42,17 +42,4 @@
     <a href="{% url 'item_index' %}" class="btn btn-secondary">Cancel</a>
   </form>
 </div>
-
-<script>
-  const locationSelect = document.getElementById('id_location')
-  const newLocationInput = document.getElementById('new-location-input')
-  locationSelect.addEventListener('change', function () {
-    if (this.value === '{{ form.NEW_LOCATION_VALUE }}') {
-      newLocationInput.style.display = 'inline'
-      newLocationInput.required = true
-    } else {
-      newLocationInput.style.display = 'none'
-      newLocationInput.required = false
-    }
-  })
-</script>
+{% endblock %}

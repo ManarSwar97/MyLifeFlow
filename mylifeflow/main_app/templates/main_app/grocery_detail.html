@@ -1,14 +1,52 @@
 {% extends 'base.html' %} {% block content %}
-<h1>{{ grocery.name }}</h1>
-<p><strong>Purchase Date:</strong> {{ grocery.purchase_date }}</p>
-<p><strong>Duration (days):</strong> {{ grocery.duration_days }}</p>
-<p><strong>Next Restock:</strong> {{ grocery.next_restock }}</p>
-<p><strong>Restocked?</strong> {{ grocery.is_restocked|yesno:"Yes,No" }}</p>
-<p><strong>Restock Date:</strong> {{ grocery.restock_date }}</p>
-{% if grocery.notes %}
-<p><strong>Notes:</strong> {{ grocery.notes }}</p>
-{% endif %}
-<a href="{% url 'grocery_update' grocery.id %}" class="btn">Edit</a>
-<a href="{% url 'grocery_delete' grocery.id %}" class="btn red">Delete</a>
-<a href="{% url 'grocery_index' %}" class="btn">Back to List</a>
-{% endblock %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/eb-style.css' %}" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+
+<div class="detail-container">
+  <h1 class="form-title"><i class="fa fa-box"></i> {{ grocery.name }}</h1>
+
+  <div class="detail-row">
+    <div class="detail-label"><i class="fa fa-calendar-check"></i> Purchase Date:</div>
+    <div class="detail-value">{{ grocery.purchase_date }}</div>
+  </div>
+  <div class="detail-row">
+    <div class="detail-label"><i class="fa fa-hourglass-start"></i> Duration (days):</div>
+    <div class="detail-value">{{ grocery.duration_days }}</div>
+  </div>
+  <div class="detail-row">
+    <div class="detail-label"><i class="fa fa-clock"></i> Next Restock:</div>
+    <div class="detail-value">{{ grocery.next_restock }}</div>
+  </div>
+  <div class="detail-row">
+    <div class="detail-label"><i class="fa fa-check-circle"></i> Restocked?</div>
+    <div class="detail-value">{{ grocery.is_restocked|yesno:"Yes,No" }}</div>
+  </div>
+  <div class="detail-row">
+    <div class="detail-label"><i class="fa fa-calendar-day"></i> Restock Date:</div>
+    <div class="detail-value">{{ grocery.restock_date }}</div>
+  </div>
+  {% if grocery.notes %}
+  <div class="detail-row">
+    <div class="detail-label"><i class="fa fa-pencil-alt"></i> Notes:</div>
+    <div class="detail-value">{{ grocery.notes }}</div>
+  </div>
+  {% endif %}
+
+  <div class="detail-actions">
+    <a href="{% url 'grocery_update' grocery.id %}" class="btn"
+      ><i class="fa fa-edit"></i> Edit</a
+    >
+    <a href="{% url 'grocery_delete' grocery.id %}" class="btn btn-secondary"
+      ><i class="fa fa-trash"></i> Delete</a
+    >
+    <a href="{% url 'grocery_index' %}" class="btn"
+      ><i class="fa fa-arrow-left"></i> Back to List</a
+    >
+  </div>
+</div>
+{% endblock content %}

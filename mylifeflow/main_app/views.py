@@ -305,14 +305,22 @@ class ItemDetail(LoginRequiredMixin, DetailView):
 
 class ItemCreate(LoginRequiredMixin, CreateView):
     model = Item
-    fields = ['name', 'location', 'description']
+    form_class = ItemForm
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user  # optional, safe to keep
+        return kwargs
 
     def form_valid(self, form):
-            form.instance.user = self.request.user
-            return super().form_valid(form)
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
-    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['location_choices'] = self.get_form().existing_locations
+        return context
+   
 
 class NoteUpdate(LoginRequiredMixin, UpdateView):
     model = Note
@@ -448,16 +456,9 @@ class ItemCreate(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
     
-
 class ItemUpdate(LoginRequiredMixin, UpdateView):
     model = Item
     form_class = ItemForm
-
-    def get_object(self, queryset=None):
-        obj = super().get_object(queryset)
-        if obj.user != self.request.user:
-            raise PermissionDenied
-        return obj
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -465,11 +466,19 @@ class ItemUpdate(LoginRequiredMixin, UpdateView):
         return kwargs
 
     def form_valid(self, form):
-        new_location = self.request.POST.get('new_location')
-        if new_location:
-            form.instance.location = new_location
-        form.instance.user = self.request.user
+        item = form.instance
+        old_location = self.get_object().location
+        new_location = self.request.POST.get('new_location') or form.cleaned_data.get('location')
+
+        # Update movement if the location changed
+        if old_location != new_location:
+            item.movement = item.movement or []
+            item.movement.append(old_location)
+            item.location = new_location
+
+        item.user = self.request.user
         return super().form_valid(form)
+
 
 class ItemDelete(LoginRequiredMixin, DeleteView):
     model = Item

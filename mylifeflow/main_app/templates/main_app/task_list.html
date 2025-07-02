@@ -15,7 +15,6 @@ body {
   margin: 0;
   font-family: 'Segoe UI', Arial, sans-serif;
 }
-
 .search-bar-container {
     max-width: 500px;
     margin: 2em auto 1em;
@@ -175,6 +174,33 @@ body {
 
 
 <div class="table-container">
+        {% for task in task_list %}
+          <div class="task-row">
+            <div class="task-info">
+              {% if task.is_completed %}
+                <i class="material-icons" style="color: green; margin-right: 10px;">check</i>
+              {% else %}
+                <i class="material-icons" style="color: red; margin-right: 10px;">close</i>
+              {% endif %}
+              <a href="{% url 'task_detail' task.id %}" class="task-title">
+                {{ task.title }}
+              </a>
+            </div>
+            {% now "Y-m-d" as today %}
+            <span class="task-date">
+              {% if task.due_date|date:"Y-m-d" == today %}
+                Today
+              {% else %}
+                {{ task.due_date|date:"F j, Y" }}
+              {% endif %}
+            </span>        
+          </div>
+        {% empty %}
+          <p class="center-align grey-text">No tasks found.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
   <table class="striped">
     <thead>
       <tr>
