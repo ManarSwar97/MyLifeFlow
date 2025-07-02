@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from .forms import NewSignupForm, PersonForm, TaskForm, BudgetForm, ExpenseForm, GroceryForm, NoteForm, VoiceForm, ItemForm
-from .models import UserProfile, Person, Task, Budget, Expense, Grocery, Item, Note, Voice
+from .models import UserProfile, Person, Task, Budget, Expense, Grocery, Item, Note, Voice, Message
 from .forms import NewSignupForm, PersonForm, TaskForm, BudgetForm, ExpenseForm, GroceryForm, NoteForm, ItemForm
 from .models import UserProfile, Person, Task, Budget, Expense, Grocery, Item, Note
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -11,7 +11,6 @@ from django.views.generic import ListView, DetailView
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from datetime import date
 from datetime import timedelta
@@ -21,7 +20,10 @@ import requests
 import os 
 from dotenv import load_dotenv
 load_dotenv()
-
+from .models import Message
+from django.db.models import Q
+from django.contrib.auth.models import User
+from django.utils import timezone
 from datetime import datetime
 from django.http import JsonResponse
 
@@ -151,11 +153,16 @@ def signup(request):
     context = {'form': form, 'error_message': error_message}
     return render(request, 'registration/signup.html', context)
 
+
 class PersonList(LoginRequiredMixin, ListView):
     model = Person
 
     def get_queryset(self):
-        return Person.objects.filter(user=self.request.user)
+        registered_emails = set(User.objects.values_list('email', flat=True))
+        persons= Person.objects.filter(user=self.request.user)
+        for person in persons:
+            person.is_registered_user = person.email in registered_emails
+        return persons
 
 class PersonDetail(LoginRequiredMixin, DetailView):
     model = Person
@@ -683,3 +690,62 @@ def achievement_summary(request):
     top_people = Person.objects.order_by('-interact_times')[:5]
     context['top_people'] = top_people
     return render(request, 'main_app/achievement_list.html', context)
+
+
+#for messages part
+@login_required
+def chat_room(request, room_name):
+    search_query = request.GET.get('search', '') 
+    users = User.objects.exclude(id=request.user.id) 
+    chats = Message.objects.filter(
+        (Q(sender=request.user) & Q(receiver__username=room_name)) |
+        (Q(receiver=request.user) & Q(sender__username=room_name))
+    )
+
+    if search_query:
+        chats = chats.filter(Q(content__icontains=search_query))  
+
+    chats = chats.order_by('timestamp') 
+    user_last_messages = []
+
+    for user in users:
+        last_message = Message.objects.filter(
+            (Q(sender=request.user) & Q(receiver=user)) |
+            (Q(receiver=request.user) & Q(sender=user))
+        ).order_by('-timestamp').first()
+
+        user_last_messages.append({
+            'user': user,
+            'last_message': last_message
+        })
+
+    # Sort user_last_messages by the timestamp of the last_message in descending order
+    user_last_messages.sort(
+    key=lambda x: x['last_message'].timestamp if x['last_message'] else timezone.make_aware(datetime.min),
+    reverse=True
+)
+
+    return render(request, 'chat.html', {
+        'room_name': room_name,
+        'chats': chats,
+        'users': users,
+        'user_last_messages': user_last_messages,
+        'search_query': search_query 
+    })
+
+@login_required
+def send_message(request, pk):
+    person = get_object_or_404(Person, pk=pk, user=request.user)
+    try:
+        matched_user = User.objects.get(email=person.email)
+        # You can redirect to an internal chat room, message form, etc.
+        return redirect('start_chat', user_id=matched_user.id)
+    except User.DoesNotExist:
+        messages.error(request, "This person is not a registered user.")
+        return redirect('person_index')
+
+@login_required
+def start_chat(request, user_id):
+    matched_user = get_object_or_404(User, pk=user_id)
+    # Redirect using the username as room name (used in chat_room)
+    return redirect('chat', room_name=matched_user.username)

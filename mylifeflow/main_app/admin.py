@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Task, Budget, Note, Grocery, Item, Person, Achievement, UserProfile, Expense, Voice
+from .models import Task, Budget, Note, Grocery, Item, Person, Achievement, UserProfile, Expense, Voice, Message
 # Register your models here.
 admin.site.register(UserProfile)
 admin.site.register(Task)
@@ -11,3 +11,4 @@ admin.site.register(Item)
 admin.site.register(Person)
 admin.site.register(Achievement)
 admin.site.register(Voice)
+admin.site.register(Message)

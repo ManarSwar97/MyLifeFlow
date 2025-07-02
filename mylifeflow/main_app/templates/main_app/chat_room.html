@@ -1,0 +1,34 @@
+<h2>Chat with {{ other_user.username }}</h2>
+<div
+  id="chat-log"
+  style="border: 1px solid #ccc; height: 300px; overflow-y: scroll"
+></div>
+<input id="chat-message-input" type="text" />
+<button id="chat-message-submit">Send</button>
+
+<script>
+  const roomId = '{{ room.id }}'
+  const wsUrl = `ws://127.0.0.1:8000/ws/chat/${roomId}/`
+
+  const chatSocket = new WebSocket(wsUrl)
+
+  console.log('Room Name:', roomName)
+  console.log('WebSocket URL:', wsUrl)
+
+  chatSocket.onmessage = function (e) {
+    const data = JSON.parse(e.data)
+    const log = document.querySelector('#chat-log')
+    log.innerHTML +=
+      '<p><strong>' + data.sender + ':</strong> ' + data.message + '</p>'
+  }
+
+  document.querySelector('#chat-message-submit').onclick = function () {
+    const input = document.querySelector('#chat-message-input')
+    chatSocket.send(
+      JSON.stringify({
+        message: input.value
+      })
+    )
+    input.value = ''
+  }
+</script>
