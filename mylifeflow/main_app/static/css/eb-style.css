@@ -83,3 +83,25 @@ body {
 .teal-text {
   color: #1de9b6;
 }
+
+.form-wrapper.checkbox-wrapper {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5em;
+  margin-bottom: 1.5em;
+}
+
+.form-wrapper.checkbox-wrapper input[type="checkbox"] {
+  width: 24px;
+  height: 24px;
+  accent-color: #1976d2;
+  cursor: pointer;
+}
+
+.form-wrapper.checkbox-wrapper label {
+  margin: 0;
+  font-size: 1.1em;
+  gap: 0.5em;
+  display: flex;
+  align-items: center;
+}
