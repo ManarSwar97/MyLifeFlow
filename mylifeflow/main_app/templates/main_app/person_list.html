@@ -7,17 +7,15 @@
 />
 
 <div class="table-container">
-  <h1>People List</h1>
+  <h1><i class="fa fa-users"></i> People</h1>
   <table>
     <thead>
       <tr>
         <th><i class="fa fa-user"></i> Name</th>
         <th><i class="fa fa-envelope"></i> Email</th>
         <th><i class="fa fa-users"></i> Relationship</th>
-        <th><i class="fa fa-phone"></i> Phone</th>
-        <th><i class="fa fa-calendar-alt"></i> Contact Date</th>
-        <th><i class="fa fa-pencil-alt"></i> Notes</th>
-        <th><i class="fa fa-cogs"></i> Actions</th>
+        <th><i class="fa fa-calendar-alt"></i> Next Contact</th>
+        <th><i class="fa fa-eye"></i> View Details</th>
       </tr>
     </thead>
     <tbody>
@@ -38,21 +36,23 @@
           {% endif %} >
         </td>
         <td>{{ person.relationship }}</td>
-        <td>{{ person.phone_number }}</td>
         <td>{{ person.contact_date }}</td>
-        <td>{{ person.notes|truncatechars:50 }}</td>
         <td>
-          <a href="{% url 'person_update' person.id %}">Edit</a> |
-          <a href="{% url 'person_delete' person.id %}">Delete</a>
+          <a href="{% url 'person_detail' person.id %}" class="btn"
+            ><i class="fa fa-eye"></i> View</a
+          >
         </td>
       </tr>
       {% empty %}
       <tr>
-        <td colspan="7">No people found.</td>
+        <td colspan="5">No people found.</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
-  <a href="{% url 'person_create' %}" class="btn">+ Add Person</a>
+  <a href="{% url 'person_create' %}" class="btn"
+    ><i class="fa fa-plus"></i> Add Person</a
+  >
 </div>
+
 {% endblock content %}
