@@ -1,59 +1,243 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-   {% if object %}
-    <h1>Edit <span class="teal-text">{{object.title}}</span></h1>
+<!-- Include Material Icons -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<style>
+  body {
+    background: linear-gradient(to bottom, #bbe4ff, #87cefd);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #091638;
+    margin: 0;
+    padding: 0;
+  }
+
+  .form-container {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2em;
+    max-width: 600px;
+    width: 90%;
+    margin: 2em auto;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  .form-title {
+    color: #091638;
+    margin-bottom: 1.5em;
+    font-size: 1.8em;
+    text-align: center;
+  }
+
+  .form-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5em;
+    width: 100%;
+  }
+
+  .form-wrapper label {
+    color: #091638;
+    font-weight: 500;
+    margin-bottom: 0.5em;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+  }
+
+  .form-wrapper input,
+  .form-wrapper textarea,
+  .form-wrapper select {
+    background: #fff;
+    color: #28304a;
+    border: 1px solid #28304a;
+    border-radius: 6px;
+    padding: 0.8em 1em;
+    font-size: 1em;
+    outline: none;
+    transition: border 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .form-wrapper textarea {
+    resize: none;
+    height: 120px;
+  }
+
+  .form-wrapper input:focus,
+  .form-wrapper textarea:focus,
+  .form-wrapper select:focus {
+    border: 1.5px solid #1976d2;
+  }
+
+  .btn {
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.8em 1.5em;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: block;
+    width: 100%;
+    margin-top: 1em;
+  }
+
+  .btn:hover {
+    background: #1565c0;
+  }
+
+  .btn-small {
+    padding: 0.5em 1em;
+    font-size: 0.9em;
+    width: auto;
+    margin: 0.5em 0.25em 0 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    border: none;
+    border-radius: 6px;
+    background: #fff;
+    border: 1px solid #1976d2;
+    color: #1976d2;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-small:hover {
+    background: #e3f2fd;
+  }
+
+  .btn-stop {
+    border-color: #e53935;
+    color: #e53935;
+  }
+
+  .btn-stop:hover {
+    background-color: #fce4ec;
+  }
+
+  .teal-text {
+    color: #1de9b6;
+  }
+
+  .mic-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+    margin-top: 1em;
+  }
+
+  .material-icons {
+    font-size: 20px;
+    vertical-align: middle;
+  }
+</style>
+
+<div class="form-container">
+  {% if object %}
+    <h1 class="form-title">Edit <span class="teal-text">{{ object.title }}</span></h1>
   {% else %}
-    <h1>Add Note</h1>
+    <h1 class="form-title">Add Note</h1>
   {% endif %}
-<form method="POST" enctype="multipart/form-data" id="noteForm">
+
+  <form method="POST" enctype="multipart/form-data" id="noteForm">
     {% csrf_token %}
-    <table>
-        {{ form.as_table }}
-    </table>
-    <button type="button" onclick="startRecognition()">🎤 Speak</button>
-    <button type="button" onclick="stopRecognition()">🛑 Stop</button>
-    <input type="submit" value="Save Note">
+
+    <div class="form-wrapper">
+      <label for="{{ form.title.id_for_label }}">
+        <i class="material-icons">edit_note</i> {{ form.title.label }}
+      </label>
+      {{ form.title }}
+    </div>
+
+    <div class="form-wrapper">
+      <label for="{{ form.text.id_for_label }}">
+        <i class="material-icons">description</i> {{ form.text.label }}
+      </label>
+      {{ form.text }}
+    </div>
+    <div class="form-wrapper">
+      <label for="{{ form.image.id_for_label }}">
+        <i class="material-icons">image</i> {{ form.image.label }}
+      </label>
+      {{ form.image }}
+    </div>
+
+    {% if form.created_at %}
+      <div class="form-wrapper">
+        <label for="{{ form.created_at.id_for_label }}">
+          <i class="material-icons">calendar_today</i> {{ form.created_at.label }}
+        </label>
+        {{ form.created_at }}
+      </div>
+    {% endif %}
+
+    <div class="mic-buttons">
+      <button type="button" onclick="startRecognition()" class="btn-small">
+        <i class="material-icons">mic</i> Speak
+      </button>
+      <button type="button" onclick="stopRecognition()" class="btn-small btn-stop">
+        <i class="material-icons">stop</i> Stop
+      </button>
+    </div>
+
+    <button type="submit" class="btn">
+      <i class="material-icons" style="margin-right: 5px; margin-bottom: 5px;" >save</i> Save Note
+    </button>
   </form>
+</div>
 
-<!--Source: https://www.youtube.com/watch?v=0mJC0A72Fnw-->
 <script>
-    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-    recognition.interimResults = true;
+  window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = new SpeechRecognition();
+  recognition.interimResults = true;
 
-    let finalTranscript = '';
-    let lastFinalTranscript = '';
+  let finalTranscript = '';
+  let lastFinalTranscript = '';
 
-    recognition.addEventListener('result', e => {
-        const transcript = Array.from(e.results)
-            .map(result => result[0])
-            .map(result => result.transcript)
-            .join('');
+  recognition.addEventListener('result', e => {
+    const transcript = Array.from(e.results)
+      .map(result => result[0])
+      .map(result => result.transcript)
+      .join('');
 
-        if (e.results[0].isFinal) {
-            if (transcript !== lastFinalTranscript) {
-                finalTranscript += transcript + ' ';
-                document.getElementById('text').value = finalTranscript;
-                lastFinalTranscript = transcript;
-            }
+    if (e.results[0].isFinal) {
+      if (transcript !== lastFinalTranscript) {
+        finalTranscript += transcript + ' ';
+        const textField = document.getElementById('text');
+        if (textField) {
+          textField.value = finalTranscript;
         }
-    });
-
-    recognition.addEventListener('end', () => {
-        if (!recognition.stoppedManually) {
-            recognition.start(); 
-        }    });
-
-    const startRecognition = () => {
-        finalTranscript = document.getElementById('text').value || '';
-        lastFinalTranscript = '';
-        recognition.start();
+        lastFinalTranscript = transcript;
+      }
     }
-    const stopRecognition = () => {
-        recognition.stoppedManually = true;
-        recognition.stop();
+  });
+
+  recognition.addEventListener('end', () => {
+    if (!recognition.stoppedManually) {
+      recognition.start();
     }
+  });
+
+  const startRecognition = () => {
+    const textField = document.getElementById('text');
+    if (textField) {
+      finalTranscript = textField.value || '';
+    }
+    lastFinalTranscript = '';
+    recognition.stoppedManually = false;
+    recognition.start();
+  }
+
+  const stopRecognition = () => {
+    recognition.stoppedManually = true;
+    recognition.stop();
+  }
 </script>
-
 {% endblock %}

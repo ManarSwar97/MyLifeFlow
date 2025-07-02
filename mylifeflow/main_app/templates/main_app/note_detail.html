@@ -1,30 +1,185 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<h1>Note Details</h1>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 
-<div class="row">
-  <div class="col s6 offset-s3">
-    <div class="card">
-      <div class="card-content">
-        <span class="card-title">{{ note.title }}</span>
-        {% if note.text %}
-          <p>{{ note.text }}</p>
-        {% endif %}
-        {% if note.image %}
-          <div style="margin-top: 15px;">
-                {% load static %}
-                <img width="100px" height="100px" src={% static note.image|cut:'main_app/static/' %} />
-            </div> 
-        {% endif %}
-      </div>
-      <div class="card-action">
-        <a href="{% url 'note_update' note.id %}">Edit</a>
-        <a href="{% url 'note_delete' note.id %}">Delete</a>
-      </div>
+<style>
+  body {
+    background: linear-gradient(to bottom, #bbe4ff, #87cefd);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #091638;
+    margin: 0;
+    padding: 0;
+  }
+
+  .detail-container {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5em 2.5em 3em;
+    max-width: 620px;
+    margin: 2.5em auto;
+    box-shadow: 0 3px 20px rgba(0, 0, 0, 0.12);
+    user-select: text;
+  }
+
+  .detail-container h1 {
+    color: #28304a;
+    margin-bottom: 1.8em;
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  .detail-row {
+    margin-bottom: 1.3em;
+    display: flex;
+    gap: 0.75em;
+    align-items: center;
+    line-height: 1.5;
+    font-size: 1.15em;
+    border-bottom: 1px solid #e1e8f0;
+    padding-bottom: 0.7em;
+  }
+
+  .detail-label {
+    font-weight: 600;
+    color: black;
+    min-width: 140px;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    user-select: none;
+  }
+
+  .detail-label i {
+    font-size: 1.3em;
+  }
+
+  .detail-value {
+    color: #28304a;
+    flex: 1;
+    word-wrap: break-word;
+  }
+
+  .detail-image {
+    margin-top: 1.5em;
+    text-align: center;
+  }
+
+  .detail-image img {
+    max-width: 100%;
+    max-height: 280px;
+    border-radius: 14px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+    object-fit: contain;
+  }
+
+  .detail-actions {
+    margin-top: 3em;
+    display: flex;
+    justify-content: center;
+    gap: 1.5em;
+  }
+
+  .btn {
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.8em 2em;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7em;
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+    font-weight: 600;
+  }
+
+  .btn:hover {
+    background: #115293;
+  }
+
+  .btn-secondary {
+    background: #fff;
+    border: 2px solid #1976d2;
+    color: #1976d2;
+    border-radius: 8px;
+    padding: 0.8em 2em;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7em;
+    font-weight: 600;
+  }
+
+  .btn-secondary:hover {
+    background-color: #e3f2fd;
+    color: #115293;
+    border-color: #115293;
+  }
+
+  .back-link {
+    display: block;
+    text-align: center;
+    margin: 3em auto 3em;
+    color: #1976d2;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.05em;
+    max-width: 600px;
+    user-select: none;
+  }
+
+  .back-link i {
+    margin-right: 0.5em;
+    font-size: 1.15em;
+    vertical-align: middle;
+  }
+
+  .back-link:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="detail-container">
+  <h1>Note Details</h1>
+
+  <div class="detail-row">
+    <div class="detail-label"><i class="fa-solid fa-heading"></i> Title:</div>
+    <div class="detail-value">{{ note.title }}</div>
+  </div>
+
+  {% if note.text %}
+  <div class="detail-row">
+    <div class="detail-label"><i class="fa-solid fa-align-left"></i> Text:</div>
+    <div class="detail-value">{{ note.text }}</div>
+  </div>
+  {% endif %}
+
+  {% if note.image %}
+    <div class="detail-image">
+      <img src="{{ note.image.url }}" alt="Note Image" />
     </div>
+  {% endif %}
+
+  <div class="detail-actions">
+    <a href="{% url 'note_update' note.id %}" class="btn" title="Edit Note">
+      <i class="fa-solid fa-pen-to-square"></i> Edit
+    </a>
+    <a href="{% url 'note_delete' note.id %}" class="btn-secondary" title="Delete Note">
+      <i class="fa-solid fa-trash"></i> Delete
+    </a>
   </div>
 </div>
 
-<a href="{% url 'note_index' %}" class="btn-flat">Back to Notes List</a>
+<a href="{% url 'note_index' %}" class="back-link">
+  <i class="fa-solid fa-arrow-left"></i> Back to Notes List
+</a>
 {% endblock %}

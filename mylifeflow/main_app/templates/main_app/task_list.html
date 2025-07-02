@@ -16,14 +16,53 @@ body {
   font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-.table-container {
-  max-width: 1000px;
-  margin: 2em auto;
-  padding: 2em;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
-}
+.search-bar-container {
+    max-width: 500px;
+    margin: 2em auto 1em;
+    text-align: center;
+  }
+
+  .search-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+  }
+
+  .search-form input[type="text"] {
+    padding: 0.6em 1em;
+    width: 100%;
+    max-width: 350px;
+    border: 1px solid #1976d2;
+    border-radius: 6px;
+    outline: none;
+    font-size: 1em;
+  }
+
+  .search-form button {
+    background: #1976d2;
+    color: white;
+    border: none;
+    padding: 0.6em 1.2em;
+    border-radius: 6px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .search-form button:hover {
+    background: #115293;
+  }
+
+  .table-container {
+    max-width: 1000px;
+    margin: 1em auto 2em;
+    padding: 2em;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
+  }
+
 
 .table-container h1 {
   color: #28304a;
@@ -81,7 +120,6 @@ body {
   background: #1565c0;
 }
 
-/* حالة المهمة */
 .status-dot {
   display: inline-block;
   width: 10px;
@@ -99,13 +137,11 @@ body {
   background-color: red;
 }
 
-/* توسيط عام */
 .center-align {
   text-align: center;
   margin-top: 20px;
 }
 
-/* خلية الإجراءات */
 .actions-cell {
   display: flex;
   justify-content: flex-start;
@@ -113,7 +149,6 @@ body {
   gap: 10px;
 }
 
-/* زر أيقونات */
 .btn-flat i.material-icons {
   font-size: 20px;
   cursor: pointer;
@@ -130,6 +165,14 @@ body {
 </style>
 
 <h1 class="center-align">Tasks List</h1>
+
+<div class="search-bar-container">
+  <form method="GET" action="{% url 'task_list_search' %}" class="search-form">
+    <input type="text" name="q" placeholder="Search task by title..." value="{{ query }}">
+    <button type="submit"><i class="fas fa-search"></i></button>
+  </form>
+</div>
+
 
 <div class="table-container">
   <table class="striped">
@@ -162,15 +205,18 @@ body {
               Pending
             {% endif %}
           </td>
-          <td class="actions-cell">
-            <a href="{% url 'task_detail' task.id %}" class="btn-small teal btn" style="color: white;">View</a>
-            <a href="{% url 'task_update' task.id %}" class="btn-flat" title="Edit">
-              <i class="material-icons orange-text text-darken-2">edit</i>
-            </a>
-            <a href="{% url 'task_delete' task.id %}" class="btn-flat" title="Delete">
-              <i class="material-icons red-text text-darken-2">delete</i>
-            </a>
-          </td>
+            <td class="actions-cell">
+              <a href="{% url 'task_detail' task.id %}" class="btn-small" style="color: black;">View Details</a>
+              <div style="margin-left: auto; display: flex; gap: 10px;">
+                <a href="{% url 'task_update' task.id %}" class="btn-flat" title="Edit">
+                  <i class="material-icons orange-text text-darken-2">edit</i>
+                </a>
+                <a href="{% url 'task_delete' task.id %}" class="btn-flat" title="Delete">
+                  <i class="material-icons red-text text-darken-2">delete</i>
+                </a>
+              </div>
+            </td>
+
         </tr>
       {% empty %}
         <tr>
