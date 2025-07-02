@@ -19,16 +19,10 @@
     </div>
 
     <div class="form-wrapper">
-      <label for="id_location"
+      <label for="{{ form.location.id_for_label }}"
         ><i class="fa fa-map-marker-alt"></i> Location</label
       >
-      <input
-        list="location-options"
-        name="location"
-        id="id_location"
-        class="form-control"
-        required
-      />
+      {{ form.location }}
       <datalist id="location-options">
         {% for loc in location_choices %}
         <option value="{{ loc }}"></option>
