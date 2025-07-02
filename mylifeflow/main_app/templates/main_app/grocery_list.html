@@ -1,15 +1,12 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends 'base.html' %} {% block content %} {% load static %}
 <link rel="stylesheet" href="{% static 'css/eb-style.css' %}" />
 <link
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 />
-{% block content %}
 
 <style>
-  
-.search-bar-container {
+  .search-bar-container {
     max-width: 500px;
     margin: 2em auto 1em;
     text-align: center;
@@ -22,7 +19,7 @@
     gap: 0.5em;
   }
 
-  .search-form input[type="text"] {
+  .search-form input[type='text'] {
     padding: 0.6em 1em;
     width: 100%;
     max-width: 350px;
@@ -46,13 +43,21 @@
   .search-form button:hover {
     background: #115293;
   }
-
 </style>
 <div class="table-container">
   <h1><i class="fa fa-cart-shopping"></i> My Groceries</h1>
-      <div class="search-bar-container">
-    <form method="GET" action="{% url 'grocery_list_search' %}" class="search-form">
-      <input type="text" name="q" placeholder="Search Grocery by name..." value="{{ query }}">
+  <div class="search-bar-container">
+    <form
+      method="GET"
+      action="{% url 'grocery_list_search' %}"
+      class="search-form"
+    >
+      <input
+        type="text"
+        name="q"
+        placeholder="Search Grocery by name..."
+        value="{{ query }}"
+      />
       <button type="submit"><i class="fas fa-search"></i></button>
     </form>
   </div>
