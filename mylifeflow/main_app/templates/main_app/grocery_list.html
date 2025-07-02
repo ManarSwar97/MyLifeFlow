@@ -1,33 +1,43 @@
-{% extends 'base.html' %}
-{% block content %}
-<h1>My Groceries</h1>
-<table class="striped">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Purchase Date</th>
-      <th>Next Restock</th>
-      <th>Restocked?</th>
-      <th>Details</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for grocery in grocery_list %}
-    <tr>
-      <td>{{ grocery.name }}</td>
-      <td>{{ grocery.purchase_date }}</td>
-      <td>{{ grocery.next_restock }}</td>
-      <td>{{ grocery.is_restocked|yesno:"Yes,No" }}</td>
-      <td>
-        <a href="{% url 'grocery_detail' grocery.id %}" class="btn">View</a>
-      </td>
-    </tr>
-    {% empty %}
-    <tr>
-      <td colspan="5">No groceries found.</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-<a href="{% url 'grocery_create' %}" class="btn">Add Grocery</a>
-{% endblock %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/eb-style.css' %}" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+
+<div class="table-container">
+  <h1><i class="fa fa-cart-shopping"></i> My Groceries</h1>
+  <table>
+    <thead>
+      <tr>
+        <th><i class="fa fa-tag"></i> Name</th>
+        <th><i class="fa fa-calendar-check"></i> Purchase Date</th>
+        <th><i class="fa fa-clock"></i> Next Restock</th>
+        <th><i class="fa fa-check-circle"></i> Restocked?</th>
+        <th><i class="fa fa-eye"></i> Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for grocery in grocery_list %}
+      <tr>
+        <td>{{ grocery.name }}</td>
+        <td>{{ grocery.purchase_date }}</td>
+        <td>{{ grocery.next_restock }}</td>
+        <td>{{ grocery.is_restocked|yesno:"Yes,No" }}</td>
+        <td>
+          <a href="{% url 'grocery_detail' grocery.id %}" class="btn"
+            ><i class="fa fa-eye"></i> View</a
+          >
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5">No groceries found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <a href="{% url 'grocery_create' %}" class="btn"
+    ><i class="fa fa-plus"></i> Add Grocery</a
+  >
+</div>
