@@ -749,3 +749,11 @@ def start_chat(request, user_id):
     matched_user = get_object_or_404(User, pk=user_id)
     # Redirect using the username as room name (used in chat_room)
     return redirect('chat', room_name=matched_user.username)
+
+@login_required
+def profile(request):
+    profile = UserProfile.objects.get(user=request.user)
+    return render(request, 'profile.html', {
+        'profile':profile
+    })
+
