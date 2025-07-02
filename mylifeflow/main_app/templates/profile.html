@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Profile Page{% endblock title %}
+
+{% block content %}
+<div class="row my-3 p-3">
+    <h1>{{ user.username }}'s Profile Page</h1>
+    <p>First name: {{ user.first_name }}</p>
+    <p>Last name: {{ user.last_name }}</p>
+    <p>Email: {{ user.email }}</p>
+
+    <p>Birthday: {{ profile.birthday }}</p>
+    {% if profile.profile_image %}
+    <div style="margin-top: 15px;">
+        <img width="100px" height="100px" src="{{ profile.profile_image.url }}" alt="Profile Image" />
+    </div>
+    {% else %}
+    <p>No profile image uploaded.</p>
+    {% endif %}
+</div>
+{% endblock content %}

@@ -12,6 +12,8 @@ urlpatterns = [
     path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('accounts/signup/', views.signup, name='signup'),
+    path('profile/', views.profile, name='users-profile'),
+
 
 # My People feature URLs
     path('mypeople/', views.PersonList.as_view(), name='person_index'),
@@ -19,6 +21,9 @@ urlpatterns = [
     path('mypeople/create/', views.PersonCreate.as_view(), name='person_create'),
     path('mypeople/<int:pk>/update/', views.PersonUpdate.as_view(), name='person_update'),
     path('mypeople/<int:pk>/delete/', views.PersonDelete.as_view(), name='person_delete'),
+    #for messages
+    path('mypeople/<int:pk>/send/', views.send_message, name='send_message'),
+
 # Daily Tasks feature URLs
     path('task/', views.TaskList.as_view(), name='task_index'),
     path('task/<int:pk>/', views.TaskDetail.as_view(), name='task_detail'),
@@ -79,6 +84,15 @@ urlpatterns = [
     path('voice_chart/', views.get_voice_emotion_counts, name='get_voice_emotion_counts'),
 
     path('person/<int:pk>/send_mail/', views.send_mail_and_increment, name='send_mail_and_increment'),
+
+#messages
+    path('chat/<str:room_name>/', views.chat_room, name='chat'),
+    path('chat/start/<int:user_id>/', views.start_chat, name='start_chat'),
+
+
+
+
+
 ]+  static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
