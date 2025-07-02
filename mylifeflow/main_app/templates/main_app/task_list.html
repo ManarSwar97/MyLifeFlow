@@ -162,7 +162,7 @@ body {
   color: #0093f5;
 }
 </style>
-
+<div class="table-container">
 <h1 class="center-align">Tasks List</h1>
 
 <div class="search-bar-container">
@@ -173,34 +173,7 @@ body {
 </div>
 
 
-<div class="table-container">
-        {% for task in task_list %}
-          <div class="task-row">
-            <div class="task-info">
-              {% if task.is_completed %}
-                <i class="material-icons" style="color: green; margin-right: 10px;">check</i>
-              {% else %}
-                <i class="material-icons" style="color: red; margin-right: 10px;">close</i>
-              {% endif %}
-              <a href="{% url 'task_detail' task.id %}" class="task-title">
-                {{ task.title }}
-              </a>
-            </div>
-            {% now "Y-m-d" as today %}
-            <span class="task-date">
-              {% if task.due_date|date:"Y-m-d" == today %}
-                Today
-              {% else %}
-                {{ task.due_date|date:"F j, Y" }}
-              {% endif %}
-            </span>        
-          </div>
-        {% empty %}
-          <p class="center-align grey-text">No tasks found.</p>
-        {% endfor %}
-      </div>
-    </div>
-  </div>
+
   <table class="striped">
     <thead>
       <tr>
@@ -256,7 +229,7 @@ body {
 <div class="center-align" style="margin-top: 20px;">
   <a href="{% url 'task_create' %}" class="btn">Add Task</a>
 </div>
-
+</div>
 <!-- Chatbot integration -->
 <script type="text/javascript">
   (function(d, m){
