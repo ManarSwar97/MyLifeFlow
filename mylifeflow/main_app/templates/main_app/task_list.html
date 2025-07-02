@@ -2,17 +2,143 @@
 {% load static %}
 
 {% block content %}
-  <link rel="stylesheet" href="{% static 'css/tasks.css' %}">
+<link rel="stylesheet" href="{% static 'css/tasks.css' %}" />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-  <h1 class="center-align">Tasks List</h1>
+<style>
+body {
+  background: #2980b9;
+  background: -webkit-linear-gradient(to right, #ffffff, #6dd5fa, #2980b9);
+  background: linear-gradient(to bottom, #bbe4ff, #87cefd);
+  color: #091638;
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
 
+.table-container {
+  max-width: 1000px;
+  margin: 2em auto;
+  padding: 2em;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
+}
+
+.table-container h1 {
+  color: #28304a;
+  margin-bottom: 1em;
+}
+
+.table-container table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #28304a;
+  margin-bottom: 3em;
+}
+
+.table-container th,
+.table-container td {
+  padding: 1em;
+  text-align: left;
+  border-bottom: 1px solid #1e2746;
+  vertical-align: middle;
+}
+
+.table-container th {
+  background-color: #fff;
+  color: #28304a;
+  font-weight: 600;
+}
+
+.table-container tr:hover {
+  background-color: #ffffffa4;
+}
+
+.table-container a {
+  color: #28304a;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.table-container a:hover {
+  text-decoration: underline;
+}
+
+.btn {
+  background: #1976d2;
+  color: #fff;
+  border-radius: 6px;
+  padding: 0.5em 1em;
+  font-size: 0.9em;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: background 0.2s;
+}
+
+.btn:hover {
+  background: #1565c0;
+}
+
+/* حالة المهمة */
+.status-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.status-completed {
+  background-color: green;
+}
+
+.status-pending {
+  background-color: red;
+}
+
+/* توسيط عام */
+.center-align {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* خلية الإجراءات */
+.actions-cell {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+}
+
+/* زر أيقونات */
+.btn-flat i.material-icons {
+  font-size: 20px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.btn-flat i.material-icons.orange-text:hover {
+  color: #0093f5;
+}
+
+.btn-flat i.material-icons.red-text:hover {
+  color: #0093f5;
+}
+</style>
+
+<h1 class="center-align">Tasks List</h1>
+
+<div class="table-container">
   <table class="striped">
     <thead>
       <tr>
-        <th>Title</th>
-        <th>Due Date</th>
-        <th>Status</th>
-        <th>Actions</th>
+        <th><i class="fas fa-tasks"></i> Title</th>
+        <th><i class="fas fa-calendar-alt"></i> Due Date</th>
+        <th><i class="fas fa-check-circle"></i> Status</th>
+        <th><i class="fas fa-cogs"></i> Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -29,19 +155,19 @@
           </td>
           <td>
             {% if task.is_completed %}
-              <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background-color:green; margin-right:5px;"></span>
+              <span class="status-dot status-completed"></span>
               Completed
             {% else %}
-              <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background-color:red; margin-right:5px;"></span>
+              <span class="status-dot status-pending"></span>
               Pending
             {% endif %}
           </td>
-          <td>
-            <a href="{% url 'task_detail' task.id %}" class="btn-small teal">View</a>
-            <a href="{% url 'task_update' task.id %}" class="btn-flat">
+          <td class="actions-cell">
+            <a href="{% url 'task_detail' task.id %}" class="btn-small teal btn" style="color: white;">View</a>
+            <a href="{% url 'task_update' task.id %}" class="btn-flat" title="Edit">
               <i class="material-icons orange-text text-darken-2">edit</i>
             </a>
-            <a href="{% url 'task_delete' task.id %}" class="btn-flat" onclick="return confirm('Are you sure you want to delete this task?');">
+            <a href="{% url 'task_delete' task.id %}" class="btn-flat" title="Delete">
               <i class="material-icons red-text text-darken-2">delete</i>
             </a>
           </td>
@@ -53,20 +179,21 @@
       {% endfor %}
     </tbody>
   </table>
+</div>
 
-  <div class="center-align" style="margin-top: 20px;">
-    <a href="{% url 'task_create' %}" class="btn">Add Task</a>
-  </div>
+<div class="center-align" style="margin-top: 20px;">
+  <a href="{% url 'task_create' %}" class="btn">Add Task</a>
+</div>
 
-  <!-- Chatbot integration -->
-  <script type="text/javascript">
-    (function(d, m){
-        var kommunicateSettings = 
-            {"appId":"cc9f527723fd05bf5ed3b094d29d49f4","popupWidget":true,"automaticChatOpenOnNavigation":true};
-        var s = document.createElement("script"); s.type = "text/javascript"; s.async = true;
-        s.src = "https://widget.kommunicate.io/v2/kommunicate.app";
-        var h = document.getElementsByTagName("head")[0]; h.appendChild(s);
-        window.kommunicate = m; m._globals = kommunicateSettings;
-    })(document, window.kommunicate || {});
-  </script>
+<!-- Chatbot integration -->
+<script type="text/javascript">
+  (function(d, m){
+      var kommunicateSettings = 
+          {"appId":"cc9f527723fd05bf5ed3b094d29d49f4","popupWidget":true,"automaticChatOpenOnNavigation":true};
+      var s = document.createElement("script"); s.type = "text/javascript"; s.async = true;
+      s.src = "https://widget.kommunicate.io/v2/kommunicate.app";
+      var h = document.getElementsByTagName("head")[0]; h.appendChild(s);
+      window.kommunicate = m; m._globals = kommunicateSettings;
+  })(document, window.kommunicate || {});
+</script>
 {% endblock %}
