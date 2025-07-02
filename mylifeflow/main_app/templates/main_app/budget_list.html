@@ -1,59 +1,40 @@
-{% extends 'base.html' %} {% block content %}
-<h1 class="center">Budgets</h1>
-<a href="{% url 'budget_create' %}" class="btn btn-primary" style="margin-bottom: 20px;">
-    Add Budget
-</a>
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
 
-<div class="budget-cards" style="display: flex; flex-wrap: wrap; gap: 1rem">
+<link rel="stylesheet" href="{% static 'css/budgets.css' %}">
+<h1 class="center page-title">Budgets</h1>
+
+<div class="btn-group">
+  <a href="{% url 'budget_create' %}" class="btn btn-primary">Add Budget</a>
+  <a href="{% url 'expense_create' %}" class="btn btn-primary">Add Expense</a>
+</div>
+
+<div class="budget-cards">
   {% for budget in budget_list %}
-  <div
-    class="card"
-    style="
-      width: 300px;
-      padding: 1rem;
-      border-radius: 10px;
-      background-color: #f9f9f9;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    "
-  >
-    <h3 style="color: #00796b">{{ budget.name }}</h3>
+  <div class="budget-card">
+    <h3 class="budget-name">{{ budget.name }}</h3>
 
     <p><strong>Total Budget:</strong> BHD{{ budget.total_amount }}</p>
     <p><strong>Saving Goal:</strong> BHD{{ budget.saving_goal }}</p>
-    <p>
-      <strong>Planned Expenses:</strong> BHD{{ budget.total_planned_expenses }}
-    </p>
+    <p><strong>Planned Expenses:</strong> BHD{{ budget.total_planned_expenses }}</p>
     <p><strong>Daily Limit:</strong> BHD{{ budget.daily_limit }}</p>
-    <p>
-      <strong>Duration:</strong> {{ budget.start_date }} → {{ budget.end_date }}
-    </p>
+    <p><strong>Duration:</strong> {{ budget.start_date }} → {{ budget.end_date }}</p>
 
     <p>
       <strong>Status:</strong>
       {% if budget.end_date < today %}
-      <span style="color: red">Expired</span>
+      <span class="status expired">Expired</span>
       {% else %}
-      <span style="color: green">Active</span>
+      <span class="status active">Active</span>
       {% endif %}
     </p>
 
-    <div style="margin-top: 1rem">
-      <a
-        href="{% url 'budget_detail' budget.id %}"
-        class="btn teal white-text"
-        style="margin-right: 5px"
-        >View Details</a
-      >
-      <a
-        href="{% url 'budget_update' budget.id %}"
-        class="btn orange white-text"
-        style="margin-right: 5px"
-        >Edit</a
-      >
-      <a href="{% url 'budget_delete' budget.id %}" class="btn red white-text"
-        >Delete</a
-      >
-      <a href="{% url 'expense_create' %}?budget_id={{ budget.id }}" class="btn btn-small teal">Add Expense</a>
+    <div class="btn-group budget-actions">
+      <a href="{% url 'budget_detail' budget.id %}" class="btn btn-teal">View Details</a>
+      <a href="{% url 'budget_update' budget.id %}" class="btn btn-orange">Edit</a>
+      <a href="{% url 'budget_delete' budget.id %}" class="btn btn-red">Delete</a>
+      <a href="{% url 'expense_create' %}?budget_id={{ budget.id }}" class="btn btn-small btn-teal-outline">Add Expense</a>
     </div>
   </div>
   {% empty %}

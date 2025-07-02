@@ -1,30 +1,67 @@
-{% extends 'base.html' %}{% block content %} {% if object %}
-<h1>Edit <span class="teal-text">{{ obbudgetject.name }}</span></h1>
-{% else %}
-<h1>Create Budget</h1>
-{% endif %}
-<form method="post" id="budgetForm">
-  {% csrf_token %}
-  <table>
-    {{ form.as_table }}
-  </table>
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
 
-  <input type="submit" value="Create Budget" class="btn" />
-</form>
+<link rel="stylesheet" href="{% static 'css/budgets.css' %}">
 
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const selects = document.querySelectorAll('select')
-    M.FormSelect.init(selects)
+<div class="form-container">
+  {% if object %}
+    <h1 class="form-title">Edit <span class="teal-text">{{ object.name }}</span></h1>
+  {% else %}
+    <h1 class="form-title">Create Budget</h1>
+  {% endif %}
 
-    const dateInputs = document.querySelectorAll('.datepicker')
-    M.Datepicker.init(dateInputs, {
-      format: 'yyyy-mm-dd',
-      defaultDate: new Date(),
-      setDefaultDate: true,
-      autoClose: true
-    })
-    
-  })
-</script>
+  <form method="post" id="budgetForm">
+    {% csrf_token %}
+
+    <div class="form-wrapper">
+      {{ form.name.label_tag }}
+      {{ form.name }}
+    </div>
+
+    <div class="form-wrapper">
+      {{ form.type.label_tag }}
+      {{ form.type }}
+    </div>
+
+    <div class="form-wrapper">
+      {{ form.total_amount.label_tag }}
+      {{ form.total_amount }}
+    </div>
+
+    <div class="form-wrapper">
+      {{ form.duration_type.label_tag }}
+      {{ form.duration_type }}
+    </div>
+
+    <div class="form-wrapper">
+      {{ form.start_date.label_tag }}
+      {{ form.start_date }}
+    </div>
+
+    <div class="form-wrapper">
+      {{ form.end_date.label_tag }}
+      {{ form.end_date }}
+    </div>
+
+    <div class="form-wrapper">
+      {{ form.auto_daily_limit.label_tag }}
+      {{ form.auto_daily_limit }}
+    </div>
+
+    <div class="form-wrapper">
+      {{ form.manual_daily_limit.label_tag }}
+      {{ form.manual_daily_limit }}
+    </div>
+
+    <div class="form-wrapper">
+      {{ form.saving_goal.label_tag }}
+      {{ form.saving_goal }}
+    </div>
+
+    <input type="submit" value="{% if object %}Update{% else %}Create{% endif %} Budget" class="btn" />
+    <a href="{% url 'budget_list' %}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+
 {% endblock %}

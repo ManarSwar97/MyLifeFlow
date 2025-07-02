@@ -51,9 +51,9 @@ class BudgetForm(forms.ModelForm):
         model= Budget
         fields=[ 'name', 'type', 'total_amount','duration_type','start_date', 'end_date','auto_daily_limit', 'manual_daily_limit','saving_goal']
         widgets = {
-            'start_date': forms.DateInput(attrs={'class': 'datepicker'}),
-            'end_date': forms.DateInput(attrs={'class': 'datepicker'}),
-            'auto_daily_limit': forms.CheckboxInput(attrs={'class': 'filled-in'})
+        'start_date': forms.DateInput(attrs={'type': 'date'}),
+        'end_date': forms.DateInput(attrs={'type': 'date'}),
+        'auto_daily_limit': forms.CheckboxInput(attrs={'class': 'filled-in'})
         }
 
 class ExpenseForm(forms.ModelForm):

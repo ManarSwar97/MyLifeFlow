@@ -1,24 +1,42 @@
-{% extends 'base.html' %} {% block content %} {% if object %}
-<h1>Edit <span class="teal-text">{{ expense.name }}</span></h1>
-{% else %}
-<h1>Add Expense</h1>
-{% endif %}
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/budgets.css' %}">
 
-<form action="" method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  <table>
-    {{ form.as_table }}
-  </table>
-  <input type="submit" value="Submit" class="btn" />
-</form>
+<div class="form-container">
+  {% if object %}
+    <h1 class="form-title">Edit <span class="teal-text">{{ expense.name }}</span></h1>
+  {% else %}
+    <h1 class="form-title">Add Expense</h1>
+  {% endif %}
 
-<a href="{% url 'expense_list' %}">Cancel</a>
+  <form action="" method="post" enctype="multipart/form-data" id="expenseForm">
+    {% csrf_token %}
+    
+    {% for field in form %}
+      <div class="form-wrapper">
+        {{ field.label_tag }}
+        {{ field }}
+        {% if field.help_text %}
+          <small class="help-text">{{ field.help_text }}</small>
+        {% endif %}
+        {% for error in field.errors %}
+          <p class="error-text">{{ error }}</p>
+        {% endfor %}
+      </div>
+    {% endfor %}
+
+    <input type="submit" value="Submit" class="btn" />
+  </form>
+
+  <a href="{% url 'expense_list' %}" class="btn btn-secondary">Cancel</a>
+</div>
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    const selects = document.querySelectorAll('select')
-    M.FormSelect.init(selects)
-  })
+    const selects = document.querySelectorAll('select');
+    M.FormSelect.init(selects);
+  });
 </script>
 
 {% endblock %}
