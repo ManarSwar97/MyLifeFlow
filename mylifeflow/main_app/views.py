@@ -766,3 +766,132 @@ def profile(request):
         'profile':profile
     })
 
+@login_required
+def task_list_search(request):
+    query = request.GET.get('q', '')
+    if query:
+        task_list = Task.objects.filter(user=request.user, title__icontains=query)
+    else:
+        task_list = Task.objects.filter(user=request.user)
+
+    print("RESULTS:", task_list)
+
+    context = {
+        'task_list': task_list,
+        'query': query,
+    }
+    return render(request, 'main_app/task_list.html', context)
+@login_required
+def person_list_search(request):
+    query = request.GET.get('q', '')
+    if query:
+        person_list = Person.objects.filter(user=request.user, name__icontains=query)
+    else:
+        person_list = Person.objects.filter(user=request.user)
+
+    print("RESULTS:", person_list)
+
+    context = {
+        'person_list': person_list,
+        'query': query,
+    }
+    return render(request, 'main_app/person_list.html', context)
+
+@login_required
+def item_list_search(request):
+    query = request.GET.get('q', '')
+    if query:
+        item_list = Item.objects.filter(user=request.user, name__icontains=query)
+    else:
+        item_list = Item.objects.filter(user=request.user)
+
+    print("RESULTS:", item_list)
+
+    context = {
+        'item_list': item_list,
+        'query': query,
+    }
+    return render(request, 'main_app/item_list.html', context)
+
+@login_required
+def grocery_list_search(request):
+    query = request.GET.get('q', '')
+    if query:
+        grocery_list = Grocery.objects.filter(user=request.user, name__icontains=query)
+    else:
+        grocery_list = Grocery.objects.filter(user=request.user)
+
+    print("RESULTS:", grocery_list)
+
+    context = {
+        'grocery_list': grocery_list,
+        'query': query,
+    }
+    return render(request, 'main_app/grocery_list.html', context)
+
+
+@login_required
+def budget_list_search(request):
+    query = request.GET.get('q', '')
+    if query:
+        budget_list = Budget.objects.filter(user=request.user, name__icontains=query)
+    else:
+        budget_list = Budget.objects.filter(user=request.user)
+
+    print("RESULTS:", budget_list)
+
+    context = {
+        'budget_list': budget_list,
+        'query': query,
+    }
+    return render(request, 'main_app/budget_list.html', context)
+
+@login_required
+def expense_list_search(request):
+    query = request.GET.get('q', '')
+    if query:
+        expense_list = Expense.objects.filter(user=request.user, name__icontains=query)
+    else:
+        expense_list = Expense.objects.filter(user=request.user)
+
+    print("RESULTS:", expense_list)
+
+    context = {
+        'expense_list': expense_list,
+        'query': query,
+    }
+    return render(request, 'main_app/expense_list.html', context)
+
+
+@login_required
+def note_list_search(request):
+    query = request.GET.get('q', '')
+    if query:
+        note_list = Note.objects.filter(user=request.user, title__icontains=query)
+    else:
+        note_list = Note.objects.filter(user=request.user)
+
+    print("RESULTS:", note_list)
+
+    context = {
+        'note_list': note_list,
+        'query': query,
+    }
+    return render(request, 'main_app/note_list.html', context)
+
+
+@login_required
+def voice_list_search(request):
+    query = request.GET.get('q', '')
+    if query:
+        voice_list = Voice.objects.filter(user=request.user, title__icontains=query)
+    else:
+        voice_list = Voice.objects.filter(user=request.user)
+
+    print("RESULTS:", voice_list)
+
+    context = {
+        'voice_list': voice_list,
+        'query': query,
+    }
+    return render(request, 'main_app/voice_list.html', context)

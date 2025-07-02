@@ -1,13 +1,82 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<style>
+  body {
+    background: linear-gradient(to bottom, #bbe4ff, #87cefd);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #091638;
+    margin: 0;
+    padding: 0;
+  }
+
+  .delete-container {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2em;
+    max-width: 500px;
+    margin: 3em auto;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
+    text-align: center;
+  }
+
+  .delete-container h1 {
+    color: #28304a;
+    margin-bottom: 1em;
+    font-size: 1.8em;
+  }
+
+  .delete-container h4 {
+    color: #091638;
+    margin-bottom: 2em;
+    font-weight: 500;
+  }
+
+  .btn {
+    background: #d32f2f;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.7em 1.5em;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-right: 1em;
+  }
+
+  .btn:hover {
+    background: #b71c1c;
+  }
+
+  .btn-secondary {
+    background: #fff;
+    color: #1976d2;
+    border: 1px solid #1976d2;
+    border-radius: 6px;
+    padding: 0.7em 1.5em;
+    font-size: 1em;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .btn-secondary:hover {
+    background: #f2f2f2;
+  }
+
+  .teal-text {
+    color: #1dafe9;
+  }
+</style>
+
+<div class="delete-container">
   <h1>Delete Task</h1>
 
-  <h4>Are you sure you want to delete <span class="teal-text">{{ object.title }}</span>?</h4>
+  <h4>Are you sure you want to delete <span class="teal-text">"{{ object.title }}"</span>?</h4>
 
   <form action="" method="POST">
     {% csrf_token %}
-    <input type="submit" value="Yes - Delete!" class="btn">
-    <a href="{% url 'task_detail' task.id %}">Cancel</a>
+    <input type="submit" value="Yes, Delete!" class="btn">
+    <a href="{% url 'task_detail' task.id %}" class="btn-secondary">Cancel</a>
   </form>
+</div>
 {% endblock %}

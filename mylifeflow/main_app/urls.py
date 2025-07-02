@@ -23,6 +23,8 @@ urlpatterns = [
     path('mypeople/<int:pk>/delete/', views.PersonDelete.as_view(), name='person_delete'),
     #for messages
     path('mypeople/<int:pk>/send/', views.send_message, name='send_message'),
+    path('mypeople/search/', views.person_list_search, name='person_list_search'),
+
 
 # Daily Tasks feature URLs
     path('task/', views.TaskList.as_view(), name='task_index'),
@@ -31,6 +33,8 @@ urlpatterns = [
     path('task/<int:pk>/update/', views.TaskUpdate.as_view(), name='task_update'),
     path('task/<int:pk>/delete/', views.TaskDelete.as_view(), name='task_delete'),
     path('dashboard/add-task/', views.dashboard_add_task, name='dashboard_add_task'),
+    path('task/search/', views.task_list_search, name='task_list_search'),
+
 
 # Journal feature URLs
     path('note/', views.NoteList.as_view(), name='note_index'),
@@ -38,6 +42,8 @@ urlpatterns = [
     path('note/create/', views.NoteCreate.as_view(), name='note_create'),
     path('note/<int:pk>/update/', views.NoteUpdate.as_view(), name='note_update'),
     path('note/<int:pk>/delete/', views.NoteDelete.as_view(), name='note_delete'),
+    path('note/search/', views.note_list_search, name='note_list_search'),
+
 
 #Budget feature URLs
     path('budget/', views.BudgetListView.as_view(), name='budget_list'),
@@ -45,6 +51,8 @@ urlpatterns = [
     path('budget/create/', views.BudgetCreateView.as_view(), name='budget_create'),
     path('budget/<int:pk>/update/', views.BudgetUpdateView.as_view(), name='budget_update'),
     path('budget/<int:pk>/delete/', views.BudgetDeleteView.as_view(), name='budget_delete'),
+    path('budget/search/', views.budget_list_search, name='budget_list_search'),
+
 
 #Expense feature URLs
     path('expense/', views.ExpenseListView.as_view(), name='expense_list'),
@@ -52,6 +60,8 @@ urlpatterns = [
     path('expense/<int:pk>/update/', views.ExpenseUpdateView.as_view(), name='expense_update'),
     path('expense/<int:pk>/delete/', views.ExpenseDeleteView.as_view(), name='expense_delete'),
     path('dashboard/add-expense/', views.dashboard_add_expense, name='dashboard_add_expense'),
+    path('expense/search/', views.expense_list_search, name='expense_list_search'),
+
 
 # Item feature URLs
     path('items/', views.ItemList.as_view(), name='item_index'),
@@ -59,6 +69,8 @@ urlpatterns = [
     path('items/<int:pk>/', views.ItemDetail.as_view(), name='item_detail'),
     path('items/<int:pk>/update/', views.ItemUpdate.as_view(), name='item_update'),
     path('items/<int:pk>/delete/', views.ItemDelete.as_view(), name='item_delete'),
+    path('items/search/', views.item_list_search, name='item_list_search'),
+
 
 # Grocery feature URLs
     path('groceries/', views.GroceryList.as_view(), name='grocery_index'),
@@ -66,6 +78,8 @@ urlpatterns = [
     path('groceries/<int:pk>/', views.GroceryDetail.as_view(), name='grocery_detail'),
     path('groceries/<int:pk>/update/', views.GroceryUpdate.as_view(), name='grocery_update'),
     path('groceries/<int:pk>/delete/', views.GroceryDelete.as_view(), name='grocery_delete'),
+    path('groceries/search/', views.grocery_list_search, name='grocery_list_search'),
+
 
 # Location feature URLs
     path('locations/<str:location>/', views.location_items, name='location_items'),
@@ -76,6 +90,8 @@ urlpatterns = [
     path('voice/<int:pk>/', views.VoiceDetail.as_view(), name='voice_detail'),
     path('voice/<int:pk>/update/', views.VoiceUpdate.as_view(), name='voice_update'),
     path('voice/<int:pk>/delete/', views.VoiceDelete.as_view(), name='voice_delete'),
+    path('voice/search/', views.voice_list_search, name='voice_list_search'),
+
 
 # achievement feature URLs
     path('achievement/', views.achievement_summary, name='achievement_index'),
