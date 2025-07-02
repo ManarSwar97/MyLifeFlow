@@ -1,3 +1,48 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/eb-style.css' %}" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+
+<div class="table-container">
+  <h1>People List</h1>
+  <table>
+    <thead>
+      <tr>
+        <th><i class="fa fa-user"></i> Name</th>
+        <th><i class="fa fa-envelope"></i> Email</th>
+        <th><i class="fa fa-users"></i> Relationship</th>
+        <th><i class="fa fa-phone"></i> Phone</th>
+        <th><i class="fa fa-calendar-alt"></i> Contact Date</th>
+        <th><i class="fa fa-pencil-alt"></i> Notes</th>
+        <th><i class="fa fa-cogs"></i> Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for person in person_list %}
+      <tr>
+        <td>{{ person.name }}</td>
+        <td>{{ person.email }}</td>
+        <td>{{ person.relationship }}</td>
+        <td>{{ person.phone_number }}</td>
+        <td>{{ person.contact_date }}</td>
+        <td>{{ person.notes|truncatechars:50 }}</td>
+        <td>
+          <a href="{% url 'person_update' person.id %}">Edit</a> |
+          <a href="{% url 'person_delete' person.id %}">Delete</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="7">No people found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <a href="{% url 'person_create' %}" class="btn">+ Add Person</a>
+</div>
+=======
 {% extends 'base.html' %} {% block content %}
 <h1>People List</h1>
 <table class="striped">
