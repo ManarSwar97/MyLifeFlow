@@ -4,6 +4,7 @@ from django.urls import reverse
 from datetime import date, timedelta
 from django.utils import timezone
 from django.contrib.auth.models import User
+import datetime
 
 
 # Create your models here.
@@ -190,7 +191,7 @@ class Item(models.Model):
 class Person(models.Model):
     name = models.CharField(max_length=50)
     relationship = models.CharField(max_length=50)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=20, null=True, blank=True)
     contact_date = models.DateField()
     notes = models.TextField(blank=True)
@@ -214,3 +215,12 @@ class Achievement(models.Model):
         return f"{self.title}"
 
 
+class Message(models.Model):
+    sender = models.ForeignKey(User, related_name="sent_messages", on_delete=models.CASCADE)
+    receiver = models.ForeignKey(User, related_name="received_messages", on_delete=models.CASCADE)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.sender} -> {self.receiver}: {self.content[:20]}"
+    
