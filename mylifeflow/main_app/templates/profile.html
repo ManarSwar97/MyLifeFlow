@@ -1,20 +1,65 @@
-{% extends "base.html" %}
-{% block title %}Profile Page{% endblock title %}
+{% extends "base.html" %} {% block content %}
+<div
+  style="
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #34495e;
+  "
+>
+  <h1
+    style="
+      text-align: center;
+      font-size: 60px;
+      font-weight: 700;
+      margin-bottom: 40px;
+      letter-spacing: 0.05em;
+    "
+  >
+    {{ user.username }}'s Profile
+  </h1>
 
-{% block content %}
-<div class="row my-3 p-3">
-    <h1>{{ user.username }}'s Profile Page</h1>
-    <p>First name: {{ user.first_name }}</p>
-    <p>Last name: {{ user.last_name }}</p>
-    <p>Email: {{ user.email }}</p>
-
-    <p>Birthday: {{ profile.birthday }}</p>
+  <div style="display: flex; align-items: center; gap: 25px; flex-wrap: wrap">
     {% if profile.profile_image %}
-    <div style="margin-top: 15px;">
-        <img width="100px" height="100px" src="{{ profile.profile_image.url }}" alt="Profile Image" />
-    </div>
+    <img
+      src="{{ profile.profile_image.url }}"
+      alt="Profile Image"
+      style="
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #2980b9;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      "
+    />
     {% else %}
-    <p>No profile image uploaded.</p>
+    <div
+      style="
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: #ccc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #777;
+        font-size: 14px;
+      "
+    >
+      No Image
+    </div>
     {% endif %}
+
+    <div style="flex-grow: 1; font-size: 20px; line-height: 1.6">
+      <p><strong>First name:</strong> {{ user.first_name|default:"—" }}</p>
+      <p><strong>Last name:</strong> {{ user.last_name|default:"—" }}</p>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+      <p>
+        <strong>Birthday:</strong> {{ profile.birthday|default:"Not provided" }}
+      </p>
+    </div>
+  </div>
 </div>
 {% endblock content %}

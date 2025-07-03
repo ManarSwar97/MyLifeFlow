@@ -1,4 +1,5 @@
 {% load static %}
+<link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -10,40 +11,6 @@
     <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" />
   </head>
   
-  <body>
-  <style>
-    body {
-      display: flex;
-      min-height: 100vh;
-      margin: 0;
-    }
-    .sidebar {
-      width: 220px;
-      background-color: #db80b1;
-      color: white;
-      padding-top: 20px;
-      flex-shrink: 0;
-    }
-    .sidebar a {
-      color: white;
-      display: block;
-      padding: 12px 20px;
-      text-decoration: none;
-    }
-    .sidebar a:hover {
-      background-color: #37474f;
-    }
-    main {
-      flex-grow: 1;
-      padding: 20px;
-      background-color: #bbe4ff;
-        }
-    .journal-content {
-      display: none;
-      margin-left: 20px;
-    }
-  </style>
-</head>
 <body>
 
   <div class="sidebar">
@@ -69,7 +36,10 @@
     <a href="{% url 'about' %}">About</a>
     <div>
     <a href="{% url 'user-profile' %}"><img width="100px" height="100px" style="border-radius: 100px;" src="{{  user.userprofile.profile_image.url }}" alt="Profile Image" /></div></a>
+
+    <a href="{% url 'user-profile' %}">{{user.username}}</a>
     <form method="post" action="{% url 'logout' %}">
+    
       {% csrf_token %}
       <button type="submit" class="btn red darken-2" style="margin: 10px 20px;">Logout</button>
     </form>

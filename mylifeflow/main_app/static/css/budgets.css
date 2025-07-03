@@ -1,27 +1,10 @@
-body {
-  background: #2980b9; /* fallback for old browsers */
-  background: -webkit-linear-gradient(
-    to right,
-    #ffffff,
-    #6dd5fa,
-    #2980b9
-  ); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(
-    to bottom,
-    #bbe4ff,
-    #87cefd
-  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  color: #091638;
-  margin: 0;
-  font-family: 'Segoe UI', Arial, sans-serif;
-}
 .form-container {
   max-width: 480px;
   margin: 40px auto;
-  background: #f9f9f9;
+  background: #fafafa;
   padding: 30px 25px;
   border-radius: 8px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 6px 15px rgba(66, 33, 99, 0.1);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -30,11 +13,11 @@ body {
   font-weight: 700;
   margin-bottom: 25px;
   text-align: center;
-  color: #004d40; /* teal-ish */
+  color: #2980b9; 
 }
 
 .teal-text {
-  color: #00796b;
+  color: #2980b9;
 }
 
 .form-wrapper {
@@ -47,41 +30,41 @@ body {
 .form-wrapper .label {
   font-weight: 600;
   margin-bottom: 6px;
-  color: #333;
+  color: #555;
 }
 
-.form-wrapper input[type="text"],
-.form-wrapper input[type="number"],
-.form-wrapper input[type="date"],
+.form-wrapper input[type='text'],
+.form-wrapper input[type='number'],
+.form-wrapper input[type='date'],
 .form-wrapper select,
-.form-wrapper input[type="checkbox"] {
+.form-wrapper input[type='checkbox'] {
   padding: 8px 12px;
-  border: 1.8px solid #bdbdbd;
+  border: 1.8px solid #498cb9;
   border-radius: 6px;
   font-size: 1rem;
   outline-offset: 2px;
   transition: border-color 0.25s ease;
 }
 
-.form-wrapper input[type="checkbox"] {
+.form-wrapper input[type='checkbox'] {
   width: auto;
   height: auto;
   margin-top: 4px;
   cursor: pointer;
 }
 
-.form-wrapper input[type="text"]:focus,
-.form-wrapper input[type="number"]:focus,
-.form-wrapper input[type="date"]:focus,
+.form-wrapper input[type='text']:focus,
+.form-wrapper input[type='number']:focus,
+.form-wrapper input[type='date']:focus,
 .form-wrapper select:focus {
-  border-color: #00796b;
-  box-shadow: 0 0 5px #00796b66;
+  border-color: #2980b9;
+  box-shadow: 0 0 5px #2980b966;
 }
 
 .btn {
   display: inline-block;
   width: 100%;
-  background-color: #00796b;
+  background-color: #2980b9;
   color: white;
   font-weight: 700;
   border: none;
@@ -96,24 +79,23 @@ body {
 }
 
 .btn:hover {
-  background-color: #004d40;
+  background-color: #1c3f63;
 }
 
 .btn-secondary {
   display: inline-block;
   width: 100%;
   background-color: #b0bec5;
-  color: #37474f;
-  font-weight: 600;
+  font-weight: 700;
   border: none;
-  padding: 10px 0;
+  padding: 12px 0;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 1rem;
-  margin-top: 8px;
+  font-size: 1.1rem;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
   text-align: center;
   text-decoration: none;
-  transition: background-color 0.3s ease;
 }
 
 .btn-secondary:hover {
@@ -124,7 +106,7 @@ body {
   text-align: center;
   margin-bottom: 1.5rem;
   font-weight: 700;
-  color: #00796b; /* teal shade */
+  color: #2980b9;
 }
 
 .btn-group {
@@ -144,7 +126,7 @@ body {
 .budget-card {
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 15px rgba(66, 33, 99, 0.1);
   padding: 1.5rem;
   width: 320px;
   display: flex;
@@ -155,11 +137,11 @@ body {
 
 .budget-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 12px 24px rgba(66, 33, 99, 0.15);
 }
 
 .budget-name {
-  color: #00796b;
+  color: #2980b9;
   font-size: 1.5rem;
   margin-bottom: 1rem;
   font-weight: 700;
@@ -168,7 +150,7 @@ body {
 .budget-card p {
   font-size: 1rem;
   margin: 0.25rem 0;
-  color: #444;
+  color: #555;
 }
 
 .status {
@@ -179,8 +161,8 @@ body {
 }
 
 .status.expired {
-  color: #d32f2f;
-  background-color: #ffebee;
+  color: #c62828;
+  background-color: #fce4ec;
 }
 
 .status.active {
@@ -196,58 +178,47 @@ body {
   justify-content: flex-start;
 }
 
-.btn {
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  text-decoration: none;
-  color: white;
-  transition: background-color 0.3s ease;
-  display: inline-block;
-  text-align: center;
-}
+
 
 .btn-primary {
-  background-color: #00796b;
+  background-color: #2980b9;
 }
 
 .btn-primary:hover {
-  background-color: #004d40;
+  background-color: #1c3f63;
 }
 
 .btn-teal {
-  background-color: #00796b;
+  background-color:#2980b9 ;
 }
 
 .btn-teal:hover {
-  background-color: #004d40;
+  background-color: #1c3f63;
 }
 
 .btn-teal-outline {
   background-color: transparent;
-  color: #00796b;
-  border: 2px solid #00796b;
+  color: #2980b9;
+  border: 2px solid #2980b9;
   padding: 0.3rem 0.75rem;
   font-size: 0.9rem;
 }
 
 .btn-teal-outline:hover {
-  background-color: #00796b;
+  background-color: #2980b9;
   color: white;
 }
 
 .btn-orange {
-  background-color: #fb8c00;
+  background-color: #55809d;
 }
 
 .btn-orange:hover {
-  background-color: #ef6c00;
+  background-color: #55809d;
 }
 
 .btn-red {
-  background-color: #d32f2f;
+  background-color: #c62828;
 }
 
 .btn-red:hover {
@@ -262,27 +233,28 @@ body {
 .center {
   text-align: center;
 }
+
 .page-title {
   font-size: 2.2rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
-  color: #00796b; /* teal */
+  color: #2980b9;
   text-align: center;
 }
 
 .budget-name {
-  color: #004d40;
+  color: #1c3f63;
 }
 
 .budget-info.card {
   background: #fff;
   border-radius: 12px;
   padding: 1.5rem 2rem;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  box-shadow: 0 6px 18px rgba(66, 33, 99, 0.1);
   max-width: 600px;
   margin: 0 auto 2rem;
   font-size: 1.1rem;
-  color: #333;
+  color: #444;
 }
 
 .budget-info p {
@@ -291,7 +263,7 @@ body {
 
 .budget-value {
   font-weight: 600;
-  color: #555;
+  color: #666;
 }
 
 .status {
@@ -302,8 +274,8 @@ body {
 }
 
 .status.expired {
-  background-color: #ffebee;
-  color: #d32f2f;
+  background-color: #fce4ec;
+  color: #c62828;
 }
 
 .status.active {
@@ -316,7 +288,7 @@ body {
   font-weight: 700;
   margin-bottom: 1rem;
   text-align: center;
-  color: #00796b;
+  color: #2980b9;
 }
 
 .highlighted-table {
@@ -324,13 +296,13 @@ body {
   max-width: 700px;
   margin: 0 auto 2rem;
   border-collapse: collapse;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   border-radius: 12px;
   overflow: hidden;
 }
 
 .highlighted-table thead tr {
-  background-color: #00796b;
+  background-color: #2980b9;
   color: white;
   text-align: left;
 }
@@ -341,18 +313,18 @@ body {
 }
 
 .highlighted-table tbody tr:nth-child(even) {
-  background-color: #f3f9f7;
+  background-color: #82b2d2;
 }
 
 .highlighted-table tbody tr:hover {
-  background-color: #e0f2f1;
+  background-color: #82b2d2;
 }
 
 .no-expenses-msg {
   max-width: 600px;
   margin: 1rem auto 2rem;
   font-style: italic;
-  color: #777;
+  color: #888;
   text-align: center;
 }
 
@@ -364,29 +336,17 @@ body {
   margin: 0 auto;
 }
 
-.btn {
-  padding: 0.6rem 1.3rem;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-  color: white;
-  display: inline-block;
-  transition: background-color 0.3s ease;
-  border: none;
-  text-align: center;
-}
 
 .btn-primary {
-  background-color: #00796b;
+  background-color: #2980b9;
 }
 
 .btn-primary:hover {
-  background-color: #004d40;
+  background-color: #1c3f63;
 }
 
 .btn-red {
-  background-color: #d32f2f;
+  background-color: #c62828;
 }
 
 .btn-red:hover {
@@ -394,9 +354,172 @@ body {
 }
 
 .btn-grey {
-  background-color: #616161;
+  background-color: #424242;
 }
 
 .btn-grey:hover {
-  background-color: #424242;
+  background-color: #212121;
 }
+
+.expense-list-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.expense-heading {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+  text-align: center;
+}
+
+.btn-add-expense {
+  display: inline-block;
+  background-color: #2980b9;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.btn-add-expense:hover {
+  background-color: #3389c2;
+}
+
+.expense-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.expense-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f6f8fa;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 0.8rem;
+}
+
+.expense-item.empty {
+  justify-content: center;
+  color: #888;
+  font-style: italic;
+}
+
+.expense-name {
+  font-weight: 600;
+  color: #34495e;
+}
+
+.expense-amount {
+  color: #2d3436;
+  font-weight: 500;
+}
+
+.expense-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.action-link {
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.edit-link {
+  color: #2980b9;
+}
+
+.edit-link:hover {
+  text-decoration: underline;
+}
+
+.delete-link {
+  color: #c0392b;
+}
+
+.delete-link:hover {
+  text-decoration: underline;
+}
+
+.delete-expense-container {
+  max-width: 480px;
+  margin: 4rem auto;
+  padding: 2.5rem 2rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.delete-heading {
+  font-size: 1.8rem;
+  color: #e74c3c;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.delete-message {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.expense-name {
+  font-weight: 600;
+  color: #c0392b;
+}
+
+.delete-form {
+  margin-bottom: 1.5rem;
+}
+
+
+
+.btn-delete {
+  background-color: #e74c3c;
+  color: #fff;
+  border: 2px solid #e74c3c;
+}
+
+.btn-delete:hover {
+  background-color: #c0392b;
+  border-color: #c0392b;
+}
+
+.delete-budget-container {
+  max-width: 480px;
+  margin: 4rem auto;
+  padding: 2rem 2.5rem;
+  background-color: #fafafa;
+  border-radius: 8px;
+  box-shadow: 0 6px 15px rgba(66, 33, 99, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+}
+
+.delete-heading {
+  color: #c62828; /* red-ish */
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.delete-message {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  color: #444;
+}
+
+
+

@@ -1,9 +1,16 @@
-{% extends 'base.html' %} {% block content %}
-<h2>Delete Budget</h2>
-<p>Are you sure you want to delete "{{ budget.name }}"?</p>
-<form method="post">
-  {% csrf_token %}
-  <button type="submit">Yes, delete</button>
-</form>
-<a href="{% url 'budget_detail' budget.id %}">Cancel</a>
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/budgets.css' %}">
+<div class="delete-budget-container">
+  <h2 class="delete-heading">Delete Budget</h2>
+  <p class="delete-message">Are you sure you want to delete "<span class="budget-name">{{ budget.name }}</span>"?</p>
+
+  <form method="post" class="delete-form">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-delete">Yes, delete</button>
+  </form>
+
+  <a href="{% url 'budget_detail' budget.id %}" class="btn btn-cancel">Cancel</a>
+</div>
 {% endblock %}
