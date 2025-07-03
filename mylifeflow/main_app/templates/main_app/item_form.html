@@ -1,45 +1,56 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+{% block content %}
 {% load static %}
-
-<link rel="stylesheet" href="{% static 'css/eb-style.css' %}" />
+{% load widget_tweaks %}
 <link
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 />
 
-<div class="form-container">
-  <h1 class="form-title">{% if object %}Edit{% else %}Add{% endif %} Item</h1>
-  <form method="post">
+<div class="max-w-xl mx-auto mt-16 bg-white shadow rounded-lg p-8">
+  <h1 class="text-2xl font-bold text-gray-800 mb-8 flex items-center gap-2">
+    {% if object %}
+      <i class="fa fa-edit text-blue-600"></i> Edit Item
+    {% else %}
+      <i class="fa fa-plus text-green-600"></i> Add Item
+    {% endif %}
+  </h1>
+
+  <form method="post" class="space-y-6">
     {% csrf_token %}
 
-    <div class="form-wrapper">
-      <label for="{{ form.name.id_for_label }}"
-        ><i class="fa fa-box"></i> Name</label
-      >
-      {{ form.name }}
+    <div>
+      <label for="{{ form.name.id_for_label }}" class="block text-gray-700 font-medium mb-1">
+        <i class="fa fa-box text-teal-500"></i> Name
+      </label>
+      {{ form.name|add_class:"w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" }}
     </div>
 
-    <div class="form-wrapper">
-      <label for="{{ form.location.id_for_label }}"
-        ><i class="fa fa-map-marker-alt"></i> Location</label
-      >
-      {{ form.location }}
+    <div>
+      <label for="{{ form.location.id_for_label }}" class="block text-gray-700 font-medium mb-1">
+        <i class="fa fa-map-marker-alt text-teal-500"></i> Location
+      </label>
+      {{ form.location|add_class:"w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" }}
       <datalist id="location-options">
         {% for loc in location_choices %}
-        <option value="{{ loc }}"></option>
+          <option value="{{ loc }}"></option>
         {% endfor %}
       </datalist>
     </div>
 
-    <div class="form-wrapper">
-      <label for="{{ form.description.id_for_label }}"
-        ><i class="fa fa-align-left"></i> Description</label
-      >
-      {{ form.description }}
+    <div>
+      <label for="{{ form.description.id_for_label }}" class="block text-gray-700 font-medium mb-1">
+        <i class="fa fa-align-left text-teal-500"></i> Description
+      </label>
+      {{ form.description|add_class:"w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" }}
     </div>
 
-    <input type="submit" value="Save" class="btn" />
-    <a href="{% url 'item_index' %}" class="btn btn-secondary">Cancel</a>
+    <div class="flex items-center gap-4 pt-4">
+      <input type="submit" value="Save" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2 rounded cursor-pointer transition" />
+      <a href="{% url 'item_index' %}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded transition">
+        Cancel
+      </a>
+    </div>
   </form>
 </div>
 {% endblock %}

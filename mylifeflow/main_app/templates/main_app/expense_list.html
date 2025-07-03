@@ -1,73 +1,66 @@
-{% extends 'base.html' %}{% load static %}
-{% block content %}
+{% extends 'base.html' %} {% load static %} {% block content %}
 
-<link rel="stylesheet" href="{% static 'css/budgets.css' %}">
+<h2 class="text-2xl font-semibold mb-6 text-center">Your Expenses</h2>
 
-<style>
-  
-.search-bar-container {
-    max-width: 500px;
-    margin: 2em auto 1em;
-    text-align: center;
-  }
+<div class="max-w-md mx-auto mb-8">
+  <form
+    method="GET"
+    action="{% url 'expense_list_search' %}"
+    class="flex items-center gap-2"
+  >
+    <input
+      type="text"
+      name="q"
+      placeholder="Search Expense by name..."
+      value="{{ query }}"
+      class="flex-grow px-4 py-2 border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+    />
+    <button
+      type="submit"
+      class="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-md transition-colors duration-200"
+      aria-label="Search expenses"
+    >
+      <i class="fas fa-search"></i>
+    </button>
+  </form>
+</div>
 
-  .search-form {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5em;
-  }
+<div class="max-w-lg mx-auto">
+  <a
+    href="{% url 'expense_create' %}"
+    class="inline-block mb-6 px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-md transition-colors duration-200"
+  >
+    + Add Expense
+  </a>
 
-  .search-form input[type="text"] {
-    padding: 0.6em 1em;
-    width: 100%;
-    max-width: 350px;
-    border: 1px solid #1976d2;
-    border-radius: 6px;
-    outline: none;
-    font-size: 1em;
-  }
-
-  .search-form button {
-    background: #1976d2;
-    color: white;
-    border: none;
-    padding: 0.6em 1.2em;
-    border-radius: 6px;
-    font-size: 1em;
-    cursor: pointer;
-    transition: background 0.2s ease;
-  }
-
-  .search-form button:hover {
-    background: #115293;
-  }
-
-</style>
-<h2>Your Expenses</h2>
-    <div class="search-bar-container">
-    <form method="GET" action="{% url 'expense_list_search' %}" class="search-form">
-      <input type="text" name="q" placeholder="Search Expense by name..." value="{{ query }}">
-      <button type="submit"><i class="fas fa-search"></i></button>
-    </form>
-  </div>
-<div class="expense-list-container">
-  <h2 class="expense-heading">Your Expenses</h2>
-  <a href="{% url 'expense_create' %}" class=" btn-add-expense">+ Add Expense</a>
-
-  <ul class="expense-list">
+  <ul class="space-y-4">
     {% for expense in expense_list %}
-      <li class="expense-item">
-        <span class="expense-name">{{ expense.name }}</span>  
-        <span class="expense-amount">BHD{{ expense.amount }}</span>
-        <div class="expense-actions">
-          <a href="{% url 'expense_update' expense.id %}" class="action-link edit-link">Edit</a>
-          <a href="{% url 'expense_delete' expense.id %}" class="action-link delete-link">Delete</a>
-        </div>
-      </li>
+    <li
+      class="flex justify-between items-center bg-white shadow-sm rounded-md p-4 border border-gray-200 hover:shadow-md transition-shadow duration-200"
+    >
+      <span class="font-medium text-gray-800">{{ expense.name }}</span>
+      <span class="font-semibold text-gray-900">BHD{{ expense.amount }}</span>
+      <div class="space-x-4">
+        <a
+          href="{% url 'expense_update' expense.id %}"
+          class="text-blue-600 hover:underline font-semibold"
+          >Edit</a
+        >
+        <a
+          href="{% url 'expense_delete' expense.id %}"
+          class="text-red-600 hover:underline font-semibold"
+          >Delete</a
+        >
+      </div>
+    </li>
     {% empty %}
-      <li class="expense-item empty">No expenses recorded.</li>
+    <li
+      class="text-center text-gray-500 py-4 border border-gray-200 rounded-md"
+    >
+      No expenses recorded.
+    </li>
     {% endfor %}
   </ul>
 </div>
+
 {% endblock %}

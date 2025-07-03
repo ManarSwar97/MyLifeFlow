@@ -2,56 +2,61 @@
 {% load static %}
 {% block content %}
 
-<link rel="stylesheet" href="{% static 'css/budgets.css' %}">
-<h1 class="page-title">
-  Budget Details: <span class="teal-text budget-name">{{ budget.name }}</span>
+<h1 class="text-3xl font-bold mb-8">
+  Budget Details: <span class="text-teal-600">{{ budget.name }}</span>
 </h1>
 
-<div class="budget-info card">
-  <p><strong>Total Budget:</strong> <span class="budget-value">{{ budget.total_amount }} BHD</span></p>
-  <p><strong>Saving Goal:</strong> <span class="budget-value">{{ budget.saving_goal }} BHD</span></p>
-  <p><strong>Daily Limit:</strong> <span class="budget-value">{{ budget.daily_limit }} BHD</span></p>
-  <p><strong>Duration:</strong> <span class="budget-value">{{ budget.start_date }} to {{ budget.end_date }}</span></p>
-  <p>
-    <strong>Status:</strong> 
+<div class="bg-white rounded-lg shadow-md p-6 mb-10">
+  <p class="mb-2"><strong>Total Budget:</strong> <span class="font-semibold">{{ budget.total_amount }} BHD</span></p>
+  <p class="mb-2"><strong>Saving Goal:</strong> <span class="font-semibold">{{ budget.saving_goal }} BHD</span></p>
+  <p class="mb-2"><strong>Daily Limit:</strong> <span class="font-semibold">{{ budget.daily_limit }} BHD</span></p>
+  <p class="mb-2"><strong>Duration:</strong> <span class="font-semibold">{{ budget.start_date }} to {{ budget.end_date }}</span></p>
+  <p class="mb-2">
+    <strong>Status:</strong>
     {% if budget.end_date < today %}
-      <span class="status expired">Expired</span>
+      <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-red-200 text-red-800">Expired</span>
     {% else %}
-      <span class="status active">Active</span>
+      <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-green-200 text-green-800">Active</span>
     {% endif %}
   </p>
-  <p><strong>Planned Expenses:</strong> <span class="budget-value">{{ budget.total_planned_expenses }} BHD</span></p>
+  <p class="mb-2"><strong>Planned Expenses:</strong> <span class="font-semibold">{{ budget.total_planned_expenses }} BHD</span></p>
 </div>
 
-<h2 class="section-title">Expenses</h2>
+<h2 class="text-2xl font-semibold mb-4">Expenses</h2>
 
 {% if budget.expense_set.all %}
-<table class="highlighted-table expenses-table">
+<table class="min-w-full bg-white border border-gray-200 rounded-md shadow-sm mb-8">
   <thead>
-    <tr>
-      <th>Expense</th>
-      <th>Amount (BHD)</th>
-      <th>Frequency</th>
+    <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
+      <th class="py-3 px-6 text-left">Expense</th>
+      <th class="py-3 px-6 text-left">Amount (BHD)</th>
+      <th class="py-3 px-6 text-left">Frequency</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody class="text-gray-600 text-sm font-light">
     {% for expense in budget.expense_set.all %}
-      <tr>
-        <td>{{ expense.name }}</td>
-        <td>{{ expense.amount }}</td>
-        <td>{{ expense.get_frequency_display }}</td>
+      <tr class="border-b border-gray-200 hover:bg-gray-100">
+        <td class="py-3 px-6 text-left whitespace-nowrap">{{ expense.name }}</td>
+        <td class="py-3 px-6 text-left">{{ expense.amount }}</td>
+        <td class="py-3 px-6 text-left">{{ expense.get_frequency_display }}</td>
       </tr>
     {% endfor %}
   </tbody>
 </table>
 {% else %}
-<p class="no-expenses-msg">No expenses planned yet.</p>
+<p class="text-gray-500 italic mb-8">No expenses planned yet.</p>
 {% endif %}
 
-<div class="actions btn-group">
-  <a href="{% url 'budget_update' budget.id %}" class="btn btn-primary">Edit</a>
-  <a href="{% url 'budget_delete' budget.id %}" class="btn btn-red">Delete</a>
-  <a href="{% url 'budget_list' %}" class="btn btn-grey">Back to Budgets</a>
+<div class="flex gap-4">
+  <a href="{% url 'budget_update' budget.id %}" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-semibold transition">
+    Edit
+  </a>
+  <a href="{% url 'budget_delete' budget.id %}" class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md font-semibold transition">
+    Delete
+  </a>
+  <a href="{% url 'budget_list' %}" class="px-6 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-md font-semibold transition">
+    Back to Budgets
+  </a>
 </div>
 
 {% endblock %}

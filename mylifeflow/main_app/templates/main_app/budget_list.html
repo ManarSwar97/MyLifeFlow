@@ -1,92 +1,77 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/budgets.css' %}">
-<style>
-  
-.search-bar-container {
-    max-width: 500px;
-    margin: 2em auto 1em;
-    text-align: center;
-  }
 
-  .search-form {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5em;
-  }
+<h1 class="text-4xl font-bold text-center mt-12 mb-8">Budgets</h1>
 
-  .search-form input[type="text"] {
-    padding: 0.6em 1em;
-    width: 100%;
-    max-width: 350px;
-    border: 1px solid #1976d2;
-    border-radius: 6px;
-    outline: none;
-    font-size: 1em;
-  }
-
-  .search-form button {
-    background: #1976d2;
-    color: white;
-    border: none;
-    padding: 0.6em 1.2em;
-    border-radius: 6px;
-    font-size: 1em;
-    cursor: pointer;
-    transition: background 0.2s ease;
-  }
-
-  .search-form button:hover {
-    background: #115293;
-  }
-
-</style>
-<h1 class="center">Budgets</h1>
-
-    <div class="search-bar-container">
-    <form method="GET" action="{% url 'budget_list_search' %}" class="search-form">
-      <input type="text" name="q" placeholder="Search Budget by name..." value="{{ query }}">
-      <button type="submit"><i class="fas fa-search"></i></button>
-    </form>
-  </div>
-
-
-<div class="btn-group">
-  <a href="{% url 'budget_create' %}" class="btn btn-primary">Add Budget</a>
-  <a href="{% url 'expense_create' %}" class="btn btn-primary">Add Expense</a>
+<div class="max-w-lg mx-auto mb-8">
+  <form method="GET" action="{% url 'budget_list_search' %}" class="flex gap-2">
+    <input
+      type="text"
+      name="q"
+      placeholder="Search Budget by name..."
+      value="{{ query }}"
+      class="flex-grow px-4 py-2 border border-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+    />
+    <button
+      type="submit"
+      class="bg-blue-700 hover:bg-blue-800 text-white px-4 rounded-md transition"
+      aria-label="Search"
+    >
+      <i class="fas fa-search"></i>
+    </button>
+  </form>
 </div>
 
-<div class="budget-cards">
+<div class="flex justify-center gap-4 mb-12">
+  <a href="{% url 'budget_create' %}" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-md font-semibold transition">
+    Add Budget
+  </a>
+  <a href="{% url 'expense_create' %}" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-md font-semibold transition">
+    Add Expense
+  </a>
+</div>
+
+<div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
   {% for budget in budget_list %}
-  <div class="budget-card">
-    <h3 class="budget-name">{{ budget.name }}</h3>
+    <div class="bg-white rounded-lg shadow-md p-6 flex flex-col justify-between">
+      <div>
+        <h3 class="text-2xl font-semibold mb-4">{{ budget.name }}</h3>
 
-    <p><strong>Total Budget:</strong> BHD{{ budget.total_amount }}</p>
-    <p><strong>Saving Goal:</strong> BHD{{ budget.saving_goal }}</p>
-    <p><strong>Planned Expenses:</strong> BHD{{ budget.total_planned_expenses }}</p>
-    <p><strong>Daily Limit:</strong> BHD{{ budget.daily_limit }}</p>
-    <p><strong>Duration:</strong> {{ budget.start_date }} → {{ budget.end_date }}</p>
+        <p><strong>Total Budget:</strong> BHD{{ budget.total_amount }}</p>
+        <p><strong>Saving Goal:</strong> BHD{{ budget.saving_goal }}</p>
+        <p><strong>Planned Expenses:</strong> BHD{{ budget.total_planned_expenses }}</p>
+        <p><strong>Daily Limit:</strong> BHD{{ budget.daily_limit }}</p>
+        <p><strong>Duration:</strong> {{ budget.start_date }} → {{ budget.end_date }}</p>
 
-    <p>
-      <strong>Status:</strong>
-      {% if budget.end_date < today %}
-      <span class="status expired">Expired</span>
-      {% else %}
-      <span class="status active">Active</span>
-      {% endif %}
-    </p>
+        <p class="mt-3">
+          <strong>Status:</strong>
+          {% if budget.end_date < today %}
+            <span class="text-red-600 font-semibold">Expired</span>
+          {% else %}
+            <span class="text-green-600 font-semibold">Active</span>
+          {% endif %}
+        </p>
+      </div>
 
-    <div class="btn-group budget-actions">
-      <a href="{% url 'budget_detail' budget.id %}" class="btn btn-teal">View Details</a>
-      <a href="{% url 'budget_update' budget.id %}" class="btn btn-orange">Edit</a>
-      <a href="{% url 'budget_delete' budget.id %}" class="btn btn-red">Delete</a>
-      <a href="{% url 'expense_create' %}?budget_id={{ budget.id }}" class="btn btn-small btn-teal-outline">Add Expense</a>
+      <div class="mt-6 flex flex-wrap gap-2">
+        <a href="{% url 'budget_detail' budget.id %}" class="bg-teal-500 hover:bg-teal-600 text-white px-3 py-1 rounded-md text-sm font-medium transition">
+          View Details
+        </a>
+        <a href="{% url 'budget_update' budget.id %}" class="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded-md text-sm font-medium transition">
+          Edit
+        </a>
+        <a href="{% url 'budget_delete' budget.id %}" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm font-medium transition">
+          Delete
+        </a>
+        <a href="{% url 'expense_create' %}?budget_id={{ budget.id }}" class="border border-teal-500 text-teal-500 hover:bg-teal-500 hover:text-white px-3 py-1 rounded-md text-sm font-medium transition">
+          Add Expense
+        </a>
+      </div>
     </div>
-  </div>
   {% empty %}
-  <p>No budgets created yet.</p>
+    <p class="text-center text-gray-500 col-span-full">No budgets created yet.</p>
   {% endfor %}
 </div>
+
 {% endblock %}

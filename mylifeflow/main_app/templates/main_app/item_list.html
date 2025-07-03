@@ -1,112 +1,111 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+{% block content %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/eb-style.css' %}" />
+
 <link
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 />
 
-<style>
-  
-.search-bar-container {
-    max-width: 500px;
-    margin: 2em auto 1em;
-    text-align: center;
-  }
+<div class="max-w-4xl mx-auto mt-10 px-4">
 
-  .search-form {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5em;
-  }
-
-  .search-form input[type="text"] {
-    padding: 0.6em 1em;
-    width: 100%;
-    max-width: 350px;
-    border: 1px solid #1976d2;
-    border-radius: 6px;
-    outline: none;
-    font-size: 1em;
-  }
-
-  .search-form button {
-    background: #1976d2;
-    color: white;
-    border: none;
-    padding: 0.6em 1.2em;
-    border-radius: 6px;
-    font-size: 1em;
-    cursor: pointer;
-    transition: background 0.2s ease;
-  }
-
-  .search-form button:hover {
-    background: #115293;
-  }
-
-</style>
-    <div class="search-bar-container">
-    <form method="GET" action="{% url 'item_list_search' %}" class="search-form">
-      <input type="text" name="q" placeholder="Search Item by name..." value="{{ query }}">
-      <button type="submit"><i class="fas fa-search"></i></button>
+  <!-- Search Bar -->
+  <div class="mb-8">
+    <form method="GET" action="{% url 'item_list_search' %}" class="flex items-center gap-3">
+      <input
+        type="text"
+        name="q"
+        placeholder="Search Item by name..."
+        value="{{ query }}"
+        class="flex-1 border border-blue-600 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+      />
+      <button
+        type="submit"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition"
+      >
+        <i class="fas fa-search"></i>
+      </button>
     </form>
   </div>
 
-<div class="table-container">
-  <h1><i class="fa fa-map-marker-alt"></i> Locations</h1>
-  <table>
-    <thead>
-      <tr>
-        <th><i class="fa fa-location-dot"></i> Location</th>
-        <th><i class="fa fa-qrcode"></i> QR Code</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for loc in unique_locations %}
-      <tr>
-        <td>{{ loc }}</td>
-        <td>
-          <a
-            href="https://api.qrserver.com/v1/create-qr-code/?data=http://127.0.0.1:8000/locations/{{ loc }}&size=200x200"
-            target="_blank"
-            ><i class="fa fa-eye"></i> View</a
-          >
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <!-- Locations Table -->
+  <div class="mb-12">
+    <h1 class="text-xl font-bold mb-4 flex items-center gap-2">
+      <i class="fa fa-map-marker-alt text-blue-600"></i> Locations
+    </h1>
+    <div class="overflow-x-auto rounded shadow">
+      <table class="min-w-full bg-white border border-gray-300">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="text-left px-4 py-2 border-b"><i class="fa fa-location-dot"></i> Location</th>
+            <th class="text-left px-4 py-2 border-b"><i class="fa fa-qrcode"></i> QR Code</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for loc in unique_locations %}
+          <tr class="hover:bg-gray-50">
+            <td class="px-4 py-2 border-b">{{ loc }}</td>
+            <td class="px-4 py-2 border-b">
+              <a
+                href="https://api.qrserver.com/v1/create-qr-code/?data=http://127.0.0.1:8000/locations/{{ loc }}&size=200x200"
+                target="_blank"
+                class="text-blue-600 hover:underline"
+              >
+                <i class="fa fa-eye"></i> View
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-  <h1><i class="fa fa-box"></i> Items</h1>
-  <table>
-    <thead>
-      <tr>
-        <th><i class="fa fa-tag"></i> Name</th>
-        <th><i class="fa fa-map-marker-alt"></i> Current Location</th>
-        <th><i class="fa fa-clock"></i> Created</th>
-        <th><i class="fa fa-eye"></i> Details</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for item in item_list %}
-      <tr>
-        <td>{{ item.name }}</td>
-        <td>{{ item.location }}</td>
-        <td>{{ item.created_at }}</td>
-        <td>
-          <a href="{% url 'item_detail' item.id %}" class="btn"
-            ><i class="fa fa-eye"></i> View</a
-          >
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <!-- Items Table -->
+  <div class="mb-8">
+    <h1 class="text-xl font-bold mb-4 flex items-center gap-2">
+      <i class="fa fa-box text-blue-600"></i> Items
+    </h1>
+    <div class="overflow-x-auto rounded shadow">
+      <table class="min-w-full bg-white border border-gray-300">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="text-left px-4 py-2 border-b"><i class="fa fa-tag"></i> Name</th>
+            <th class="text-left px-4 py-2 border-b"><i class="fa fa-map-marker-alt"></i> Location</th>
+            <th class="text-left px-4 py-2 border-b"><i class="fa fa-clock"></i> Created</th>
+            <th class="text-left px-4 py-2 border-b"><i class="fa fa-eye"></i> Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in item_list %}
+          <tr class="hover:bg-gray-50">
+            <td class="px-4 py-2 border-b">{{ item.name }}</td>
+            <td class="px-4 py-2 border-b">{{ item.location }}</td>
+            <td class="px-4 py-2 border-b">{{ item.created_at }}</td>
+            <td class="px-4 py-2 border-b">
+              <a
+                href="{% url 'item_detail' item.id %}"
+                class="text-blue-600 hover:underline"
+              >
+                <i class="fa fa-eye"></i> View
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-  <a href="{% url 'item_create' %}" class="btn"
-    ><i class="fa fa-plus"></i> Add Item</a
-  >
+  <!-- Add Button -->
+  <div class="text-right">
+    <a
+      href="{% url 'item_create' %}"
+      class="inline-block bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-md font-medium transition"
+    >
+      <i class="fa fa-plus"></i> Add Item
+    </a>
+  </div>
+
 </div>
 {% endblock %}

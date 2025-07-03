@@ -1,157 +1,96 @@
-{% extends 'base.html' %}
-
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 <link
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
   rel="stylesheet"
 />
 
-<style>
-  body {
-    background: linear-gradient(to bottom, #bbe4ff, #87cefd);
-    font-family: 'Segoe UI', Arial, sans-serif;
-    color: #091638;
-    margin: 0;
-    padding: 0;
-  }
+<div
+  class="min-h-screen bg-gradient-to-b from-sky-200 to-sky-400 font-sans text-slate-900 p-6"
+>
+  <div class="bg-white rounded-2xl max-w-xl mx-auto p-8 shadow-lg">
+    <h1 class="text-3xl font-semibold text-center mb-8 text-slate-800">
+      Task Details
+    </h1>
 
-  .detail-container {
-    background: #fff;
-    border-radius: 16px;
-    padding: 2em;
-    max-width: 600px;
-    margin: 2em auto;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
-  }
+    <div class="space-y-6">
+      <div class="flex items-center gap-3 text-lg leading-relaxed">
+        <div
+          class="flex items-center gap-2 font-semibold min-w-[140px] text-slate-900"
+        >
+          <i class="fas fa-heading text-black min-w-[20px] text-center"></i>
+          Title:
+        </div>
+        <div class="flex-1 text-slate-700">{{ task.title }}</div>
+      </div>
 
-  .detail-container h1 {
-    color: #28304a;
-    margin-bottom: 1.5em;
-    text-align: center;
-  }
+      <div class="flex items-center gap-3 text-lg leading-relaxed">
+        <div
+          class="flex items-center gap-2 font-semibold min-w-[140px] text-slate-900"
+        >
+          <i class="fas fa-align-left text-black min-w-[20px] text-center"></i>
+          Description:
+        </div>
+        <div class="flex-1 text-slate-700">{{ task.description }}</div>
+      </div>
 
-  .detail-row {
-    margin-bottom: 1em;
-    display: flex;
-    gap: 0.5em;
-    align-items: center;
-    line-height: 1.6;
-    font-size: 1.1em;
-  }
+      <div class="flex items-center gap-3 text-lg leading-relaxed">
+        <div
+          class="flex items-center gap-2 font-semibold min-w-[140px] text-slate-900"
+        >
+          <i
+            class="fas fa-calendar-alt text-black min-w-[20px] text-center"
+          ></i>
+          Due Date:
+        </div>
+        <div class="flex-1 text-slate-700">{{ task.due_date }}</div>
+      </div>
 
-  .detail-label {
-    font-weight: 600;
-    color: #091638;
-    min-width: 140px;
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-  }
+      <div class="flex items-center gap-3 text-lg leading-relaxed">
+        <div
+          class="flex items-center gap-2 font-semibold min-w-[140px] text-slate-900"
+        >
+          <i
+            class="fas fa-check-circle text-black min-w-[20px] text-center"
+          ></i>
+          Completed:
+        </div>
+        <div class="flex-1 text-slate-700">
+          {{ task.is_completed|yesno:"Yes,No" }}
+        </div>
+      </div>
 
-  .detail-label i {
-    color: black;
-    min-width: 20px;
-    text-align: center;
-  }
-
-  .detail-value {
-    color: #28304a;
-    flex: 1;
-  }
-
-  .detail-actions {
-    margin-top: 2em;
-    display: flex;
-    justify-content: center;
-    gap: 1em;
-  }
-
-  .btn {
-    background: #1976d2;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 0.7em 1.5em;
-    font-size: 1em;
-    cursor: pointer;
-    transition: background 0.2s;
-    text-decoration: none;
-  }
-
-  .btn:hover {
-    background: #1565c0;
-  }
-
-  .btn-secondary {
-    background: #fff;
-    border: 1px solid #28304a;
-    color: #28304a;
-    border-radius: 6px;
-    padding: 0.7em 1.5em;
-    text-decoration: none;
-  }
-
-  .btn-secondary:hover {
-    background-color: #f0f0f0;
-  }
-
-  .back-link {
-    display: block;
-    text-align: center;
-    margin-top: 2em;
-    color: #1976d2;
-    text-decoration: none;
-    font-weight: bold;
-  }
-
-  .back-link:hover {
-    text-decoration: underline;
-  }
-</style>
-
-<div class="detail-container">
-  <h1>Task Details</h1>
-
-  <div class="detail-row">
-    <div class="detail-label">
-      <i class="fas fa-heading"></i> Title:
+      <div class="flex items-center gap-3 text-lg leading-relaxed">
+        <div
+          class="flex items-center gap-2 font-semibold min-w-[140px] text-slate-900"
+        >
+          <i class="fas fa-clock text-black min-w-[20px] text-center"></i>
+          Created At:
+        </div>
+        <div class="flex-1 text-slate-700">{{ task.created_at }}</div>
+      </div>
     </div>
-    <div class="detail-value">{{ task.title }}</div>
-  </div>
 
-  <div class="detail-row">
-    <div class="detail-label">
-      <i class="fas fa-align-left"></i> Description:
+    <div class="mt-10 flex justify-center gap-6">
+      <a
+        href="{% url 'task_update' task.id %}"
+        class="bg-blue-600 hover:bg-blue-700 text-white rounded-md px-6 py-2 text-lg transition"
+      >
+        Edit
+      </a>
+      <a
+        href="{% url 'task_delete' task.id %}"
+        class="border border-slate-800 text-slate-800 hover:bg-slate-100 rounded-md px-6 py-2 text-lg transition"
+      >
+        Delete
+      </a>
     </div>
-    <div class="detail-value">{{ task.description }}</div>
   </div>
 
-  <div class="detail-row">
-    <div class="detail-label">
-      <i class="fas fa-calendar-alt"></i> Due Date:
-    </div>
-    <div class="detail-value">{{ task.due_date }}</div>
-  </div>
-
-  <div class="detail-row">
-    <div class="detail-label">
-      <i class="fas fa-check-circle"></i> Completed:
-    </div>
-    <div class="detail-value">{{ task.is_completed|yesno:"Yes,No" }}</div>
-  </div>
-
-  <div class="detail-row">
-    <div class="detail-label">
-      <i class="fas fa-clock"></i> Created At:
-    </div>
-    <div class="detail-value">{{ task.created_at }}</div>
-  </div>
-
-  <div class="detail-actions">
-    <a href="{% url 'task_update' task.id %}" class="btn">Edit</a>
-    <a href="{% url 'task_delete' task.id %}" class="btn btn-secondary">Delete</a>
-  </div>
+  <a
+    href="{% url 'task_index' %}"
+    class="block text-center mt-10 text-blue-600 font-semibold hover:underline text-lg"
+  >
+    ← Back to Task List
+  </a>
 </div>
-
-<a href="{% url 'task_index' %}" class="back-link">← Back to Task List</a>
 {% endblock %}

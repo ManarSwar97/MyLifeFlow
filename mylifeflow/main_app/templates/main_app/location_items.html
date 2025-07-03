@@ -1,35 +1,41 @@
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/eb-style.css' %}" />
+{% load widget_tweaks %}
 <link
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 />
 
-<div class="table-container">
-  <h1><i class="fa fa-location-dot"></i> Items at "{{ location }}"</h1>
+<div class="max-w-5xl mx-auto mt-10 px-4">
+  <h1 class="text-2xl font-bold mb-6 flex items-center gap-2">
+    <i class="fa fa-location-dot text-blue-600"></i>
+    Items at "{{ location }}"
+  </h1>
 
   {% if items %}
-  <!-- Table for desktop and tablet -->
-  <div class="table-scroll desktop-table">
-    <table>
-      <thead>
+  <!-- Table view for medium and larger screens -->
+  <div class="hidden md:block overflow-x-auto rounded shadow">
+    <table class="min-w-full bg-white border border-gray-300">
+      <thead class="bg-gray-100">
         <tr>
-          <th><i class="fa fa-tag"></i> Name</th>
-          <th><i class="fa fa-align-left"></i> Description</th>
-          <th><i class="fa fa-clock"></i> Created</th>
-          <th><i class="fa fa-eye"></i> Details</th>
+          <th class="text-left px-4 py-2 border-b"><i class="fa fa-tag"></i> Name</th>
+          <th class="text-left px-4 py-2 border-b"><i class="fa fa-align-left"></i> Description</th>
+          <th class="text-left px-4 py-2 border-b"><i class="fa fa-clock"></i> Created</th>
+          <th class="text-left px-4 py-2 border-b"><i class="fa fa-eye"></i> Details</th>
         </tr>
       </thead>
       <tbody>
         {% for item in items %}
-        <tr>
-          <td>{{ item.name }}</td>
-          <td>{{ item.description }}</td>
-          <td>{{ item.created_at }}</td>
-          <td>
-            <a href="{% url 'item_detail' item.id %}" class="btn"
-              ><i class="fa fa-eye"></i> View</a
+        <tr class="hover:bg-gray-50">
+          <td class="px-4 py-2 border-b">{{ item.name }}</td>
+          <td class="px-4 py-2 border-b">{{ item.description }}</td>
+          <td class="px-4 py-2 border-b">{{ item.created_at }}</td>
+          <td class="px-4 py-2 border-b">
+            <a
+              href="{% url 'item_detail' item.id %}"
+              class="text-blue-600 hover:underline"
             >
+              <i class="fa fa-eye"></i> View
+            </a>
           </td>
         </tr>
         {% endfor %}
@@ -37,24 +43,36 @@
     </table>
   </div>
 
-  <!-- Cards for mobile -->
-  <div class="mobile-cards">
+  <!-- Card view for small screens -->
+  <div class="md:hidden space-y-4">
     {% for item in items %}
-    <div class="item-card">
-      <h2><i class="fa fa-tag"></i> {{ item.name }}</h2>
-      <p><i class="fa fa-align-left"></i> {{ item.description }}</p>
-      <p><i class="fa fa-clock"></i> Created: {{ item.created_at }}</p>
-      <a href="{% url 'item_detail' item.id %}" class="btn"
-        ><i class="fa fa-eye"></i> View Details</a
+    <div class="bg-white border border-gray-300 rounded-lg shadow p-4">
+      <h2 class="text-lg font-semibold mb-2 flex items-center gap-2">
+        <i class="fa fa-tag text-blue-600"></i> {{ item.name }}
+      </h2>
+      <p class="mb-1"><i class="fa fa-align-left text-gray-600"></i> {{ item.description }}</p>
+      <p class="mb-3 text-sm text-gray-500"><i class="fa fa-clock text-gray-600"></i> Created: {{ item.created_at }}</p>
+      <a
+        href="{% url 'item_detail' item.id %}"
+        class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition"
       >
+        <i class="fa fa-eye"></i> View Details
+      </a>
     </div>
     {% endfor %}
   </div>
   {% else %}
-  <p><i class="fa fa-box-open"></i> No items found at this location.</p>
+  <p class="text-gray-600 flex items-center gap-2 mt-4">
+    <i class="fa fa-box-open text-xl text-gray-500"></i> No items found at this location.
+  </p>
   {% endif %}
 
-  <a href="{% url 'item_index' %}" class="btn"
-    ><i class="fa fa-arrow-left"></i> Back to All Items</a
-  >
+  <div class="mt-6">
+    <a
+      href="{% url 'item_index' %}"
+      class="inline-block bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-md transition"
+    >
+      <i class="fa fa-arrow-left"></i> Back to All Items
+    </a>
+  </div>
 </div>

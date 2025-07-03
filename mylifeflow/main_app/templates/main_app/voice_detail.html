@@ -1,208 +1,85 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends 'base.html' %} {% load static %} {% block content %}
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  rel="stylesheet"
+/>
 
-{% block content %}
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+<div
+  class="max-w-xl mx-auto mt-10 bg-white rounded-2xl p-10 shadow-md select-text"
+>
+  <h1
+    class="text-center text-3xl font-extrabold text-[#28304a] mb-8 tracking-wide"
+  >
+    Voice Note Details
+  </h1>
 
-<style>
-  body {
-    background: linear-gradient(to bottom, #bbe4ff, #87cefd);
-    font-family: 'Segoe UI', Arial, sans-serif;
-    color: #091638;
-    margin: 0;
-    padding: 0;
-  }
-
-  .detail-container {
-    background: #fff;
-    border-radius: 16px;
-    padding: 2.5em 2.5em 3em;
-    max-width: 620px;
-    margin: 2.5em auto;
-    box-shadow: 0 3px 20px rgba(0, 0, 0, 0.12);
-    user-select: text;
-  }
-
-  .detail-container h1 {
-    color: #28304a;
-    margin-bottom: 1.8em;
-    text-align: center;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-  }
-
-  .detail-row {
-    margin-bottom: 1.3em;
-    display: flex;
-    gap: 0.75em;
-    align-items: center;
-    line-height: 1.5;
-    font-size: 1.15em;
-    border-bottom: 1px solid #e1e8f0;
-    padding-bottom: 0.7em;
-  }
-
-  .detail-label {
-    font-weight: 600;
-    color: black;
-    min-width: 140px;
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-    user-select: none;
-  }
-
-  .detail-label i {
-    font-size: 1.3em;
-  }
-
-  .detail-value {
-    color: #28304a;
-    flex: 1;
-    word-wrap: break-word;
-  }
-
-  .detail-audio {
-    margin-top: 1.5em;
-    text-align: center;
-  }
-
-  .detail-audio audio {
-    width: 100%;
-    max-width: 500px;
-    border-radius: 8px;
-    outline: none;
-  }
-
-  .detail-audio audio:focus {
-    box-shadow: 0 0 10px #1976d2;
-  }
-
-  .detail-image {
-    margin-top: 1.5em;
-    text-align: center;
-  }
-
-  .detail-image img {
-    max-width: 100%;
-    max-height: 280px;
-    border-radius: 14px;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
-    object-fit: contain;
-  }
-
-  .detail-actions {
-    margin-top: 3em;
-    display: flex;
-    justify-content: center;
-    gap: 1.5em;
-  }
-
-  .btn {
-    background: #1976d2;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 0.8em 2em;
-    font-size: 1.1em;
-    cursor: pointer;
-    transition: background 0.3s ease;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.7em;
-    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
-    font-weight: 600;
-  }
-
-  .btn:hover {
-    background: #115293;
-  }
-
-  .btn-secondary {
-    background: #fff;
-    border: 2px solid #1976d2;
-    color: #1976d2;
-    border-radius: 8px;
-    padding: 0.8em 2em;
-    font-size: 1.1em;
-    cursor: pointer;
-    transition: background 0.3s ease, color 0.3s ease;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.7em;
-    font-weight: 600;
-  }
-
-  .btn-secondary:hover {
-    background-color: #e3f2fd;
-    color: #115293;
-    border-color: #115293;
-  }
-
-  .back-link {
-    display: block;
-    text-align: center;
-    margin: 3em auto 3em;
-    color: #1976d2;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1.05em;
-    max-width: 600px;
-    user-select: none;
-  }
-
-  .back-link i {
-    margin-right: 0.5em;
-    font-size: 1.15em;
-    vertical-align: middle;
-  }
-
-  .back-link:hover {
-    text-decoration: underline;
-  }
-</style>
-
-<div class="detail-container">
-  <h1>Voice Note Details</h1>
-
-  <div class="detail-row">
-    <div class="detail-label"><i class="fa-solid fa-file-audio"></i> Title:</div>
-    <div class="detail-value">{{ voice.title }}</div>
+  <div
+    class="flex items-center gap-3 border-b border-gray-300 pb-3 mb-5 text-lg leading-relaxed"
+  >
+    <div
+      class="flex items-center gap-2 font-semibold text-black min-w-[140px] select-none"
+    >
+      <i class="fa-solid fa-file-audio text-xl"></i> Title:
+    </div>
+    <div class="text-[#28304a] break-words flex-1">{{ voice.title }}</div>
   </div>
 
-  <div class="detail-row">
-    <div class="detail-label"><i class="fa-solid fa-heart"></i> Emotion:</div>
-    <div class="detail-value">{{ voice.emotion|title }}</div>
+  <div
+    class="flex items-center gap-3 border-b border-gray-300 pb-3 mb-5 text-lg leading-relaxed"
+  >
+    <div
+      class="flex items-center gap-2 font-semibold text-black min-w-[140px] select-none"
+    >
+      <i class="fa-solid fa-heart text-xl"></i> Emotion:
+    </div>
+    <div class="text-[#28304a] break-words flex-1">
+      {{ voice.emotion|title }}
+    </div>
   </div>
 
   {% if voice.audio %}
-  <div class="detail-audio">
-    <audio controls>
+  <div class="mt-6 text-center">
+    <audio
+      controls
+      class="w-full max-w-lg rounded-lg outline-none focus:shadow-[0_0_10px_#1976d2]"
+    >
       <source src="{{ voice.audio.url }}" type="audio/ogg" />
       Your browser does not support the audio element.
     </audio>
   </div>
-  {% endif %}
-
-  {% if voice.image %}
-  <div class="detail-image">
-    <img src="{{ voice.image.url }}" alt="Voice Image" />
+  {% endif %} {% if voice.image %}
+  <div class="mt-6 text-center">
+    <img
+      src="{{ voice.image.url }}"
+      alt="Voice Image"
+      class="max-w-full max-h-72 rounded-xl shadow-md object-contain mx-auto"
+    />
   </div>
   {% endif %}
 
-  <div class="detail-actions">
-    <a href="{% url 'voice_update' voice.id %}" class="btn" title="Edit Voice Note">
+  <div class="mt-12 flex justify-center gap-6">
+    <a
+      href="{% url 'voice_update' voice.id %}"
+      title="Edit Voice Note"
+      class="bg-blue-700 hover:bg-blue-900 text-white rounded-lg px-8 py-3 text-lg font-semibold flex items-center gap-3 shadow-md transition-colors"
+    >
       <i class="fa-solid fa-pencil-alt"></i> Edit
     </a>
-    <a href="{% url 'voice_delete' voice.id %}" class="btn-secondary" title="Delete Voice Note">
+    <a
+      href="{% url 'voice_delete' voice.id %}"
+      title="Delete Voice Note"
+      class="border-2 border-blue-700 text-blue-700 hover:bg-blue-100 hover:text-blue-900 rounded-lg px-8 py-3 text-lg font-semibold flex items-center gap-3 transition-colors"
+    >
       <i class="fa-solid fa-times-circle"></i> Delete
     </a>
   </div>
 </div>
 
-<a href="{% url 'voice_index' %}" class="back-link">
-  <i class="fa-solid fa-chevron-left"></i> Back to Voice Notes List
+<a
+  href="{% url 'voice_index' %}"
+  class="block text-center mt-12 mb-12 text-blue-700 font-semibold text-lg max-w-xl mx-auto select-none hover:underline"
+>
+  <i class="fa-solid fa-chevron-left mr-2 text-lg align-middle"></i> Back to
+  Voice Notes List
 </a>
 {% endblock %}

@@ -1,121 +1,176 @@
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>MyLifeFlow</title>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" />
+
     <link
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link
+      rel="icon"
+      href="{% static 'img/favicon.ico' %}"
+      type="image/x-icon"
+    />
 
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind Dashboard CSS -->
+    <link href="{% static 'argon-dashboard-tailwind.css' %}" rel="stylesheet" />
+
+    <!-- FontAwesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Custom CSS -->
+    <link href="{% static 'css/custom.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/sidebar.css' %}" rel="stylesheet" />
   </head>
-  
-  <body>
-  <style>
-    body {
-      display: flex;
-      min-height: 100vh;
-      margin: 0;
-      background: linear-gradient(to bottom, #bbe4ff, #87cefd);
-    }
-    .sidebar {
-      width: 220px;
-      background-color: #db80b1;
-      color: white;
-      padding-top: 20px;
-      flex-shrink: 0;
-    }
-    .sidebar a {
-      color: white;
-      display: block;
-      padding: 12px 20px;
-      text-decoration: none;
-    }
-    .sidebar a:hover {
-      background-color: #37474f;
-    }
-    main {
-      flex-grow: 1;
-      padding: 20px;
-    }
-    .journal-content {
-      display: none;
-      margin-left: 20px;
-    }
-  </style>
-<body>
 
-  <div class="sidebar">
-    <h5 class="center-align" style="margin-bottom: 30px;">MyLifeFlow</h5>
-    <a href="{% url 'home' %}">Dashboard</a>
-    <a href="{% url 'task_index' %}">Tasks</a>
-    <a href="{% url 'grocery_index' %}">Groceries</a>
-    <a href="{% url 'budget_list' %}">Budgets</a>
-    <a href="{% url 'item_index' %}">Find My</a>
-    <a href="{% url 'person_index' %}">People</a>
-    
-    <!-- Journal Section -->
-  <div class="Journal">
-    <a href="#" class="journal-toggle">Journal ▼</a>
-    <div class="journal-content">
-      <a href="{% url 'note_index' %}">Voice-to-Text</a>
-      <a href="{% url 'voice_index' %}">Voice Only</a>
+  <body class="flex min-h-screen bg-gradient-to-b from-sky-300 to-sky-400">
+    <!-- Sidebar -->
+    <div
+      class="sidebar w-56 bg-pink-400 text-white pt-5 flex-shrink-0 flex flex-col"
+    >
+      <h5 class="text-center mb-8 font-bold text-lg">MyLifeFlow</h5>
+
+      <nav class="flex flex-col space-y-1 px-4">
+        <a
+          href="{% url 'home' %}"
+          class="block px-4 py-2 rounded hover:bg-gray-700"
+          >Dashboard</a
+        >
+        <a
+          href="{% url 'task_index' %}"
+          class="block px-4 py-2 rounded hover:bg-gray-700"
+          >Tasks</a
+        >
+        <a
+          href="{% url 'grocery_index' %}"
+          class="block px-4 py-2 rounded hover:bg-gray-700"
+          >Groceries</a
+        >
+        <a
+          href="{% url 'budget_list' %}"
+          class="block px-4 py-2 rounded hover:bg-gray-700"
+          >Budgets</a
+        >
+        <a
+          href="{% url 'item_index' %}"
+          class="block px-4 py-2 rounded hover:bg-gray-700"
+          >Find My</a
+        >
+        <a
+          href="{% url 'person_index' %}"
+          class="block px-4 py-2 rounded hover:bg-gray-700"
+          >People</a
+        >
+
+        <!-- Journal Section -->
+        <div class="mt-4">
+          <a
+            href="#"
+            class="journal-toggle block px-4 py-2 rounded hover:bg-gray-700 cursor-pointer"
+            >Journal ▼</a
+          >
+          <div class="journal-content hidden ml-4 mt-2 flex flex-col space-y-1">
+            <a href="{% url 'note_index' %}" class="hover:underline"
+              >Voice-to-Text</a
+            >
+            <a href="{% url 'voice_index' %}" class="hover:underline"
+              >Voice Only</a
+            >
+          </div>
+        </div>
+
+        <a
+          href="{% url 'achievement_index' %}"
+          class="block px-4 py-2 rounded hover:bg-gray-700 mt-4"
+          >Achievements</a
+        >
+
+        {% if user.is_authenticated %}
+        <a
+          href="{% url 'about' %}"
+          class="block px-4 py-2 rounded hover:bg-gray-700"
+          >About</a
+        >
+
+        <a
+          href="{% url 'user-profile' %}"
+          class="block px-4 py-2 mt-4 text-center"
+        >
+          <img
+            src="{{ user.userprofile.profile_image.url }}"
+            alt="Profile Image"
+            class="w-24 h-24 rounded-full mx-auto mb-2 object-cover"
+          />
+          <span>{{ user.username }}</span>
+        </a>
+
+        <form method="post" action="{% url 'logout' %}" class="px-4 py-2 mt-4">
+          {% csrf_token %}
+          <button
+            type="submit"
+            class="w-full bg-red-700 hover:bg-red-800 text-white py-2 rounded transition"
+          >
+            Logout
+          </button>
+        </form>
+
+        {% else %}
+        <a
+          href="{% url 'login' %}"
+          class="block px-4 py-2 rounded hover:bg-gray-700 mt-4"
+          >Sign In</a
+        >
+        <a
+          href="{% url 'signup' %}"
+          class="block px-4 py-2 rounded hover:bg-gray-700 mt-2"
+          >Sign Up</a
+        >
+        {% endif %}
+      </nav>
     </div>
-  </div>
 
-    <a href="{% url 'achievement_index' %}">Achievements</a>
-    {% if user.is_authenticated %}
-    <a href="{% url 'about' %}">About</a>
-    <div>
-    <a href="{% url 'user-profile' %}"><img width="100px" height="100px" style="border-radius: 100px;" src="{{  user.userprofile.profile_image.url }}" alt="Profile Image" /></div></a>
+    <!-- Main Content Area -->
+    <main class="flex-grow p-6 overflow-auto">
+      {% block content %} {% endblock %}
+    </main>
 
-    <a href="{% url 'user-profile' %}">{{user.username}}</a>
-    <form method="post" action="{% url 'logout' %}">
-    
-      {% csrf_token %}
-      <button type="submit" class="btn red darken-2" style="margin: 10px 20px;">Logout</button>
-    </form>
-    {% else %}
-    <a href="{% url 'login' %}">Sign In</a>
-    <a href="{% url 'signup' %}">Sign Up</a>
+    <!-- Journal Toggle Script -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const toggle = document.querySelector('.journal-toggle')
+        const content = document.querySelector('.journal-content')
 
-    </div>
-    {% endif %}
-  </div>
+        // Restore toggle state from localStorage
+        const isJournalOpen = localStorage.getItem('journalOpen') === 'true'
+        if (isJournalOpen) {
+          content.classList.remove('hidden')
+          toggle.textContent = 'Journal ▲'
+        }
 
-  <main>
-    {% block content %} {% endblock %}
-  </main>
-  <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const toggle = document.querySelector('.journal-toggle')
-    const content = document.querySelector('.journal-content')
-
-    // Restore from localStorage
-    const isJournalOpen = localStorage.getItem('journalOpen') === 'true'
-    if (isJournalOpen) {
-      content.style.display = 'block'
-      toggle.innerHTML = 'Journal ▲'
-    }
-
-    toggle.addEventListener('click', function (e) {
-      e.preventDefault()
-      const isVisible = content.style.display === 'block'
-      content.style.display = isVisible ? 'none' : 'block'
-      toggle.innerHTML = !isVisible ? 'Journal ▲' : 'Journal ▼'
-      localStorage.setItem('journalOpen', !isVisible);
-    })
-  })
-</script>
-
+        toggle.addEventListener('click', (e) => {
+          e.preventDefault()
+          const isVisible = !content.classList.contains('hidden')
+          if (isVisible) {
+            content.classList.add('hidden')
+            toggle.textContent = 'Journal ▼'
+          } else {
+            content.classList.remove('hidden')
+            toggle.textContent = 'Journal ▲'
+          }
+          localStorage.setItem('journalOpen', !isVisible)
+        })
+      })
+    </script>
   </body>
-
+</html>
