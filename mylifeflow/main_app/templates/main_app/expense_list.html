@@ -1,7 +1,8 @@
-{% extends 'base.html' %}
-{% load static %}
-
+{% extends 'base.html' %}{% load static %}
 {% block content %}
+
+<link rel="stylesheet" href="{% static 'css/budgets.css' %}">
+
 <style>
   
 .search-bar-container {
@@ -50,16 +51,23 @@
       <button type="submit"><i class="fas fa-search"></i></button>
     </form>
   </div>
-<a href="{% url 'expense_create' %}">+ Add Expense</a>
-<ul>
-  {% for expense in expense_list %}
-  <li>
-    {{ expense.name }} - {{ expense.amount }}
-    <a href="{% url 'expense_update' expense.id %}">Edit</a> |
-    <a href="{% url 'expense_delete' expense.id %}">Delete</a>
-  </li>
-  {% empty %}
-  <li>No expenses recorded.</li>
-  {% endfor %}
-</ul>
+<div class="expense-list-container">
+  <h2 class="expense-heading">Your Expenses</h2>
+  <a href="{% url 'expense_create' %}" class=" btn-add-expense">+ Add Expense</a>
+
+  <ul class="expense-list">
+    {% for expense in expense_list %}
+      <li class="expense-item">
+        <span class="expense-name">{{ expense.name }}</span>  
+        <span class="expense-amount">BHD{{ expense.amount }}</span>
+        <div class="expense-actions">
+          <a href="{% url 'expense_update' expense.id %}" class="action-link edit-link">Edit</a>
+          <a href="{% url 'expense_delete' expense.id %}" class="action-link delete-link">Delete</a>
+        </div>
+      </li>
+    {% empty %}
+      <li class="expense-item empty">No expenses recorded.</li>
+    {% endfor %}
+  </ul>
+</div>
 {% endblock %}

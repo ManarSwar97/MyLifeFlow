@@ -1,4 +1,5 @@
 {% load static %}
+<link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -6,16 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>MyLifeFlow</title>
-    <!-- <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
-    /> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-
-    
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" />
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" />
     <link
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
@@ -58,7 +54,6 @@
       margin-left: 20px;
     }
   </style>
-</head>
 <body>
 
   <div class="sidebar">
@@ -84,7 +79,10 @@
     <a href="{% url 'about' %}">About</a>
     <div>
     <a href="{% url 'user-profile' %}"><img width="100px" height="100px" style="border-radius: 100px;" src="{{  user.userprofile.profile_image.url }}" alt="Profile Image" /></div></a>
+
+    <a href="{% url 'user-profile' %}">{{user.username}}</a>
     <form method="post" action="{% url 'logout' %}">
+    
       {% csrf_token %}
       <button type="submit" class="btn red darken-2" style="margin: 10px 20px;">Logout</button>
     </form>

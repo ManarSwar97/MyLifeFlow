@@ -1,27 +1,32 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 
-<h1>Budget Details: <span class="teal-text">{{ budget.name }}</span></h1>
+<link rel="stylesheet" href="{% static 'css/budgets.css' %}">
+<h1 class="page-title">
+  Budget Details: <span class="teal-text budget-name">{{ budget.name }}</span>
+</h1>
 
-<div class="budget-info">
-  <p><strong>Total Budget:</strong> {{ budget.total_amount }} BHD</p>
-  <p><strong>Saving Goal:</strong> {{ budget.saving_goal }} BHD</p>
-  <p><strong>Daily Limit:</strong> {{ budget.daily_limit }} BHD</p>
-  <p><strong>Duration:</strong> {{ budget.start_date }} to {{ budget.end_date }}</p>
-  <p><strong>Status:</strong> 
-        {% if budget.end_date < today %}
-      <span style="color: red">Expired</span>
-      {% else %}
-      <span style="color: green">Active</span>
-      {% endif %}
+<div class="budget-info card">
+  <p><strong>Total Budget:</strong> <span class="budget-value">{{ budget.total_amount }} BHD</span></p>
+  <p><strong>Saving Goal:</strong> <span class="budget-value">{{ budget.saving_goal }} BHD</span></p>
+  <p><strong>Daily Limit:</strong> <span class="budget-value">{{ budget.daily_limit }} BHD</span></p>
+  <p><strong>Duration:</strong> <span class="budget-value">{{ budget.start_date }} to {{ budget.end_date }}</span></p>
+  <p>
+    <strong>Status:</strong> 
+    {% if budget.end_date < today %}
+      <span class="status expired">Expired</span>
+    {% else %}
+      <span class="status active">Active</span>
+    {% endif %}
   </p>
-  <p><strong>Planned Expenses:</strong> {{ budget.total_planned_expenses }} BHD</p>
+  <p><strong>Planned Expenses:</strong> <span class="budget-value">{{ budget.total_planned_expenses }} BHD</span></p>
 </div>
 
-<h2>Expenses</h2>
+<h2 class="section-title">Expenses</h2>
 
 {% if budget.expense_set.all %}
-<table class="highlighted-table">
+<table class="highlighted-table expenses-table">
   <thead>
     <tr>
       <th>Expense</th>
@@ -40,13 +45,13 @@
   </tbody>
 </table>
 {% else %}
-<p>No expenses planned yet.</p>
+<p class="no-expenses-msg">No expenses planned yet.</p>
 {% endif %}
 
-<div class="actions" style="margin-top: 20px;">
-  <a href="{% url 'budget_update' budget.id %}" class="btn">Edit</a>
-  <a href="{% url 'budget_delete' budget.id %}" class="btn red">Delete</a>
-  <a href="{% url 'budget_list' %}" class="btn grey">Back to Budgets</a>
+<div class="actions btn-group">
+  <a href="{% url 'budget_update' budget.id %}" class="btn btn-primary">Edit</a>
+  <a href="{% url 'budget_delete' budget.id %}" class="btn btn-red">Delete</a>
+  <a href="{% url 'budget_list' %}" class="btn btn-grey">Back to Budgets</a>
 </div>
 
 {% endblock %}
