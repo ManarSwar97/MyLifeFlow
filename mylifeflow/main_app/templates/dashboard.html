@@ -93,7 +93,8 @@
       </p>
 
       <p>
-        Wind speed: {{ weather.wind.speed }} {% if units == 'metric' %} m/s {% else %} mph {% endif %}
+        Wind speed: {{ weather.wind.speed }} {% if units == 'metric' %} m/s {%
+        else %} mph {% endif %}
       </p>
 
       <a
@@ -128,25 +129,27 @@
 
         <div class="task-status">
           <p>
-            <span class="status-dot green-dot">&#9679;</span> Completed ({{completed}})
+            <span class="status-dot green-dot">&#9679;</span> Completed
+            ({{completed}})
           </p>
           <p>
-            <span class="status-dot red-dot">&#9679;</span> Pending ({{pending}})
+            <span class="status-dot red-dot">&#9679;</span> Pending
+            ({{pending}})
           </p>
         </div>
 
         <div id="task-cards-container" class="task-cards-container">
           {% for task in task_list %}
           <a href="{% url 'task_detail' task.id %}">
-          <div class="task-card">
-            <h4>{{ task.title }}</h4>
-            <p>Due: {{ task.due_date }}</p>
-            <p>
-              Status: {% if task.is_completed %}
-              <span style="color: green">&#9679;</span> Completed {% else %}
-              <span style="color: red">&#9679;</span> Pending {% endif %}
-            </p>
-          </div>
+            <div class="task-card">
+              <h4>{{ task.title }}</h4>
+              <p>Due: {{ task.due_date }}</p>
+              <p>
+                Status: {% if task.is_completed %}
+                <span style="color: green">&#9679;</span> Completed {% else %}
+                <span style="color: red">&#9679;</span> Pending {% endif %}
+              </p>
+            </div>
           </a>
           {% endfor %}
         </div>
@@ -183,8 +186,9 @@
           <div class="card">
             <div class="card-content">
               <span class="circle-avatar">
-          {{ person.name|slice:":1" }}{% if person.name|length > 1 %}{{ person.name|slice:"1:2" }}{% endif %}
-        </span>
+                {{ person.name|slice:":1" }}{% if person.name|length > 1 %}{{
+                person.name|slice:"1:2" }}{% endif %}
+              </span>
               <span class="card-title">{{ person.name }}</span>
               <p>Next Contact Date: {{ person.contact_date }}</p>
             </div>
@@ -211,11 +215,7 @@
 
         <!-- Dropdown box -->
         <label for="budgetDropdown">Choose a budget:</label>
-        <select
-          id="budgetDropdown"
-          class="budget_dropdown"
-          onchange="showBudget(this.value)"
-        >
+        <select id="budgetDropdown" onchange="showBudget(this.value)">
           <option value="">-- Select a Budget --</option>
           {% for budget in budget_list %}
           <option value="budget-{{ budget.id }}">{{ budget.name }}</option>
@@ -241,10 +241,10 @@
             You have reached your daily limit!
           </p>
           {% else %}
-    
+
           <p>
-            You can still spend up to BHD
-            {{ item.remaining_daily_limit|floatformat:"2" }} today.
+            You can still spend up to BHD {{
+            item.remaining_daily_limit|floatformat:"2" }} today.
           </p>
 
           {% endif %}
@@ -361,7 +361,6 @@
               'Task Added',
               'Your new task has been added successfully!'
             )
-            
           },
           3000
         )
