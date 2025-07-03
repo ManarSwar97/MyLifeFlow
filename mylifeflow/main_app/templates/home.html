@@ -1,16 +1,163 @@
-{% extends 'base.html' %} {% block content %}
-<h1>welcome home page</h1>
-{% if user.is_authenticated %}
-<h1>Welcome {{ user.first_name }}!</h1>
-<a href="{% url 'person_index' %}" class="btn">My People</a>
-<a href="{% url 'task_index' %}" class="btn">Daily Task</a>
-<a href="{% url 'note_index' %}" class="btn">Journaling</a>
-<a href="{% url 'budget_list' %}" class="btn">Budget</a>
-<a href="{% url 'item_index' %}" class="btn">My Items</a>
-<a href="{% url 'grocery_index' %}" class="btn">My Groceries</a>
-<a href="{% url 'voice_index' %}" class="btn">Voice</a>
-<a href="{% url 'achievement_index' %}" class="btn">Achievement</a>
+{% load static %}
+{% block content %}
 
-{% else %}
-<h1>Welcome to MyLifeFlow!</h1>
-{% endif %} {% endblock %}
+<!-- Page background -->
+<div class="page-background">
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="logo">MyLifeFlow</div>
+
+    <div class="nav-links">
+      {% if user.is_authenticated %}
+        <span class="user-greeting">Hi, {{ user.first_name }}</span>
+        <form method="post" action="{% url 'logout' %}" class="logout-form">
+          {% csrf_token %}
+          <button type="submit" class="logout-button">Logout</button>
+        </form>
+      {% else %}
+        <a href="{% url 'login' %}" class="nav-button text-link">Sign In</a>
+        <a href="{% url 'signup' %}" class="nav-button signup-button">Sign Up</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    {% if user.is_authenticated %}
+      <h1 class="welcome-heading">Welcome {{ user.first_name }}!</h1>
+    {% else %}
+      <h1 class="welcome-main">Welcome to MyLifeFlow!</h1>
+      <p class="description">
+        MyLifeFlow is your all-in-one life companion — a personal dashboard that helps you stay on track with your tasks,
+        manage your money, restock groceries, and even store household items with QR codes.
+        You can voice-journal your days, track your yearly achievements, and connect with the people that matter through
+        messages and voice calls.
+      </p>
+      <p class="tagline">
+        Organize smarter. Live better. Flow through your day with MyLifeFlow! 💫🧠📲
+      </p>
+    {% endif %}
+  </div>
+
+</div>
+
+<!-- Styles -->
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+  }
+
+  .page-background {
+    min-height: 100vh;
+    background: linear-gradient(to bottom right, #bfdbfe, #93c5fd); /* from-blue-100 to-blue-300 */
+  }
+
+  .navbar {
+    background: linear-gradient(to bottom, #7dd3fc, #38bdf8); /* from-sky-300 to-sky-400 */
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  .logo {
+    font-size: 32px;
+    font-weight: 800;
+    color: white;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .user-greeting {
+    color: white;
+    font-weight: 600;
+  }
+
+  .logout-form {
+    display: inline;
+  }
+
+  .logout-button {
+    background-color: #ef4444;
+    color: white;
+    font-weight: 600;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .logout-button:hover {
+    background-color: #dc2626;
+  }
+
+  .nav-button {
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 6px;
+  }
+
+  .text-link {
+    color: white;
+  }
+
+  .text-link:hover {
+    color: #f1f5f9;
+  }
+
+  .signup-button {
+    background-color: white;
+    color: #1e40af;
+    font-weight: 600;
+  }
+
+  .signup-button:hover {
+    background-color: #f3f4f6;
+  }
+
+  .main-content {
+    margin-top: 80px;
+    margin-left: 60px;
+    max-width: 700px;
+  }
+
+  .welcome-heading {
+    font-size: 56px;
+    font-weight: 800;
+    color: #1e3a8a;
+    margin-bottom: 32px;
+  }
+
+  .welcome-main {
+    font-size: 80px;
+    font-weight: 800;
+    color: #0369a1;
+    margin-bottom: 32px;
+  }
+
+  .description {
+    font-size: 18px;
+    color: #1f2937;
+    line-height: 1.6;
+    text-align: left;
+  }
+
+  .tagline {
+    margin-top: 24px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #075985;
+    text-align: left;
+  }
+</style>
+
+{% endblock %}
