@@ -1,28 +1,159 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
 
-<h1>Sign Up</h1>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+  body {
+    background: linear-gradient(to bottom, #bbe4ff, #87cefd);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #091638;
+    margin: 0;
+    padding: 0;
+  }
 
-{% if error_message %}
-<p class="red-text">{{ error_message }}</p>
-{% endif %}
+  .form-container {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2em;
+    max-width: 600px;
+    width: 90%;
+    margin: 3em auto;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
+  }
 
-<form method="post" action="{% url 'signup' %}" enctype="multipart/form-data">
-  {% csrf_token %} {{ form.as_p }}
+  .form-title {
+    color: #091638;
+    margin-bottom: 1.5em;
+    font-size: 1.8em;
+    text-align: center;
+  }
 
-  <!-- for location -->
-  <input type="hidden" name="latitude" id="latitude" />
-  <input type="hidden" name="longitude" id="longitude" />
+  .form-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5em;
+    width: 100%;
+  }
 
-  <input type="submit" class="btn" value="signup" />
-</form>
+  .form-wrapper label {
+    color: #091638;
+    font-weight: 500;
+    margin-bottom: 0.5em;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+  }
+
+  .form-wrapper input,
+  .form-wrapper select {
+    background: #fff;
+    color: #28304a;
+    border: 1px solid #28304a;
+    border-radius: 6px;
+    padding: 0.8em 1em;
+    font-size: 1em;
+    outline: none;
+    transition: border 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .form-wrapper input:focus {
+    border: 1.5px solid #1976d2;
+  }
+
+  .btn {
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.8em 1.5em;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: block;
+    width: 100%;
+    margin-top: 1em;
+  }
+
+  .btn:hover {
+    background: #1565c0;
+  }
+
+  .red-text {
+    color: #e53935;
+    text-align: center;
+    font-weight: 500;
+    margin-bottom: 1em;
+  }
+</style>
+
+<div class="form-container">
+  <h1 class="form-title">Sign Up</h1>
+
+  {% if error_message %}
+    <p class="red-text">{{ error_message }}</p>
+  {% endif %}
+
+  <form method="post" action="{% url 'signup' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="form-wrapper">
+      <label for="{{ form.username.id_for_label }}">Username</label>
+      {{ form.username }}
+    </div>
+
+    <div class="form-wrapper">
+      <label for="{{ form.email.id_for_label }}">Email</label>
+      {{ form.email }}
+    </div>
+
+    <div class="form-wrapper">
+      <label for="{{ form.first_name.id_for_label }}">First Name</label>
+      {{ form.first_name }}
+    </div>
+
+    <div class="form-wrapper">
+      <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+      {{ form.last_name }}
+    </div>
+
+    <div class="form-wrapper">
+      <label for="{{ form.password1.id_for_label }}">Password</label>
+      {{ form.password1 }}
+    </div>
+
+    <div class="form-wrapper">
+      <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+      {{ form.password2 }}
+    </div>
+
+    <div class="form-wrapper">
+      <label for="{{ form.birthday.id_for_label }}">Birthday</label>
+      {{ form.birthday }}
+    </div>
+
+    <div class="form-wrapper">
+      <label for="{{ form.profile_image.id_for_label }}">Profile Image</label>
+      {{ form.profile_image }}
+    </div>
+
+    <!-- Geolocation hidden fields -->
+    <input type="hidden" name="latitude" id="latitude" />
+    <input type="hidden" name="longitude" id="longitude" />
+
+    <input type="submit" class="btn" value="Sign Up" />
+  </form>
+</div>
 
 <script>
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function (position) {
-      document.getElementById('latitude').value = position.coords.latitude
-      document.getElementById('longitude').value = position.coords.longitude
-    })
+      document.getElementById('latitude').value = position.coords.latitude;
+      document.getElementById('longitude').value = position.coords.longitude;
+    });
   }
 </script>
-
 {% endblock %}
