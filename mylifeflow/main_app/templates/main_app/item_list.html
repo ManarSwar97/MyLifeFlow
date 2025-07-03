@@ -1,52 +1,112 @@
 {% extends 'base.html' %} {% block content %}
-<h1>Locations</h1>
-<table class="striped">
-  <thead>
-    <tr>
-      <th>Location</th>
-      <th>QR Code</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for loc in unique_locations %}
-    <tr>
-      <td>{{ loc }}</td>
-      <td>
-        <a
-          href="https://api.qrserver.com/v1/create-qr-code/?data=http://127.0.0.1:8000/locations/{{ loc }}&size=200x200"
-          target="_blank"
-        >
-          View
-        </a>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/eb-style.css' %}" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
 
-<h1>Items</h1>
-<table class="striped">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Current Location</th>
-      <th>Created</th>
-      <th>Details</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for item in item_list %}
-    <tr>
-      <td>{{ item.name }}</td>
-      <td>{{ item.location }}</td>
-      <td>{{ item.created_at }}</td>
-      <td>
-        <a href="{% url 'item_detail' item.id %}" class="btn">View</a>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<style>
+  
+.search-bar-container {
+    max-width: 500px;
+    margin: 2em auto 1em;
+    text-align: center;
+  }
 
-<a href="{% url 'item_create' %}" class="btn">Add Item</a>
+  .search-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+  }
+
+  .search-form input[type="text"] {
+    padding: 0.6em 1em;
+    width: 100%;
+    max-width: 350px;
+    border: 1px solid #1976d2;
+    border-radius: 6px;
+    outline: none;
+    font-size: 1em;
+  }
+
+  .search-form button {
+    background: #1976d2;
+    color: white;
+    border: none;
+    padding: 0.6em 1.2em;
+    border-radius: 6px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .search-form button:hover {
+    background: #115293;
+  }
+
+</style>
+    <div class="search-bar-container">
+    <form method="GET" action="{% url 'item_list_search' %}" class="search-form">
+      <input type="text" name="q" placeholder="Search Item by name..." value="{{ query }}">
+      <button type="submit"><i class="fas fa-search"></i></button>
+    </form>
+  </div>
+
+<div class="table-container">
+  <h1><i class="fa fa-map-marker-alt"></i> Locations</h1>
+  <table>
+    <thead>
+      <tr>
+        <th><i class="fa fa-location-dot"></i> Location</th>
+        <th><i class="fa fa-qrcode"></i> QR Code</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for loc in unique_locations %}
+      <tr>
+        <td>{{ loc }}</td>
+        <td>
+          <a
+            href="https://api.qrserver.com/v1/create-qr-code/?data=http://127.0.0.1:8000/locations/{{ loc }}&size=200x200"
+            target="_blank"
+            ><i class="fa fa-eye"></i> View</a
+          >
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h1><i class="fa fa-box"></i> Items</h1>
+  <table>
+    <thead>
+      <tr>
+        <th><i class="fa fa-tag"></i> Name</th>
+        <th><i class="fa fa-map-marker-alt"></i> Current Location</th>
+        <th><i class="fa fa-clock"></i> Created</th>
+        <th><i class="fa fa-eye"></i> Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in item_list %}
+      <tr>
+        <td>{{ item.name }}</td>
+        <td>{{ item.location }}</td>
+        <td>{{ item.created_at }}</td>
+        <td>
+          <a href="{% url 'item_detail' item.id %}" class="btn"
+            ><i class="fa fa-eye"></i> View</a
+          >
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <a href="{% url 'item_create' %}" class="btn"
+    ><i class="fa fa-plus"></i> Add Item</a
+  >
+</div>
 {% endblock %}

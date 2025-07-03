@@ -92,18 +92,17 @@ class VoiceForm(forms.ModelForm):
             return super().form_valid(form)
 
 class ItemForm(forms.ModelForm):
-    NEW_LOCATION_VALUE = '__new__'
-
-    location = forms.ChoiceField(choices=[], required=True, label='Location')
+    location = forms.CharField(
+        label='Location',
+        widget=forms.TextInput(attrs={'list': 'location-options'})
+    )
 
     class Meta:
         model = Item
         fields = ['name', 'location', 'description']
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
+        self.user = kwargs.pop('user', None)  # <--- Accept `user` from view
         super().__init__(*args, **kwargs)
-        existing_locations = Item.objects.values_list('location', flat=True).distinct()
-        choices = [(loc, loc) for loc in existing_locations if loc]
-        choices.append((self.NEW_LOCATION_VALUE, 'Add new location'))
-        self.fields['location'].choices = choices
+        self.existing_locations = Item.objects.values_list('location', flat=True).distinct()
+

@@ -9,8 +9,51 @@
     <title>MyLifeFlow</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
   </head>
   
+  <body>
+  <style>
+    body {
+      display: flex;
+      min-height: 100vh;
+      margin: 0;
+      background: linear-gradient(to bottom, #bbe4ff, #87cefd);
+    }
+    .sidebar {
+      width: 220px;
+      background-color: #db80b1;
+      color: white;
+      padding-top: 20px;
+      flex-shrink: 0;
+    }
+    .sidebar a {
+      color: white;
+      display: block;
+      padding: 12px 20px;
+      text-decoration: none;
+    }
+    .sidebar a:hover {
+      background-color: #37474f;
+    }
+    main {
+      flex-grow: 1;
+      padding: 20px;
+    }
+        }
+    .journal-content {
+      display: none;
+      margin-left: 20px;
+    }
+  </style>
 <body>
 
   <div class="sidebar">

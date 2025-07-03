@@ -1,33 +1,103 @@
-.task-card {
-  padding: 20px;
-  background-color: #fcf5f5;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+/* الخلفية واللون العام */
+body {
+  background: #2980b9; /* fallback */
+  background: -webkit-linear-gradient(to right, #ffffff, #6dd5fa, #2980b9);
+  background: linear-gradient(to bottom, #bbe4ff, #87cefd);
+  color: #091638;
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-.task-header {
-  margin-bottom: 25px;
+/* حاوية الجدول */
+.table-container {
+  max-width: 1000px;
+  margin: 2em auto;
+  padding: 2em;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
 }
 
-.task-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 15px;
+/* عنوان داخل الحاوية */
+.table-container h1 {
+  color: #28304a;
+  margin-bottom: 1em;
 }
 
-.task-info {
-  display: flex;
-  align-items: center;
+/* تنسيق الجدول */
+.table-container table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #28304a;
+  margin-bottom: 3em;
 }
 
-.task-title {
-  font-size: 18px;
-  color: #333;
-  font-weight: 500;
+.table-container th,
+.table-container td {
+  padding: 1em;
+  text-align: left;
+  border-bottom: 1px solid #1e2746;
 }
 
-.task-date {
-  color: #888;
-  font-size: 14px;
+.table-container th {
+  background-color: #fff;
+  color: #28304a;
+  font-weight: 600;
+}
+
+/* تمييز الصف عند المرور عليه بالماوس */
+.table-container tr:hover {
+  background-color: #ffffffa4;
+}
+
+/* روابط داخل الجدول */
+.table-container a {
+  color: #28304a;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.table-container a:hover {
+  text-decoration: underline;
+}
+
+/* أزرار */
+.btn {
+  background: #1976d2;
+  color: #fff;
+  border-radius: 6px;
+  padding: 0.7em 1.5em;
+  font-size: 1em;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: background 0.2s;
+}
+
+.btn:hover {
+  background: #1565c0;
+}
+
+/* نقاط الحالة */
+.status-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.status-completed {
+  background-color: green;
+}
+
+.status-pending {
+  background-color: red;
+}
+
+/* تباعد تحت زر الإضافة */
+.center-align {
+  text-align: center;
+  margin-top: 20px;
 }

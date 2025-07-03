@@ -1,37 +1,161 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+<style>
+  body {
+    background: linear-gradient(to bottom, #bbe4ff, #87cefd);
+    color: #091638;
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+
+  .form-container {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2em;
+    max-width: 500px;
+    width: 90%;
+    margin: 2em auto;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  .form-title {
+    color: #091638;
+    margin-bottom: 1.5em;
+    font-size: 1.8em;
+    text-align: center;
+  }
+
+  .form-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5em;
+    width: 100%;
+  }
+
+  .form-wrapper label {
+    color: #091638;
+    font-weight: 500;
+    margin-bottom: 0.5em;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+  }
+
+  .form-wrapper input,
+  .form-wrapper textarea,
+  .form-wrapper select {
+    background: #fff;
+    color: #28304a;
+    border: 1px solid #28304a;
+    border-radius: 6px;
+    padding: 0.8em 1em;
+    font-size: 1em;
+    outline: none;
+    transition: border 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .form-wrapper textarea {
+    resize: none;
+    height: 120px;
+  }
+
+  .form-wrapper input:focus,
+  .form-wrapper textarea:focus,
+  .form-wrapper select:focus {
+    border: 1.5px solid #1976d2;
+  }
+
+  .form-wrapper.checkbox-wrapper {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5em;
+    margin-bottom: 1.5em;
+  }
+
+  .form-wrapper.checkbox-wrapper input[type='checkbox'] {
+    width: 20px;
+    height: 20px;
+    accent-color: #1976d2;
+    margin-right: 8px;
+    cursor: pointer;
+  }
+
+  .form-wrapper.checkbox-wrapper label {
+    margin: 0;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+  }
+
+  .btn {
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.8em 1.5em;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: block;
+    width: 100%;
+  }
+
+  .btn:hover {
+    background: #1565c0;
+  }
+
+  .teal-text {
+    color: #1de9b6;
+  }
+</style>
+
+<div class="form-container">
   {% if object %}
-    <h1>Edit <span class="teal-text">{{object.title}}</span></h1>
+    <h1 class="form-title">Edit <span class="teal-text">{{ object.title }}</span></h1>
   {% else %}
-    <h1>Add Task</h1>
+    <h1 class="form-title">Add Task</h1>
   {% endif %}
 
   <form method="post">
     {% csrf_token %}
-    
-    <table style="margin-bottom: 30px;">
-      <tr>
-        <td>{{ form.title.label_tag }}</td>
-        <td>{{ form.title }}</td>
-      </tr>
-      <tr>
-        <td>{{ form.description.label_tag }}</td>
-        <td>{{ form.description }}</td>
-      </tr>
-      <tr>
-        <td>{{ form.due_date.label_tag }}</td>
-        <td>{{ form.due_date }}</td>
-      </tr>
-    </table>
 
-    <div style="margin-bottom: 20px;">
-      <label>
-        {{ form.is_completed }}
-        <span>Completed?</span>
+    <div class="form-wrapper">
+      <label for="{{ form.title.id_for_label }}">
+        <i class="fas fa-heading"></i> {{ form.title.label }}
+      </label>
+      {{ form.title }}
+    </div>
+
+    <div class="form-wrapper">
+      <label for="{{ form.description.id_for_label }}">
+        <i class="fas fa-align-left"></i> {{ form.description.label }}
+      </label>
+      {{ form.description }}
+    </div>
+
+    <div class="form-wrapper">
+      <label for="{{ form.due_date.id_for_label }}">
+        <i class="fas fa-calendar-alt"></i> {{ form.due_date.label }}
+      </label>
+      {{ form.due_date }}
+    </div>
+
+    <div class="form-wrapper checkbox-wrapper">
+      {{ form.is_completed }}
+      <label for="{{ form.is_completed.id_for_label }}">
+        <i class="fas fa-check-circle"></i> Completed?
       </label>
     </div>
 
     <button type="submit" class="btn">Save</button>
   </form>
+</div>
 {% endblock %}

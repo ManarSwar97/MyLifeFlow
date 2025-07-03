@@ -306,14 +306,22 @@ class ItemDetail(LoginRequiredMixin, DetailView):
 
 class ItemCreate(LoginRequiredMixin, CreateView):
     model = Item
-    fields = ['name', 'location', 'description']
+    form_class = ItemForm
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user  # optional, safe to keep
+        return kwargs
 
     def form_valid(self, form):
-            form.instance.user = self.request.user
-            return super().form_valid(form)
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
-    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['location_choices'] = self.get_form().existing_locations
+        return context
+   
 
 class NoteUpdate(LoginRequiredMixin, UpdateView):
     model = Note
@@ -449,16 +457,9 @@ class ItemCreate(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
     
-
 class ItemUpdate(LoginRequiredMixin, UpdateView):
     model = Item
     form_class = ItemForm
-
-    def get_object(self, queryset=None):
-        obj = super().get_object(queryset)
-        if obj.user != self.request.user:
-            raise PermissionDenied
-        return obj
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -466,11 +467,19 @@ class ItemUpdate(LoginRequiredMixin, UpdateView):
         return kwargs
 
     def form_valid(self, form):
-        new_location = self.request.POST.get('new_location')
-        if new_location:
-            form.instance.location = new_location
-        form.instance.user = self.request.user
+        item = form.instance
+        old_location = self.get_object().location
+        new_location = self.request.POST.get('new_location') or form.cleaned_data.get('location')
+
+        # Update movement if the location changed
+        if old_location != new_location:
+            item.movement = item.movement or []
+            item.movement.append(old_location)
+            item.location = new_location
+
+        item.user = self.request.user
         return super().form_valid(form)
+
 
 class ItemDelete(LoginRequiredMixin, DeleteView):
     model = Item
@@ -758,3 +767,132 @@ def profile(request):
         'profile':profile
     })
 
+@login_required
+def task_list_search(request):
+    query = request.GET.get('q', '')
+    if query:
+        task_list = Task.objects.filter(user=request.user, title__icontains=query)
+    else:
+        task_list = Task.objects.filter(user=request.user)
+
+    print("RESULTS:", task_list)
+
+    context = {
+        'task_list': task_list,
+        'query': query,
+    }
+    return render(request, 'main_app/task_list.html', context)
+@login_required
+def person_list_search(request):
+    query = request.GET.get('q', '')
+    if query:
+        person_list = Person.objects.filter(user=request.user, name__icontains=query)
+    else:
+        person_list = Person.objects.filter(user=request.user)
+
+    print("RESULTS:", person_list)
+
+    context = {
+        'person_list': person_list,
+        'query': query,
+    }
+    return render(request, 'main_app/person_list.html', context)
+
+@login_required
+def item_list_search(request):
+    query = request.GET.get('q', '')
+    if query:
+        item_list = Item.objects.filter(user=request.user, name__icontains=query)
+    else:
+        item_list = Item.objects.filter(user=request.user)
+
+    print("RESULTS:", item_list)
+
+    context = {
+        'item_list': item_list,
+        'query': query,
+    }
+    return render(request, 'main_app/item_list.html', context)
+
+@login_required
+def grocery_list_search(request):
+    query = request.GET.get('q', '')
+    if query:
+        grocery_list = Grocery.objects.filter(user=request.user, name__icontains=query)
+    else:
+        grocery_list = Grocery.objects.filter(user=request.user)
+
+    print("RESULTS:", grocery_list)
+
+    context = {
+        'grocery_list': grocery_list,
+        'query': query,
+    }
+    return render(request, 'main_app/grocery_list.html', context)
+
+
+@login_required
+def budget_list_search(request):
+    query = request.GET.get('q', '')
+    if query:
+        budget_list = Budget.objects.filter(user=request.user, name__icontains=query)
+    else:
+        budget_list = Budget.objects.filter(user=request.user)
+
+    print("RESULTS:", budget_list)
+
+    context = {
+        'budget_list': budget_list,
+        'query': query,
+    }
+    return render(request, 'main_app/budget_list.html', context)
+
+@login_required
+def expense_list_search(request):
+    query = request.GET.get('q', '')
+    if query:
+        expense_list = Expense.objects.filter(user=request.user, name__icontains=query)
+    else:
+        expense_list = Expense.objects.filter(user=request.user)
+
+    print("RESULTS:", expense_list)
+
+    context = {
+        'expense_list': expense_list,
+        'query': query,
+    }
+    return render(request, 'main_app/expense_list.html', context)
+
+
+@login_required
+def note_list_search(request):
+    query = request.GET.get('q', '')
+    if query:
+        note_list = Note.objects.filter(user=request.user, title__icontains=query)
+    else:
+        note_list = Note.objects.filter(user=request.user)
+
+    print("RESULTS:", note_list)
+
+    context = {
+        'note_list': note_list,
+        'query': query,
+    }
+    return render(request, 'main_app/note_list.html', context)
+
+
+@login_required
+def voice_list_search(request):
+    query = request.GET.get('q', '')
+    if query:
+        voice_list = Voice.objects.filter(user=request.user, title__icontains=query)
+    else:
+        voice_list = Voice.objects.filter(user=request.user)
+
+    print("RESULTS:", voice_list)
+
+    context = {
+        'voice_list': voice_list,
+        'query': query,
+    }
+    return render(request, 'main_app/voice_list.html', context)

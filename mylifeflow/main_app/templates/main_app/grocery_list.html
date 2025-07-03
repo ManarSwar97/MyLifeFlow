@@ -1,33 +1,98 @@
-{% extends 'base.html' %}
-{% block content %}
-<h1>My Groceries</h1>
-<table class="striped">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Purchase Date</th>
-      <th>Next Restock</th>
-      <th>Restocked?</th>
-      <th>Details</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for grocery in grocery_list %}
-    <tr>
-      <td>{{ grocery.name }}</td>
-      <td>{{ grocery.purchase_date }}</td>
-      <td>{{ grocery.next_restock }}</td>
-      <td>{{ grocery.is_restocked|yesno:"Yes,No" }}</td>
-      <td>
-        <a href="{% url 'grocery_detail' grocery.id %}" class="btn">View</a>
-      </td>
-    </tr>
-    {% empty %}
-    <tr>
-      <td colspan="5">No groceries found.</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-<a href="{% url 'grocery_create' %}" class="btn">Add Grocery</a>
+{% extends 'base.html' %} {% block content %} {% load static %}
+<link rel="stylesheet" href="{% static 'css/eb-style.css' %}" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+
+<style>
+  .search-bar-container {
+    max-width: 500px;
+    margin: 2em auto 1em;
+    text-align: center;
+  }
+
+  .search-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+  }
+
+  .search-form input[type='text'] {
+    padding: 0.6em 1em;
+    width: 100%;
+    max-width: 350px;
+    border: 1px solid #1976d2;
+    border-radius: 6px;
+    outline: none;
+    font-size: 1em;
+  }
+
+  .search-form button {
+    background: #1976d2;
+    color: white;
+    border: none;
+    padding: 0.6em 1.2em;
+    border-radius: 6px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .search-form button:hover {
+    background: #115293;
+  }
+</style>
+<div class="table-container">
+  <h1><i class="fa fa-cart-shopping"></i> My Groceries</h1>
+  <div class="search-bar-container">
+    <form
+      method="GET"
+      action="{% url 'grocery_list_search' %}"
+      class="search-form"
+    >
+      <input
+        type="text"
+        name="q"
+        placeholder="Search Grocery by name..."
+        value="{{ query }}"
+      />
+      <button type="submit"><i class="fas fa-search"></i></button>
+    </form>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th><i class="fa fa-tag"></i> Name</th>
+        <th><i class="fa fa-calendar-check"></i> Purchase Date</th>
+        <th><i class="fa fa-clock"></i> Next Restock</th>
+        <th><i class="fa fa-check-circle"></i> Restocked?</th>
+        <th><i class="fa fa-eye"></i> Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for grocery in grocery_list %}
+      <tr>
+        <td>{{ grocery.name }}</td>
+        <td>{{ grocery.purchase_date }}</td>
+        <td>{{ grocery.next_restock }}</td>
+        <td>{{ grocery.is_restocked|yesno:"Yes,No" }}</td>
+        <td>
+          <a href="{% url 'grocery_detail' grocery.id %}" class="btn"
+            ><i class="fa fa-eye"></i> View</a
+          >
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5">No groceries found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <a href="{% url 'grocery_create' %}" class="btn"
+    ><i class="fa fa-plus"></i> Add Grocery</a
+  >
+</div>
 {% endblock %}
