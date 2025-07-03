@@ -32,7 +32,9 @@
       feelWithUnit,
       quote,
       author,
-      pending
+      pending,
+      total_interacts,
+      
     ) {
       const now = new Date()
       const hour = now.getHours()
@@ -46,8 +48,8 @@
       }
 
       speak(
-        `I am your My Life Flow assistant, here to help you stay on top of your day. The weater in ${weather}, is ${tempWithUnit}, feeling like ${feelWithUnit}. Here’s a little inspiration for you: ${quote}, by ${author}. I hope that brightens your day! You have ${pending} tasks pending today; let’s try to complete them or add new ones to stay on track. Don’t forget to check in with your loved ones — you currently have 3 contacts.  Also, keep an eye on your groceries — you have 2 items needing restock soon.  And remember, taking a moment to journal can help you reflect and recharge. I’m here to support you every step of the way — let’s make today a great one!`
-      )
+      `I am your My Life Flow assistant, here to help you stay on top of your day. The weather in ${weather} is ${tempWithUnit}, feeling like ${feelWithUnit}. Here’s a little inspiration for you: ${quote}, by ${author}. I hope that brightens your day! You have ${pending} tasks pending today; let’s try to complete them or add new ones to stay on track. Don’t forget to check in with your loved ones — you currently have ${total_interacts} contacts. Also, keep an eye on your groceries — you have ${restockCount} item${restockCount != 1 ? 's' : ''} needing restock soon. And remember, taking a moment to journal can help you reflect and recharge. I’m here to support you every step of the way — let’s make today a great one!`
+    )
     }
 
     document
@@ -63,7 +65,7 @@
         const author = "{{ quotes.author|default:''|escapejs }}"
         const pending = '{{ pending |escapejs }}'
         const restockCount = ''
-        const peopleCount = ''
+        const total_interacts = '{{interact_times}}'
 
         wishUser(
           username,
@@ -74,7 +76,8 @@
           feelWithUnit,
           quote,
           author,
-          pending
+          pending,
+          total_interacts
         )
       })
   </script>
