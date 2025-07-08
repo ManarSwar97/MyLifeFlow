@@ -1,66 +1,74 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load widget_tweaks %}
 {% block content %}
 
-<link rel="stylesheet" href="{% static 'css/budgets.css' %}">
-
-<div class="form-container">
+<div class="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
   {% if object %}
-    <h1 class="form-title">Edit <span class="teal-text">{{ object.name }}</span></h1>
+    <h1 class="text-3xl font-bold mb-6">
+      Edit <span class="text-teal-600">{{ object.name }}</span>
+    </h1>
   {% else %}
-    <h1 class="form-title">Create Budget</h1>
+    <h1 class="text-3xl font-bold mb-6">Create Budget</h1>
   {% endif %}
 
-  <form method="post" id="budgetForm">
+  <form method="post" id="budgetForm" class="space-y-6">
     {% csrf_token %}
 
-    <div class="form-wrapper">
-      {{ form.name.label_tag }}
-      {{ form.name }}
+    <div>
+      {{ form.name.label_tag }}<br/>
+      {{ form.name|add_class:"w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500" }}
     </div>
 
-    <div class="form-wrapper">
-      {{ form.type.label_tag }}
-      {{ form.type }}
+    <div>
+      {{ form.type.label_tag }}<br/>
+      {{ form.type|add_class:"w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500" }}
     </div>
 
-    <div class="form-wrapper">
-      {{ form.total_amount.label_tag }}
-      {{ form.total_amount }}
+    <div>
+      {{ form.total_amount.label_tag }}<br/>
+      {{ form.total_amount|add_class:"w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500" }}
     </div>
 
-    <div class="form-wrapper">
-      {{ form.duration_type.label_tag }}
-      {{ form.duration_type }}
+    <div>
+      {{ form.duration_type.label_tag }}<br/>
+      {{ form.duration_type|add_class:"w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500" }}
     </div>
 
-    <div class="form-wrapper">
-      {{ form.start_date.label_tag }}
-      {{ form.start_date }}
+    <div>
+      {{ form.start_date.label_tag }}<br/>
+      {{ form.start_date|add_class:"w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500" }}
     </div>
 
-    <div class="form-wrapper">
-      {{ form.end_date.label_tag }}
-      {{ form.end_date }}
+    <div>
+      {{ form.end_date.label_tag }}<br/>
+      {{ form.end_date|add_class:"w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500" }}
     </div>
 
-    <div class="form-wrapper">
-      {{ form.auto_daily_limit.label_tag }}
-      {{ form.auto_daily_limit }}
+    <div class="flex items-center space-x-2">
+      {{ form.auto_daily_limit }} {{ form.auto_daily_limit.label_tag }}
     </div>
 
-    <div class="form-wrapper">
-      {{ form.manual_daily_limit.label_tag }}
-      {{ form.manual_daily_limit }}
+    <div>
+      {{ form.manual_daily_limit.label_tag }}<br/>
+      {{ form.manual_daily_limit|add_class:"w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500" }}
     </div>
 
-    <div class="form-wrapper">
-      {{ form.saving_goal.label_tag }}
-      {{ form.saving_goal }}
+    <div>
+      {{ form.saving_goal.label_tag }}<br/>
+      {{ form.saving_goal|add_class:"w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500" }}
     </div>
 
-    <input type="submit" value="{% if object %}Update{% else %}Create{% endif %} Budget" class="btn" />
-    <a href="{% url 'budget_list' %}" class="btn btn-secondary">Cancel</a>
+    <div class="flex space-x-4">
+      <input
+        type="submit"
+        value="{% if object %}Update{% else %}Create{% endif %} Budget"
+        class="bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-2 rounded-md cursor-pointer transition"
+      />
+      <a href="{% url 'budget_list' %}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-6 py-2 rounded-md transition">
+        Cancel
+      </a>
+    </div>
   </form>
 </div>
 

@@ -1,17 +1,26 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/budgets.css' %}">
 
-<div class="delete-expense-container">
-  <h2 class="delete-heading">Delete Expense</h2>
-  <p class="delete-message">Are you sure you want to delete "<span class="expense-name">{{ expense.name }}</span>"?</p>
+<div class="max-w-md mx-auto mt-16 p-6 bg-white rounded-lg shadow-md text-center">
+  <h2 class="text-2xl font-semibold mb-4 text-red-600">Delete Expense</h2>
+  <p class="mb-6 text-gray-700">
+    Are you sure you want to delete
+    <span class="font-semibold text-gray-900">"{{ expense.name }}"</span>?
+  </p>
 
-  <form method="post" class="delete-form">
+  <form method="post" class="mb-4">
     {% csrf_token %}
-    <button type="submit" class="btn btn-delete">Yes, delete</button>
+    <button type="submit" 
+            class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition-colors duration-200">
+      Yes, delete
+    </button>
   </form>
 
-  <a href="{% url 'expense_list' %}" class="btn btn-cancel">Cancel</a>
+  <a href="{% url 'expense_list' %}" 
+     class="inline-block text-center w-full border border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-900 py-2 px-4 rounded transition-colors duration-200">
+    Cancel
+  </a>
 </div>
+
 {% endblock %}

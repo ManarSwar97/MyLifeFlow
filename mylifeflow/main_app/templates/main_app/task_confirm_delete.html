@@ -1,82 +1,29 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<style>
-  body {
-    background: linear-gradient(to bottom, #bbe4ff, #87cefd);
-    font-family: 'Segoe UI', Arial, sans-serif;
-    color: #091638;
-    margin: 0;
-    padding: 0;
-  }
+<div class="min-h-screen bg-gradient-to-b from-sky-200 to-sky-400 flex items-center justify-center px-4">
+  <div class="bg-white rounded-2xl shadow-lg max-w-md w-full p-8 text-center">
+    <h1 class="text-2xl font-semibold text-slate-900 mb-6">Delete Task</h1>
 
-  .delete-container {
-    background: #fff;
-    border-radius: 16px;
-    padding: 2em;
-    max-width: 500px;
-    margin: 3em auto;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
-    text-align: center;
-  }
+    <h4 class="text-lg font-medium text-slate-800 mb-10">
+      Are you sure you want to delete 
+      <span class="text-cyan-500 font-semibold">"{{ object.title }}"</span>?
+    </h4>
 
-  .delete-container h1 {
-    color: #28304a;
-    margin-bottom: 1em;
-    font-size: 1.8em;
-  }
-
-  .delete-container h4 {
-    color: #091638;
-    margin-bottom: 2em;
-    font-weight: 500;
-  }
-
-  .btn {
-    background: #d32f2f;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 0.7em 1.5em;
-    font-size: 1em;
-    cursor: pointer;
-    transition: background 0.2s;
-    margin-right: 1em;
-  }
-
-  .btn:hover {
-    background: #b71c1c;
-  }
-
-  .btn-secondary {
-    background: #fff;
-    color: #1976d2;
-    border: 1px solid #1976d2;
-    border-radius: 6px;
-    padding: 0.7em 1.5em;
-    font-size: 1em;
-    text-decoration: none;
-    transition: background 0.2s, color 0.2s;
-  }
-
-  .btn-secondary:hover {
-    background: #f2f2f2;
-  }
-
-  .teal-text {
-    color: #1dafe9;
-  }
-</style>
-
-<div class="delete-container">
-  <h1>Delete Task</h1>
-
-  <h4>Are you sure you want to delete <span class="teal-text">"{{ object.title }}"</span>?</h4>
-
-  <form action="" method="POST">
-    {% csrf_token %}
-    <input type="submit" value="Yes, Delete!" class="btn">
-    <a href="{% url 'task_detail' task.id %}" class="btn-secondary">Cancel</a>
-  </form>
+    <form action="" method="POST" class="flex justify-center gap-4">
+      {% csrf_token %}
+      <input 
+        type="submit" 
+        value="Yes, Delete!" 
+        class="bg-red-700 hover:bg-red-800 text-white rounded-md px-6 py-2 text-lg cursor-pointer transition"
+      />
+      <a 
+        href="{% url 'task_detail' task.id %}" 
+        class="border border-blue-600 text-blue-600 hover:bg-blue-100 rounded-md px-6 py-2 text-lg transition inline-block"
+      >
+        Cancel
+      </a>
+    </form>
+  </div>
 </div>
 {% endblock %}

@@ -1,7 +1,31 @@
+
+<!-- Tailwind CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
 {% load static %}
 {% block content %}
 
 <!-- Page background -->
+<div class="min-h-screen bg-gradient-to-br from-blue-100 to-blue-300">
+
+  <!-- Navigation Bar -->
+  <nav class="bg-gradient-to-b from-sky-300 to-sky-400 px-8 py-6 flex justify-between items-center shadow-md">
+    <div class="text-3xl font-extrabold text-white tracking-wide">MyLifeFlow</div>
+
+    <div class="space-x-6 text-lg">
+      {% if user.is_authenticated %}
+        <span class="text-white font-semibold">Hi, {{ user.first_name }}</span>
+        <form method="post" action="{% url 'logout' %}" class="inline">
+          {% csrf_token %}
+          <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1.5 px-4 rounded-md">
+            Logout
+          </button>
+        </form>
+      {% else %}
+        <a href="{% url 'login' %}" class="text-white hover:text-gray-200 font-medium">Sign In</a>
+        <a href="{% url 'signup' %}" class="bg-white text-blue-700 hover:bg-gray-100 font-semibold py-1.5 px-5 rounded-md">
+          Sign Up
+        </a>
+      
 <div class="page-background">
 
   <!-- Navigation Bar -->
@@ -18,29 +42,48 @@
       {% else %}
         <a href="{% url 'login' %}" class="nav-button text-link">Sign In</a>
         <a href="{% url 'signup' %}" class="nav-button signup-button">Sign Up</a>
+
       {% endif %}
     </div>
   </nav>
 
   <!-- Main Content -->
+
+  <div class="max-w-3xl mt-20 px-6 ml-12">
+    {% if user.is_authenticated %}
+      <h1 class="text-6xl font-extrabold text-blue-800 mb-8">
+        Welcome {{ user.first_name }}!
+      </h1>
+    {% else %}
+      <h1 class="text-9xl font-extrabold text-sky-600 mb-8">
+        Welcome to MyLifeFlow!
+      </h1>
+      <p class="text-lg text-gray-900 leading-relaxed max-w-2xl text-left">
+
   <div class="main-content">
     {% if user.is_authenticated %}
       <h1 class="welcome-heading">Welcome {{ user.first_name }}!</h1>
     {% else %}
       <h1 class="welcome-main">Welcome to MyLifeFlow!</h1>
       <p class="description">
+
         MyLifeFlow is your all-in-one life companion — a personal dashboard that helps you stay on track with your tasks,
         manage your money, restock groceries, and even store household items with QR codes.
         You can voice-journal your days, track your yearly achievements, and connect with the people that matter through
         messages and voice calls.
       </p>
+
+      <p class="mt-6 text-lg font-semibold text-sky-800 text-left max-w-2xl">
+
       <p class="tagline">
+
         Organize smarter. Live better. Flow through your day with MyLifeFlow! 💫🧠📲
       </p>
     {% endif %}
   </div>
 
 </div>
+
 
 <!-- Styles -->
 <style>
@@ -159,5 +202,6 @@
     text-align: left;
   }
 </style>
+
 
 {% endblock %}

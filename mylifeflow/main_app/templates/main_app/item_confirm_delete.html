@@ -1,26 +1,37 @@
-{% extends 'base.html' %} {% block content %}
-
+{% extends 'base.html' %}
+{% block content %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/eb-style.css' %}" />
+
 <link
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 />
 
-<div class="delete-container">
-  <h1 class="form-title"><i class="fa fa-trash"></i> Delete Item</h1>
-  <h4>
+<div class="max-w-xl mx-auto mt-20 px-6 py-10 bg-white rounded-lg shadow">
+  <h1 class="text-2xl font-bold text-red-600 flex items-center gap-2 mb-4">
+    <i class="fa fa-trash"></i> Delete Item
+  </h1>
+
+  <p class="text-gray-700 text-lg mb-6">
     Are you sure you want to delete
-    <span class="teal-text">{{ object.name }}</span>?
-  </h4>
-  <form method="post">
+    <span class="text-teal-600 font-semibold">{{ object.name }}</span>?
+  </p>
+
+  <form method="post" class="flex gap-4">
     {% csrf_token %}
-    <button type="submit" class="btn">
+    <button
+      type="submit"
+      class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition"
+    >
       <i class="fa fa-check"></i> Yes, delete
     </button>
-    <a href="{% url 'item_detail' object.id %}" class="btn btn-secondary"
-      ><i class="fa fa-times"></i> Cancel</a
+
+    <a
+      href="{% url 'item_detail' object.id %}"
+      class="flex items-center gap-2 bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md transition"
     >
+      <i class="fa fa-times"></i> Cancel
+    </a>
   </form>
 </div>
 {% endblock %}

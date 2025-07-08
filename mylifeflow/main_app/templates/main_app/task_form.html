@@ -1,161 +1,55 @@
 {% extends 'base.html' %}
-
+{% load widget_tweaks %}
 {% block content %}
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 
-<style>
-  body {
-    background: linear-gradient(to bottom, #bbe4ff, #87cefd);
-    color: #091638;
-    margin: 0;
-    font-family: 'Segoe UI', Arial, sans-serif;
-  }
+<div class="min-h-screen bg-gradient-to-b from-sky-200 to-sky-400 text-slate-900 font-sans flex items-center justify-center p-6">
+  <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-lg">
+    {% if object %}
+      <h1 class="text-2xl font-semibold mb-6 text-center text-slate-900">
+        Edit <span class="text-teal-400">{{ object.title }}</span>
+      </h1>
+    {% else %}
+      <h1 class="text-2xl font-semibold mb-6 text-center text-slate-900">Add Task</h1>
+    {% endif %}
 
-  .form-container {
-    background: #fff;
-    border-radius: 16px;
-    padding: 2em;
-    max-width: 500px;
-    width: 90%;
-    margin: 2em auto;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
-  }
+    <form method="post" class="space-y-6">
+      {% csrf_token %}
 
-  .form-title {
-    color: #091638;
-    margin-bottom: 1.5em;
-    font-size: 1.8em;
-    text-align: center;
-  }
+      <div class="flex flex-col">
+        <label for="{{ form.title.id_for_label }}" class="flex items-center gap-2 mb-2 font-medium text-slate-900">
+          <i class="fas fa-heading text-black w-5 text-center"></i> {{ form.title.label }}
+        </label>
+        {{ form.title|add_class:"border border-slate-700 rounded-md p-3 text-slate-700 focus:outline-none focus:border-blue-600" }}
+      </div>
 
-  .form-wrapper {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 1.5em;
-    width: 100%;
-  }
+      <div class="flex flex-col">
+        <label for="{{ form.description.id_for_label }}" class="flex items-center gap-2 mb-2 font-medium text-slate-900">
+          <i class="fas fa-align-left text-black w-5 text-center"></i> {{ form.description.label }}
+        </label>
+        {{ form.description|add_class:"border border-slate-700 rounded-md p-3 text-slate-700 resize-none h-32 focus:outline-none focus:border-blue-600" }}
+      </div>
 
-  .form-wrapper label {
-    color: #091638;
-    font-weight: 500;
-    margin-bottom: 0.5em;
-    font-size: 1em;
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-  }
+      <div class="flex flex-col">
+        <label for="{{ form.due_date.id_for_label }}" class="flex items-center gap-2 mb-2 font-medium text-slate-900">
+          <i class="fas fa-calendar-alt text-black w-5 text-center"></i> {{ form.due_date.label }}
+        </label>
+        {{ form.due_date|add_class:"border border-slate-700 rounded-md p-3 text-slate-700 focus:outline-none focus:border-blue-600" }}
+      </div>
 
-  .form-wrapper input,
-  .form-wrapper textarea,
-  .form-wrapper select {
-    background: #fff;
-    color: #28304a;
-    border: 1px solid #28304a;
-    border-radius: 6px;
-    padding: 0.8em 1em;
-    font-size: 1em;
-    outline: none;
-    transition: border 0.2s;
-    width: 100%;
-    box-sizing: border-box;
-  }
+      <div class="flex items-center gap-2">
+        {{ form.is_completed|add_class:"w-5 h-5 accent-blue-600 cursor-pointer" }}
+        <label for="{{ form.is_completed.id_for_label }}" class="flex items-center gap-2 font-medium text-slate-900 cursor-pointer">
+          <i class="fas fa-check-circle text-black w-5 text-center"></i> Completed?
+        </label>
+      </div>
 
-  .form-wrapper textarea {
-    resize: none;
-    height: 120px;
-  }
-
-  .form-wrapper input:focus,
-  .form-wrapper textarea:focus,
-  .form-wrapper select:focus {
-    border: 1.5px solid #1976d2;
-  }
-
-  .form-wrapper.checkbox-wrapper {
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5em;
-    margin-bottom: 1.5em;
-  }
-
-  .form-wrapper.checkbox-wrapper input[type='checkbox'] {
-    width: 20px;
-    height: 20px;
-    accent-color: #1976d2;
-    margin-right: 8px;
-    cursor: pointer;
-  }
-
-  .form-wrapper.checkbox-wrapper label {
-    margin: 0;
-    font-size: 1em;
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-  }
-
-  .btn {
-    background: #1976d2;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 0.8em 1.5em;
-    font-size: 1em;
-    cursor: pointer;
-    transition: background 0.2s;
-    display: block;
-    width: 100%;
-  }
-
-  .btn:hover {
-    background: #1565c0;
-  }
-
-  .teal-text {
-    color: #1de9b6;
-  }
-</style>
-
-<div class="form-container">
-  {% if object %}
-    <h1 class="form-title">Edit <span class="teal-text">{{ object.title }}</span></h1>
-  {% else %}
-    <h1 class="form-title">Add Task</h1>
-  {% endif %}
-
-  <form method="post">
-    {% csrf_token %}
-
-    <div class="form-wrapper">
-      <label for="{{ form.title.id_for_label }}">
-        <i class="fas fa-heading"></i> {{ form.title.label }}
-      </label>
-      {{ form.title }}
-    </div>
-
-    <div class="form-wrapper">
-      <label for="{{ form.description.id_for_label }}">
-        <i class="fas fa-align-left"></i> {{ form.description.label }}
-      </label>
-      {{ form.description }}
-    </div>
-
-    <div class="form-wrapper">
-      <label for="{{ form.due_date.id_for_label }}">
-        <i class="fas fa-calendar-alt"></i> {{ form.due_date.label }}
-      </label>
-      {{ form.due_date }}
-    </div>
-
-    <div class="form-wrapper checkbox-wrapper">
-      {{ form.is_completed }}
-      <label for="{{ form.is_completed.id_for_label }}">
-        <i class="fas fa-check-circle"></i> Completed?
-      </label>
-    </div>
-
-    <button type="submit" class="btn">Save</button>
-  </form>
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md py-3 transition">
+        Save
+      </button>
+    </form>
+  </div>
 </div>
+
 {% endblock %}

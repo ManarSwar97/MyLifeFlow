@@ -1,64 +1,30 @@
-{% extends "base.html" %} {% block content %}
-<div
-  style="
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 20px 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #34495e;
-  "
->
-  <h1
-    style="
-      text-align: center;
-      font-size: 60px;
-      font-weight: 700;
-      margin-bottom: 40px;
-      letter-spacing: 0.05em;
-    "
-  >
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-lg mx-auto mt-12 p-5 font-sans text-gray-700">
+  <h1 class="text-center text-6xl font-extrabold mb-10 tracking-widest">
     {{ user.username }}'s Profile
   </h1>
 
-  <div style="display: flex; align-items: center; gap: 25px; flex-wrap: wrap">
+  <div class="flex flex-wrap items-center gap-6">
     {% if profile.profile_image %}
     <img
       src="{{ profile.profile_image.url }}"
       alt="Profile Image"
-      style="
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 3px solid #2980b9;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      "
+      class="w-30 h-30 rounded-full object-cover border-4 border-blue-600 shadow-md"
     />
     {% else %}
     <div
-      style="
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        background: #ccc;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #777;
-        font-size: 14px;
-      "
+      class="w-30 h-30 rounded-full bg-gray-300 flex items-center justify-center text-gray-500 text-sm"
     >
       No Image
     </div>
     {% endif %}
 
-    <div style="flex-grow: 1; font-size: 20px; line-height: 1.6">
+    <div class="flex-grow text-lg leading-relaxed space-y-2">
       <p><strong>First name:</strong> {{ user.first_name|default:"—" }}</p>
       <p><strong>Last name:</strong> {{ user.last_name|default:"—" }}</p>
       <p><strong>Email:</strong> {{ user.email }}</p>
-      <p>
-        <strong>Birthday:</strong> {{ profile.birthday|default:"Not provided" }}
-      </p>
+      <p><strong>Birthday:</strong> {{ profile.birthday|default:"Not provided" }}</p>
     </div>
   </div>
 </div>

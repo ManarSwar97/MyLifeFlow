@@ -86,7 +86,8 @@ def dashboard(request):
 
     budget_list = Budget.objects.filter(user=request.user)
     person_list = Person.objects.filter(user=request.user)
-
+    total_interacts = person_list.aggregate(total=Sum('interact_times'))['total'] or 0
+    
     #for grocieries 
     next_day= timezone.localdate() + timedelta(days=1)
     all_groceries = Grocery.objects.filter(user=request.user, is_restocked=False)
@@ -120,6 +121,8 @@ def dashboard(request):
         'completed': completed,
         'pending': pending,
         'percentage': percentage,
+        'interact_times': total_interacts,
+        'restock_count': len(grocery_list), 
     })
 
 
@@ -321,7 +324,7 @@ class ItemCreate(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['location_choices'] = self.get_form().existing_locations
         return context
-   
+
 
 class NoteUpdate(LoginRequiredMixin, UpdateView):
     model = Note

@@ -1,15 +1,18 @@
-{% extends 'base.html' %} {% block content %} {% load static %}
-<link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
 {% if user.is_authenticated %}
-<div class="dashboard-wrapper">
-  <div class="dashboard-header">
-    <h1>Welcome back, {{ user.first_name }}!</h1>
-    <p>
-      Track you daily habits and progress to keep your life flowing smoothly.
+<div class="p-6 min-h-screen">
+  <div class="mb-6 text-center">
+    <h1 class="text-3xl font-bold text-gray-800">Welcome back, {{ user.first_name }}!</h1>
+    <p class="text-gray-600 mt-2">
+      Track your daily habits and progress to keep your life flowing smoothly.
     </p>
   </div>
-  <div class="voice-assistant-container">
-    <button id="enableAssistant" class="voice-assistant-btn">
+
+    <div class="flex justify-center mb-8">
+    <button id="enableAssistant" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
       Enable Voice Assistant
     </button>
   </div>
@@ -29,7 +32,10 @@
       feelWithUnit,
       quote,
       author,
-      pending
+      pending,
+      total_interacts,
+      restockCount
+      
     ) {
       const now = new Date()
       const hour = now.getHours()
@@ -43,8 +49,8 @@
       }
 
       speak(
-        `I am your My Life Flow assistant, here to help you stay on top of your day. The weater in ${weather}, is ${tempWithUnit}, feeling like ${feelWithUnit}. Here’s a little inspiration for you: ${quote}, by ${author}. I hope that brightens your day! You have ${pending} tasks pending today; let’s try to complete them or add new ones to stay on track. Don’t forget to check in with your loved ones — you currently have 3 contacts.  Also, keep an eye on your groceries — you have 2 items needing restock soon.  And remember, taking a moment to journal can help you reflect and recharge. I’m here to support you every step of the way — let’s make today a great one!`
-      )
+      `I am your My Life Flow assistant, here to help you stay on top of your day. The weather in ${weather} is ${tempWithUnit}, feeling like ${feelWithUnit}. Here’s a little inspiration for you: ${quote}, by ${author}. I hope that brightens your day! You have ${pending} tasks pending today; let’s try to complete them or add new ones to stay on track. Don’t forget to check in with your loved ones — you currently have ${total_interacts} contacts. Also, keep an eye on your groceries — you have ${restockCount} item${restockCount != 1 ? 's' : ''} needing restock soon. And remember, taking a moment to journal can help you reflect and recharge. I’m here to support you every step of the way — let’s make today a great one!`
+    )
     }
 
     document
@@ -60,7 +66,7 @@
         const author = "{{ quotes.author|default:''|escapejs }}"
         const pending = '{{ pending |escapejs }}'
         const restockCount = ''
-        const peopleCount = ''
+        const total_interacts = '{{interact_times}}'
 
         wishUser(
           username,
@@ -71,151 +77,121 @@
           feelWithUnit,
           quote,
           author,
-          pending
+          pending,
+          total_interacts
         )
       })
   </script>
 
-  <div class="top-widgets">
-    <!-- for weather -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
     {% if weather %}
-    <div class="widget weather-widget">
-      <h3>Weather in {{ weather.sys.country }}</h3>
-
-      <p>
-        Temp: {{ weather.main.temp }} ° {% if units == 'metric' %} C {% else %}
-        F {% endif %}
-      </p>
-
-      <p>
-        Feels like: {{ weather.main.feels_like }} ° {% if units == 'metric' %} C
-        {% else %} F {% endif %}
-      </p>
-
-      <p>
-        Wind speed: {{ weather.wind.speed }} {% if units == 'metric' %} m/s {% else %} mph {% endif %}
-      </p>
-
-      <a
-        href="?units={% if units == 'metric' %}imperial{% else %}metric{% endif %}"
-        style="cursor: pointer"
-      >
-        Switch to ° {% if units == 'metric' %} F {% else %} C {% endif %}
+    <div class="bg-white shadow p-4 rounded">
+      <h3 class="text-xl font-semibold mb-2">Weather in {{ weather.sys.country }}</h3>
+      <p>Temp: {{ weather.main.temp }}° {% if units == 'metric' %}C{% else %}F{% endif %}</p>
+      <p>Feels like: {{ weather.main.feels_like }}° {% if units == 'metric' %}C{% else %}F{% endif %}</p>
+      <p>Wind speed: {{ weather.wind.speed }} {% if units == 'metric' %}m/s{% else %}mph{% endif %}</p>
+      <a href="?units={% if units == 'metric' %}imperial{% else %}metric{% endif %}" class="text-blue-500 underline">
+        Switch to °{% if units == 'metric' %}F{% else %}C{% endif %}
       </a>
     </div>
     {% else %}
     <p>Could not get weather data.</p>
     {% endif %}
 
-    <!-- for quotes -->
     {% if quotes %}
-    <div class="widget quotes-widget">
-      <h3>Today's quote</h3>
-      <p>{{quotes.quote}}</p>
-      <p>by: {{quotes.author}}</p>
+    <div class="bg-white shadow p-4 rounded">
+      <h3 class="text-xl font-semibold mb-2">Today's Quote</h3>
+      <p class="italic">"{{ quotes.quote }}"</p>
+      <p class="text-right mt-2">– {{ quotes.author }}</p>
     </div>
     {% else %}
     <p>Could not get quotes data.</p>
     {% endif %}
   </div>
 
-  <div class="dashboard-container">
-    <div class="left-column">
-      <!-- Daily Tasks part -->
-      <div class="task-section">
-        <h3>Today's Tasks</h3>
-        <h4>{{ percentage }}%</h4>
+  <div class="flex flex-col lg:flex-row gap-6">
+    <!-- Left column -->
+    <div class="flex-1 space-y-6">
+      <!-- Tasks -->
+      <div class="bg-white shadow p-4 rounded">
+        <h3 class="text-xl font-bold mb-2">Today's Tasks</h3>
+        <h4 class="text-lg text-gray-600 mb-2">{{ percentage }}%</h4>
 
-        <div class="task-status">
-          <p>
-            <span class="status-dot green-dot">&#9679;</span> Completed ({{completed}})
-          </p>
-          <p>
-            <span class="status-dot red-dot">&#9679;</span> Pending ({{pending}})
-          </p>
+        <div class="flex gap-4 mb-4">
+          <p><span class="text-green-500 font-bold">&#9679;</span> Completed ({{ completed }})</p>
+          <p><span class="text-red-500 font-bold">&#9679;</span> Pending ({{ pending }})</p>
         </div>
 
-        <div id="task-cards-container" class="task-cards-container">
+        <div id="task-cards-container" class="grid gap-4">
           {% for task in task_list %}
-          <a href="{% url 'task_detail' task.id %}">
-          <div class="task-card">
-            <h4>{{ task.title }}</h4>
-            <p>Due: {{ task.due_date }}</p>
-            <p>
-              Status: {% if task.is_completed %}
-              <span style="color: green">&#9679;</span> Completed {% else %}
-              <span style="color: red">&#9679;</span> Pending {% endif %}
+          <a href="{% url 'task_detail' task.id %}" class="block bg-gray-100 hover:bg-gray-200 p-4 rounded">
+            <h4 class="font-semibold">{{ task.title }}</h4>
+            <p class="text-sm text-gray-600">Due: {{ task.due_date }}</p>
+            <p class="text-sm">
+              Status:
+              {% if task.is_completed %}
+              <span class="text-green-500">&#9679;</span> Completed
+              {% else %}
+              <span class="text-red-500">&#9679;</span> Pending
+              {% endif %}
             </p>
-          </div>
           </a>
           {% endfor %}
         </div>
 
-        <button id="add-task-btn" class="add-task">+ Add Task</button>
+        <button id="add-task-btn" class="mt-4 px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          + Add Task
+        </button>
 
-        <form
-          id="dashboard-task-form"
-          class="dashboard-task-form"
-          method="POST"
-          action="{% url 'dashboard_add_task' %}"
-        >
+        <form id="dashboard-task-form" class="mt-4 space-y-2 hidden" method="POST" action="{% url 'dashboard_add_task' %}">
           {% csrf_token %}
-          <input
-            type="text"
-            name="title"
-            id="new-task-title"
-            placeholder="Enter task title"
-            required
-          />
-          <button class="add-task-btn" type="submit">Save</button>
-          <button type="button" id="cancel-task-btn">Cancel</button>
+          <input type="text" name="title" id="new-task-title" placeholder="Enter task title" required
+            class="w-full border px-3 py-2 rounded" />
+          <div class="flex gap-2">
+            <button class="bg-green-600 text-white px-4 py-2 rounded add-task-btn" type="submit">Save</button>
+            <button type="button" id="cancel-task-btn" class="bg-gray-300 px-4 py-2 rounded">Cancel</button>
+          </div>
         </form>
 
-        <a href="{% url 'task_index' %}" class="btn btn-primary"
-          >View All Tasks</a
-        >
+        <a href="{% url 'task_index' %}" class="inline-block mt-4 text-blue-600 underline">View All Tasks</a>
       </div>
-      <!-- My People Part -->
-      <div class="people-section">
-        <h3>My People</h3>
+
+      <!-- People -->
+      <div class="bg-white shadow p-4 rounded">
+        <h3 class="text-xl font-bold mb-4">My People</h3>
         {% for person in person_list %}
-        <a href="{% url 'person_detail' person.id %}">
-          <div class="card">
-            <div class="card-content">
-              <span class="circle-avatar">
-          {{ person.name|slice:":1" }}{% if person.name|length > 1 %}{{ person.name|slice:"1:2" }}{% endif %}
-        </span>
-              <span class="card-title">{{ person.name }}</span>
-              <p>Next Contact Date: {{ person.contact_date }}</p>
+        <a href="{% url 'person_detail' person.id %}" class="block mb-3 bg-gray-100 p-3 rounded hover:bg-gray-200">
+          <div class="flex items-center gap-3">
+            <span class="bg-indigo-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold">
+              {{ person.name|slice:":1" }}{% if person.name|length > 1 %}{{ person.name|slice:"1:2" }}{% endif %}
+            </span>
+            <div>
+              <h4 class="font-semibold">{{ person.name }}</h4>
+              <p class="text-sm text-gray-500">Next Contact: {{ person.contact_date }}</p>
             </div>
           </div>
         </a>
         {% empty %}
-        <p>No people found.</p>
+        <p class="text-gray-500">No people found.</p>
         {% endfor %}
       </div>
 
-      <!-- Journaling Part -->
-      <div class="journal-section">
-        <h4>Tap to Record Today’s Entry</h4>
-        <a href="{% url 'voice_create' %}" class="btn"
-          ><button>Record</button></a
-        >
+      <!-- Journal -->
+      <div class="bg-white shadow p-4 rounded text-center">
+        <h4 class="mb-4 font-semibold">Tap to Record Today’s Entry</h4>
+        <a href="{% url 'voice_create' %}">
+          <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">Record</button>
+        </a>
       </div>
     </div>
 
-    <div class="right-column">
-      <!-- Budget part -->
-      <div class="budget-section">
-        <h3>Budgets</h3>
-
-        <!-- Dropdown box -->
-        <label for="budgetDropdown">Choose a budget:</label>
-        <select
-          id="budgetDropdown"
-          class="budget_dropdown"
-          onchange="showBudget(this.value)"
-        >
+    <!-- Right column -->
+    <div class="flex-1 space-y-6">
+      <!-- Budget -->
+      <div class="bg-white shadow p-4 rounded">
+        <h3 class="text-xl font-bold mb-4">Budgets</h3>
+        <label for="budgetDropdown" class="block mb-2">Choose a budget:</label>
+        <select id="budgetDropdown" class="w-full border px-3 py-2 rounded" onchange="showBudget(this.value)">
           <option value="">-- Select a Budget --</option>
           {% for budget in budget_list %}
           <option value="budget-{{ budget.id }}">{{ budget.name }}</option>
@@ -223,110 +199,80 @@
         </select>
 
         {% for item in budgets %}
-        <div
-          class="budget-card"
-          id="budget-{{ item.budget.id }}"
-          style="display: none"
-        >
-          <h3>{{ item.budget.name }}</h3>
-          <p>Total Amount: BHD{{ item.budget.total_amount }}</p>
+        <div id="budget-{{ item.budget.id }}" class="mt-4 p-4 border rounded hidden">
+          <h3 class="text-lg font-bold">{{ item.budget.name }}</h3>
+          <p>Total: BHD{{ item.budget.total_amount }}</p>
           <p>Remaining: BHD{{ item.remaining }}</p>
-          <h4>Today's Budget</h4>
-          <h5>BHD{{ item.daily_limit|floatformat:2 }}</h5>
+          <h4 class="mt-2 font-semibold">Today's Budget</h4>
+          <h5 class="text-xl">BHD{{ item.daily_limit|floatformat:2 }}</h5>
           <p>Total Spent: BHD{{ item.spent }}</p>
           <p>Spent Today: BHD{{ item.today_spent|floatformat:2 }}</p>
 
           {% if item.today_spent >= item.daily_limit %}
-          <p style="color: red; font-weight: bold">
-            You have reached your daily limit!
-          </p>
+          <p class="text-red-600 font-bold mt-2">You have reached your daily limit!</p>
           {% else %}
-    
-          <p>
-            You can still spend up to BHD
-            {{ item.remaining_daily_limit|floatformat:"2" }} today.
-          </p>
-
+          <p class="text-green-700">You can still spend BHD{{ item.remaining_daily_limit|floatformat:"2" }} today.</p>
           {% endif %}
 
-          <!-- Expenses part -->
-          <h4>Expenses:</h4>
-          <ul>
+          <h4 class="mt-4 font-semibold">Expenses:</h4>
+          <ul class="list-disc list-inside">
             {% for expense in item.expenses %}
             <li>
               {{ expense.name }} — BHD{{ expense.amount|floatformat:2 }}
-              <small>({{ expense.created_at|date:"M d, Y" }})</small>
+              <small class="text-gray-500">({{ expense.created_at|date:"M d, Y" }})</small>
             </li>
             {% empty %}
-            <li>No expenses added yet.</li>
+            <li class="text-gray-500">No expenses added yet.</li>
             {% endfor %}
           </ul>
 
-          <button class="add-expense-btn" data-budget-id="{{ item.budget.id }}">
+          <button class="mt-4 bg-blue-500 text-white px-3 py-2 rounded add-expense-btn" data-budget-id="{{ item.budget.id }}">
             Add Expense
           </button>
-          <form
-            method="POST"
-            action="{% url 'dashboard_add_expense' %}"
-            class="dashboard-expense-form"
-            style="display: none"
-          >
+          <form method="POST" action="{% url 'dashboard_add_expense' %}" class="dashboard-expense-form mt-2 hidden">
             {% csrf_token %}
-            <input
-              type="hidden"
-              name="budget_id"
-              value="{{ item.budget.id }}"
-            />
-
-            <input
-              type="text"
-              name="title"
-              placeholder="Expense Title"
-              required
-            />
-            <input
-              type="number"
-              name="amount"
-              placeholder="Amount"
-              step="0.01"
-              required
-            />
-
-            <button class="add-expense-btn-submit" type="submit">
-              Add Expense
-            </button>
-            <button type="button" class="cancel-expense-btn">Cancel</button>
+            <input type="hidden" name="budget_id" value="{{ item.budget.id }}" />
+            <input type="text" name="title" placeholder="Expense Title" class="w-full mt-2 px-3 py-2 border rounded" required />
+            <input type="number" name="amount" placeholder="Amount" step="0.01" class="w-full mt-2 px-3 py-2 border rounded" required />
+            <div class="flex gap-2 mt-2">
+              <button class="bg-green-600 text-white px-4 py-2 rounded add-expense-btn-submit" type="submit">Add Expense</button>
+              <button type="button" class="cancel-expense-btn bg-gray-300 px-4 py-2 rounded">Cancel</button>
+            </div>
           </form>
         </div>
         {% endfor %}
       </div>
 
-      <!-- Restock Reminders part -->
-      <div class="restock-section">
-        <h5>Restock Reminders</h5>
-        <p>
-          Here are the groceries you need to restock very soon — keep an eye on
-          these to stay stocked up!
+      <!-- Grocery Restock -->
+      <div class="bg-white shadow p-4 rounded">
+        <h5 class="text-lg font-semibold mb-2">Restock Reminders</h5>
+        <p class="text-sm mb-4 text-gray-600">
+          Here are the groceries you need to restock soon — stay stocked up!
         </p>
 
-        {% if grocery_list %} {% for grocery in grocery_list %}
-        <a href="{% url 'grocery_detail' grocery.id %}">
-          <div class="card">
-            <div class="card-content">
-              <span class="card-title">{{ grocery.name }}</span>
-              <p>Next Restock: {{ grocery.next_restock|date:"F j, Y" }}</p>
-            </div>
+        {% if grocery_list %}
+        {% for grocery in grocery_list %}
+        <a href="{% url 'grocery_detail' grocery.id %}" class="block bg-gray-100 hover:bg-gray-200 p-3 mb-3 rounded">
+          <div>
+            <h6 class="font-semibold">{{ grocery.name }}</h6>
+            <p class="text-sm text-gray-500">Next Restock: {{ grocery.next_restock|date:"F j, Y" }}</p>
           </div>
         </a>
-        {% endfor %} {% else %}
-        <p>
-          You're all stocked up for now! No groceries need restocking in the
-          next day.
-        </p>
+        {% endfor %}
+        {% else %}
+        <p class="text-gray-500">You're all stocked up for now!</p>
         {% endif %}
       </div>
     </div>
   </div>
+</div>
+<!-- Test Notification Button -->
+<div class="fixed bottom-4 right-4">
+  <button onclick="sendNotification('Test Notification', 'This is a test!')"
+          class="p-3 rounded-full bg-yellow-400 hover:bg-yellow-500 transition text-xl shadow-lg">
+    🔔
+  </button>
+</div>
   {% else %}
   <h1>Welcome to MyLifeFlow!</h1>
   {% endif %}
@@ -385,10 +331,6 @@
     3000
   )
 </script>
-
-<button onclick="sendNotification('Test Notification', 'This is a test!')">
-  🔔 Test Notification
-</button>
 
 <script>
   const addButtons = document.querySelectorAll('.add-expense-btn')

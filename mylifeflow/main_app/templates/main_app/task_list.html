@@ -2,234 +2,99 @@
 {% load static %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/tasks.css' %}" />
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-<style>
-body {
-  background: #2980b9;
-  background: -webkit-linear-gradient(to right, #ffffff, #6dd5fa, #2980b9);
-  background: linear-gradient(to bottom, #bbe4ff, #87cefd);
-  color: #091638;
-  margin: 0;
-  font-family: 'Segoe UI', Arial, sans-serif;
-}
-.search-bar-container {
-    max-width: 500px;
-    margin: 2em auto 1em;
-    text-align: center;
-  }
+<div class="max-w-4xl mx-auto p-6 bg-white rounded-2xl shadow-lg mt-8">
 
-  .search-form {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5em;
-  }
+  <h1 class="text-center text-3xl font-semibold text-gray-800 mb-6">Tasks List</h1>
 
-  .search-form input[type="text"] {
-    padding: 0.6em 1em;
-    width: 100%;
-    max-width: 350px;
-    border: 1px solid #1976d2;
-    border-radius: 6px;
-    outline: none;
-    font-size: 1em;
-  }
+  <div class="max-w-md mx-auto mb-6">
+    <form method="GET" action="{% url 'task_list_search' %}" class="flex gap-3">
+      <input
+        type="text"
+        name="q"
+        placeholder="Search task by title..."
+        value="{{ query }}"
+        class="flex-grow px-4 py-2 border border-blue-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <button
+        type="submit"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
+        aria-label="Search"
+      >
+        <i class="fas fa-search"></i>
+      </button>
+    </form>
+  </div>
 
-  .search-form button {
-    background: #1976d2;
-    color: white;
-    border: none;
-    padding: 0.6em 1.2em;
-    border-radius: 6px;
-    font-size: 1em;
-    cursor: pointer;
-    transition: background 0.2s ease;
-  }
-
-  .search-form button:hover {
-    background: #115293;
-  }
-
-  .table-container {
-    max-width: 1000px;
-    margin: 1em auto 2em;
-    padding: 2em;
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
-  }
-
-
-.table-container h1 {
-  color: #28304a;
-  margin-bottom: 1em;
-}
-
-.table-container table {
-  width: 100%;
-  border-collapse: collapse;
-  color: #28304a;
-  margin-bottom: 3em;
-}
-
-.table-container th,
-.table-container td {
-  padding: 1em;
-  text-align: left;
-  border-bottom: 1px solid #1e2746;
-  vertical-align: middle;
-}
-
-.table-container th {
-  background-color: #fff;
-  color: #28304a;
-  font-weight: 600;
-}
-
-.table-container tr:hover {
-  background-color: #ffffffa4;
-}
-
-.table-container a {
-  color: #28304a;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.table-container a:hover {
-  text-decoration: underline;
-}
-
-.btn {
-  background: #1976d2;
-  color: #fff;
-  border-radius: 6px;
-  padding: 0.5em 1em;
-  font-size: 0.9em;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-block;
-  transition: background 0.2s;
-}
-
-.btn:hover {
-  background: #1565c0;
-}
-
-.status-dot {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  margin-right: 5px;
-  vertical-align: middle;
-}
-
-.status-completed {
-  background-color: green;
-}
-
-.status-pending {
-  background-color: red;
-}
-
-.center-align {
-  text-align: center;
-  margin-top: 20px;
-}
-
-.actions-cell {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 10px;
-}
-
-.btn-flat i.material-icons {
-  font-size: 20px;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.btn-flat i.material-icons.orange-text:hover {
-  color: #0093f5;
-}
-
-.btn-flat i.material-icons.red-text:hover {
-  color: #0093f5;
-}
-</style>
-<div class="table-container">
-<h1 class="center-align">Tasks List</h1>
-
-<div class="search-bar-container">
-  <form method="GET" action="{% url 'task_list_search' %}" class="search-form">
-    <input type="text" name="q" placeholder="Search task by title..." value="{{ query }}">
-    <button type="submit"><i class="fas fa-search"></i></button>
-  </form>
-</div>
-
-
-
-  <table class="striped">
+  <table class="w-full text-left text-gray-700 border-collapse">
     <thead>
-      <tr>
-        <th><i class="fas fa-tasks"></i> Title</th>
-        <th><i class="fas fa-calendar-alt"></i> Due Date</th>
-        <th><i class="fas fa-check-circle"></i> Status</th>
-        <th><i class="fas fa-cogs"></i> Actions</th>
+      <tr class="border-b border-gray-300">
+        <th class="py-3 px-4 font-semibold text-gray-900">
+          <i class="fas fa-tasks mr-2"></i>Title
+        </th>
+        <th class="py-3 px-4 font-semibold text-gray-900">
+          <i class="fas fa-calendar-alt mr-2"></i>Due Date
+        </th>
+        <th class="py-3 px-4 font-semibold text-gray-900">
+          <i class="fas fa-check-circle mr-2"></i>Status
+        </th>
+        <th class="py-3 px-4 font-semibold text-gray-900">
+          <i class="fas fa-cogs mr-2"></i>Actions
+        </th>
       </tr>
     </thead>
     <tbody>
       {% now "Y-m-d" as today %}
       {% for task in task_list %}
-        <tr>
-          <td>{{ task.title }}</td>
-          <td>
+        <tr class="hover:bg-blue-50 transition-colors">
+          <td class="py-3 px-4">{{ task.title }}</td>
+          <td class="py-3 px-4">
             {% if task.due_date|date:"Y-m-d" == today %}
-              Today
+              <span class="font-semibold text-blue-600">Today</span>
             {% else %}
               {{ task.due_date|date:"F j, Y" }}
             {% endif %}
           </td>
-          <td>
+          <td class="py-3 px-4 flex items-center gap-2">
             {% if task.is_completed %}
-              <span class="status-dot status-completed"></span>
-              Completed
+              <span class="w-3 h-3 rounded-full bg-green-600 inline-block"></span>
+              <span>Completed</span>
             {% else %}
-              <span class="status-dot status-pending"></span>
-              Pending
+              <span class="w-3 h-3 rounded-full bg-red-600 inline-block"></span>
+              <span>Pending</span>
             {% endif %}
           </td>
-            <td class="actions-cell">
-              <a href="{% url 'task_detail' task.id %}" class="btn-small" style="color: black;">View Details</a>
-              <div style="margin-left: auto; display: flex; gap: 10px;">
-                <a href="{% url 'task_update' task.id %}" class="btn-flat" title="Edit">
-                  <i class="material-icons orange-text text-darken-2">edit</i>
-                </a>
-                <a href="{% url 'task_delete' task.id %}" class="btn-flat" title="Delete">
-                  <i class="material-icons red-text text-darken-2">delete</i>
-                </a>
-              </div>
-            </td>
-
+          <td class="py-3 px-4 flex items-center gap-4">
+            <a href="{% url 'task_detail' task.id %}" class="text-black bg-gray-200 hover:bg-gray-300 rounded px-3 py-1 text-sm font-semibold transition">
+              View Details
+            </a>
+            <div class="flex gap-2 ml-auto">
+              <a href="{% url 'task_update' task.id %}" title="Edit" class="text-orange-600 hover:text-blue-600 transition">
+                <i class="material-icons cursor-pointer">edit</i>
+              </a>
+              <a href="{% url 'task_delete' task.id %}" title="Delete" class="text-red-600 hover:text-blue-600 transition">
+                <i class="material-icons cursor-pointer">delete</i>
+              </a>
+            </div>
+          </td>
         </tr>
       {% empty %}
         <tr>
-          <td colspan="4" class="center-align grey-text">No tasks found.</td>
+          <td colspan="4" class="text-center text-gray-500 py-6">No tasks found.</td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
+
+  <div class="text-center mt-8">
+    <a href="{% url 'task_create' %}" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+      Add Task
+    </a>
+  </div>
 </div>
 
-<div class="center-align" style="margin-top: 20px;">
-  <a href="{% url 'task_create' %}" class="btn">Add Task</a>
-</div>
-</div>
 <!-- Chatbot integration -->
 <script type="text/javascript">
   (function(d, m){

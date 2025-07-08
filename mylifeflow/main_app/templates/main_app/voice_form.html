@@ -1,278 +1,156 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% load widget_tweaks %}
 {% block content %}
 <!-- Include Material Icons -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-<style>
-body {
-  background: linear-gradient(to bottom, #bbe4ff, #87cefd);
-  font-family: 'Segoe UI', Arial, sans-serif;
-  color: #091638;
-  margin: 0;
-  padding: 0;
-}
+<div class="bg-gradient-to-b from-sky-200 to-sky-400 min-h-screen flex items-start justify-center py-8 px-4 font-sans text-[#091638]">
 
-.form-container {
-  background: #fff;
-  border-radius: 16px;
-  padding: 2em;
-  max-width: 600px;
-  width: 90%;
-  margin: 2em auto 3em;
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
-}
+  <div class="bg-white rounded-2xl p-8 max-w-xl w-full shadow-md">
 
-.form-title {
-  color: #091638;
-  margin-bottom: 1.5em;
-  font-size: 1.8em;
-  text-align: center;
-  font-weight: 600;
-}
+    {% if object %}
+      <h1 class="text-center text-2xl font-semibold mb-6">
+        Edit <span class="text-teal-400">{{ object.title }}</span>
+      </h1>
+    {% else %}
+      <h1 class="text-center text-2xl font-semibold mb-6">Add Voice Note</h1>
+    {% endif %}
 
-.form-wrapper {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1.5em;
-  width: 100%;
-}
+    <form method="POST" enctype="multipart/form-data" id="voiceForm" class="space-y-6">
+      {% csrf_token %}
 
-.form-wrapper label {
-  color: #091638;
-  font-weight: 600;
-  margin-bottom: 0.5em;
-  font-size: 1.1em;
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-}
+      <div class="flex flex-col w-full">
+        <label for="{{ form.title.id_for_label }}" class="flex items-center gap-2 font-semibold text-[#091638] mb-2 text-lg">
+          <span class="material-icons">edit_note</span> {{ form.title.label }}
+        </label>
+        {{ form.title|add_class:"border border-[#28304a] rounded-md px-4 py-2 text-[#28304a] text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600" }}
+      </div>
 
-.form-wrapper input,
-.form-wrapper textarea,
-.form-wrapper select {
-  background: #fff;
-  color: #28304a;
-  border: 1px solid #28304a;
-  border-radius: 6px;
-  padding: 0.8em 1em;
-  font-size: 1em;
-  outline: none;
-  transition: border 0.2s;
-  width: 100%;
-  box-sizing: border-box;
-  font-family: inherit;
-}
+      <div class="hidden">
+        {{ form.audio }}
+      </div>
 
-.form-wrapper textarea {
-  resize: none;
-  height: 120px;
-}
+      <div class="flex flex-col w-full">
+        <label for="{{ form.image.id_for_label }}" class="flex items-center gap-2 font-semibold text-[#091638] mb-2 text-lg">
+          <span class="material-icons">image</span> {{ form.image.label }}
+        </label>
+        {{ form.image|add_class:"border border-[#28304a] rounded-md px-4 py-2 text-[#28304a] text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600" }}
+      </div>
 
-.form-wrapper input:focus,
-.form-wrapper textarea:focus,
-.form-wrapper select:focus {
-  border: 1.5px solid #1976d2;
-}
+      <div class="flex flex-col w-full">
+        <label for="{{ form.emotion.id_for_label }}" class="flex items-center gap-2 font-semibold text-[#091638] mb-2 text-lg">
+          <span class="material-icons">mood</span> {{ form.emotion.label }}
+        </label>
+        {{ form.emotion|add_class:"border border-[#28304a] rounded-md px-4 py-2 text-[#28304a] text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600" }}
+      </div>
 
-.btn,
-.styled-button {
-  background: #1976d2;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 0.9em 1.6em;
-  font-size: 1em;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
-  user-select: none;
-  /* ensure buttons look consistent */
-}
+      <div class="display mt-6 text-center"></div>
+      <div class="controllers mt-6 flex justify-center gap-4"></div>
 
-.btn:hover,
-.styled-button:hover {
-  background: #1565c0;
-  box-shadow: 0 0 8px rgba(21, 101, 192, 0.6);
-}
-
-.btn {
-  display: block;
-  width: 100%;
-  margin-top: 1.5em;
-}
-
-.teal-text {
-  color: #1de9b6;
-}
-
-.controllers {
-  margin-top: 1.5em;
-  display: flex;
-  justify-content: center;
-  gap: 1em;
-}
-
-.display {
-  margin-top: 1.5em;
-  text-align: center;
-}
-
-.display audio {
-  margin-top: 1em;
-  border-radius: 8px;
-  outline: none;
-  width: 100%;
-  max-width: 500px;
-}
-
-.display audio:focus {
-  box-shadow: 0 0 10px #1976d2;
-}
-</style>
-
-<div class="form-container">
-  {% if object %}
-    <h1 class="form-title">Edit <span class="teal-text">{{ object.title }}</span></h1>
-  {% else %}
-    <h1 class="form-title">Add Voice Note</h1>
-  {% endif %}
-
-  <form method="POST" enctype="multipart/form-data" id="voiceForm">
-    {% csrf_token %}
-
-    <div class="form-wrapper">
-      <label for="{{ form.title.id_for_label }}">
-        <i class="material-icons">edit_note</i> {{ form.title.label }}
-      </label>
-      {{ form.title }}
-    </div>
-
-    <div class="form-wrapper" style="display: none;">
-      {{ form.audio }}
-    </div>
-
-    <div class="form-wrapper">
-      <label for="{{ form.image.id_for_label }}">
-        <i class="material-icons">image</i> {{ form.image.label }}
-      </label>
-      {{ form.image }}
-    </div>
-
-    <div class="form-wrapper">
-      <label for="{{ form.emotion.id_for_label }}">
-        <i class="material-icons">mood</i> {{ form.emotion.label }}
-      </label>
-      {{ form.emotion }}
-    </div>
-
-    <div class="display"></div>
-    <div class="controllers"></div>
-
-    <button type="submit" class="btn">
-      <i class="material-icons" style="margin-right: 5px;"></i> Save Voice Note
-    </button>
-  </form>
+      <button type="submit" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 rounded-md transition-shadow duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2 select-none">
+        <i class="material-icons"></i> Save Voice Note
+      </button>
+    </form>
+  </div>
 </div>
 
-<!--source: https://github.com/davidsproject/VRecorder/blob/main/vrecorder.js-->
-  <script>
-    const display = document.querySelector('.display')
-    const controllerWrapper = document.querySelector('.controllers')
+<script>
+  const display = document.querySelector('.display')
+  const controllerWrapper = document.querySelector('.controllers')
 
-    const State = ['Initial', 'Record', 'Download']
-    let stateIndex = 0
-    let mediaRecorder, chunks = [], audioURL = ''
+  const State = ['Initial', 'Record', 'Download']
+  let stateIndex = 0
+  let mediaRecorder, chunks = [], audioURL = ''
 
-    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
-        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-            mediaRecorder = new MediaRecorder(stream)
+  if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+          mediaRecorder = new MediaRecorder(stream)
 
-            mediaRecorder.ondataavailable = (e) => {
-                chunks.push(e.data)
-            }
+          mediaRecorder.ondataavailable = (e) => {
+              chunks.push(e.data)
+          }
 
-            mediaRecorder.onstop = () => {
-                const blob = new Blob(chunks, {'type': 'audio/ogg; codecs=opus'})
-                chunks = []
-                audioURL = window.URL.createObjectURL(blob)
+          mediaRecorder.onstop = () => {
+              const blob = new Blob(chunks, {'type': 'audio/ogg; codecs=opus'})
+              chunks = []
+              audioURL = window.URL.createObjectURL(blob)
 
-                const file = new File([blob], 'voice_note.ogg', { type: 'audio/ogg' })
-                const dataTransfer = new DataTransfer()
-                dataTransfer.items.add(file)
-                document.querySelector('input[type="file"][name$="audio"]').files = dataTransfer.files
+              const file = new File([blob], 'voice_note.ogg', { type: 'audio/ogg' })
+              const dataTransfer = new DataTransfer()
+              dataTransfer.items.add(file)
+              document.querySelector('input[type="file"][name$="audio"]').files = dataTransfer.files
 
-                document.querySelector('audio')?.remove()
-                const audio = document.createElement('audio')
-                audio.controls = true
-                audio.src = audioURL
-                display.append(audio)
-            }
-        }).catch(error => {
-            console.log('Following error has occurred: ', error)
-        })
-    } else {
-        stateIndex = ''
-        application(stateIndex)
-    }
+              document.querySelector('audio')?.remove()
+              const audio = document.createElement('audio')
+              audio.controls = true
+              audio.src = audioURL
+              display.append(audio)
+          }
+      }).catch(error => {
+          console.log('Following error has occurred: ', error)
+      })
+  } else {
+      stateIndex = ''
+      application(stateIndex)
+  }
 
-    const clearDisplay = () => display.textContent = ''
-    const clearControls = () => controllerWrapper.textContent = ''
+  const clearDisplay = () => display.textContent = ''
+  const clearControls = () => controllerWrapper.textContent = ''
 
-    const startRecording = () => {
-        stateIndex = 1
-        mediaRecorder.start()
-        application(stateIndex)
-    }
+  const startRecording = () => {
+      stateIndex = 1
+      mediaRecorder.start()
+      application(stateIndex)
+  }
 
-    const stopRecording = () => {
-        stateIndex = 2
-        mediaRecorder.stop()
-        application(stateIndex)
-    }
+  const stopRecording = () => {
+      stateIndex = 2
+      mediaRecorder.stop()
+      application(stateIndex)
+  }
 
-    const addButton = (id, funString, text) => {
-        const btn = document.createElement('button')
-        btn.id = id
-        btn.setAttribute('onclick', funString)
-        btn.textContent = text
-        btn.classList.add('styled-button');
-        controllerWrapper.append(btn)
-    }
+  const addButton = (id, funString, text) => {
+      const btn = document.createElement('button')
+      btn.id = id
+      btn.setAttribute('onclick', funString)
+      btn.textContent = text
+      btn.classList.add('styled-button');
+      controllerWrapper.append(btn)
+  }
 
-    const addMessage = (text) => {
-        const msg = document.createElement('p')
-        msg.textContent = text
-        display.append(msg)
-    }
+  const addMessage = (text) => {
+      const msg = document.createElement('p')
+      msg.textContent = text
+      display.append(msg)
+  }
 
-    const application = (index) => {
-        switch (State[index]) {
-            case 'Initial':
-                clearDisplay()
-                clearControls()
-                addButton('record', 'startRecording()', 'Start Recording')
-                break
-            case 'Record':
-                clearDisplay()
-                clearControls()
-                addMessage('Recording...')
-                addButton('stop', 'stopRecording()', 'Stop Recording')
-                break
-            case 'Download':
-                clearDisplay()
-                clearControls()
-                addButton('record', 'startRecording()', 'Record Again')
-                break
-            default:
-                clearDisplay()
-                clearControls()
-                addMessage('Your browser does not support mediaDevices')
-                break
-        }
-    }
+  const application = (index) => {
+      switch (State[index]) {
+          case 'Initial':
+              clearDisplay()
+              clearControls()
+              addButton('record', 'startRecording()', 'Start Recording')
+              break
+          case 'Record':
+              clearDisplay()
+              clearControls()
+              addMessage('Recording...')
+              addButton('stop', 'stopRecording()', 'Stop Recording')
+              break
+          case 'Download':
+              clearDisplay()
+              clearControls()
+              addButton('record', 'startRecording()', 'Record Again')
+              break
+          default:
+              clearDisplay()
+              clearControls()
+              addMessage('Your browser does not support mediaDevices')
+              break
+      }
+  }
 
-    application(stateIndex)
-  </script>
+  application(stateIndex)
+</script>
 {% endblock %}

@@ -1,56 +1,61 @@
-{% extends 'base.html' %}{% block content %}
-{% load static %}
-
-
-<link rel="stylesheet" href="{% static 'css/eb-style.css' %}" />
+{% extends 'base.html' %}
+{% block content %}
+{% load widget_tweaks %}
 <link
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 />
 
-<div class="form-container">
-  <h1 class="form-title">
+<div class="max-w-xl mx-auto mt-12 p-8 bg-white rounded-lg shadow-md">
+  <h1 class="text-3xl font-bold mb-6 text-gray-800 flex items-center gap-3">
+    <i class="fa fa-{{ object|yesno:'edit,plus' }}"></i>
     {% if object %}Edit{% else %}Add{% endif %} Grocery
   </h1>
-  <form method="post">
+
+  <form method="post" class="space-y-6">
     {% csrf_token %}
-    <div class="form-wrapper">
-      <label for="{{ form.name.id_for_label }}"
-        ><i class="fa fa-shopping-basket"></i> Name</label
-      >
-      {{ form.name }}
-    </div>
 
-    <div class="form-wrapper">
-      <label for="{{ form.purchase_date.id_for_label }}"
-        ><i class="fa fa-calendar"></i> Purchase Date</label
-      >
-      {{ form.purchase_date }}
-    </div>
-
-    <div class="form-wrapper">
-      <label for="{{ form.duration_days.id_for_label }}"
-        ><i class="fa fa-clock"></i> Duration (in days)</label
-      >
-      {{ form.duration_days }}
-    </div>
-
-    <div class="form-wrapper checkbox-wrapper">
-      <label for="{{ form.is_restocked.id_for_label }}">
-        <i class="fa fa-check"></i> Is Restocked?
+    <div>
+      <label for="{{ form.name.id_for_label }}" class="block font-medium text-gray-700 mb-1">
+        <i class="fa fa-shopping-basket text-teal-600 mr-1"></i> Name
       </label>
+      {{ form.name|add_class:"w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500" }}
+    </div>
+
+    <div>
+      <label for="{{ form.purchase_date.id_for_label }}" class="block font-medium text-gray-700 mb-1">
+        <i class="fa fa-calendar text-teal-600 mr-1"></i> Purchase Date
+      </label>
+      {{ form.purchase_date|add_class:"w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500" }}
+    </div>
+
+    <div>
+      <label for="{{ form.duration_days.id_for_label }}" class="block font-medium text-gray-700 mb-1">
+        <i class="fa fa-clock text-teal-600 mr-1"></i> Duration (in days)
+      </label>
+      {{ form.duration_days|add_class:"w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500" }}
+    </div>
+
+    <div class="flex items-center space-x-3">
       {{ form.is_restocked }}
+      <label for="{{ form.is_restocked.id_for_label }}" class="font-medium text-gray-700">
+        <i class="fa fa-check text-teal-600 mr-1"></i> Is Restocked?
+      </label>
     </div>
 
-    <div class="form-wrapper">
-      <label for="{{ form.notes.id_for_label }}"
-        ><i class="fa fa-pencil-alt"></i> Notes</label
-      >
-      {{ form.notes }}
+    <div>
+      <label for="{{ form.notes.id_for_label }}" class="block font-medium text-gray-700 mb-1">
+        <i class="fa fa-pencil-alt text-teal-600 mr-1"></i> Notes
+      </label>
+      {{ form.notes|add_class:"w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500" }}
     </div>
 
-    <input type="submit" value="Save" class="btn" />
-    <a href="{% url 'grocery_index' %}" class="btn btn-secondary">Cancel</a>
+    <div class="flex gap-4 mt-6">
+      <input type="submit" value="Save" class="bg-teal-600 hover:bg-teal-700 text-white font-semibold px-4 py-2 rounded-md transition" />
+      <a href="{% url 'grocery_index' %}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-4 py-2 rounded-md transition">
+        Cancel
+      </a>
+    </div>
   </form>
 </div>
-{% endblock content %}
+{% endblock %}

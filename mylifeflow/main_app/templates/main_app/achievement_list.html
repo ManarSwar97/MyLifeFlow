@@ -1,325 +1,201 @@
-{% extends 'base.html' %}
-{% block content %}
-<style>
-  body {
-    background: linear-gradient(to bottom, #bbe4ff, #87cefd);
-    font-family: 'Segoe UI', Arial, sans-serif;
-    color: #091638;
-    margin: 0;
-    padding: 0;
-  }
+{% extends 'base.html' %} {% load static %} {% block content %}
 
-  .cards-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    max-width: 1200px;
-    margin: 2em auto 4em;
-    padding: 0 1em;
-    box-sizing: border-box;
-  }
+<div class="flex flex-wrap gap-6 max-w-6xl mx-auto my-8 px-4">
+  <div class="bg-white rounded-2xl shadow-lg p-6 flex-1 min-w-[320px]">
+    <h2 class="text-2xl font-bold text-sky-900 mb-4">Task Completion</h2>
+    <h3 class="text-lg font-semibold text-slate-800 mb-4">
+      You have completed {{ completed_percentage }}% tasks
+    </h3>
+    <canvas id="taskChart" class="w-full h-auto"></canvas>
+  </div>
 
-  .card {
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 3px 20px rgba(0, 0, 0, 0.12);
-    padding: 2em 2.5em;
-    margin-bottom: 30px;
-    flex: 1 1 calc(50% - 20px);
-    box-sizing: border-box;
-    min-width: 320px;
-    color: #28304a;
-  }
+  <div class="bg-white rounded-2xl shadow-lg p-6 flex-1 min-w-[320px]">
+    <h2 class="text-2xl font-bold text-sky-900 mb-4">
+      Saving and Expense Summary
+    </h2>
+    <p class="text-slate-700">
+      <strong>Total Savings:</strong> {{ total_saving }}
+    </p>
+    <p class="text-slate-700">
+      <strong>Total Expenses:</strong> {{ total_expenses }}
+    </p>
+    <p class="font-semibold text-slate-800 mt-2">{{ saving_message }}</p>
+    <canvas id="expenseChart" class="w-full h-auto mt-4"></canvas>
+  </div>
 
-  .card h2 {
-    margin-top: 0;
-    margin-bottom: 1em;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    color: #091638;
-  }
+  <div class="bg-white rounded-2xl shadow-lg p-6 flex-1 min-w-[320px]">
+    <h2 class="text-2xl font-bold text-sky-900 mb-4">
+      Grocery Restock Summary
+    </h2>
+    <p class="font-semibold text-slate-800 mb-4">
+      You have restocked {{ percentage }}% during this year!
+    </p>
+    <canvas id="groceryChart" class="w-full h-auto"></canvas>
+  </div>
 
-  .card h3, .card p {
-    color: #28304a;
-  }
+  <div class="bg-white rounded-2xl shadow-lg p-6 flex-1 min-w-[320px]">
+    <h2 class="text-2xl font-bold text-sky-900 mb-4">
+      Voice Journaling Summary
+    </h2>
+    <p class="text-slate-700">
+      Total voice notes recorded: {{ voice_note_count }}
+    </p>
+    <p class="text-slate-700">
+      Voice journaling completion: {{ voice_note_percentage }}%
+    </p>
+    <canvas id="emotionChart" class="w-full h-auto mt-4"></canvas>
+  </div>
+</div>
 
-  /* Chart canvas to be responsive */
-  canvas {
-    width: 100% !important;
-    height: auto !important;
-  }
+<h3
+  class="text-center text-2xl font-bold text-sky-900 mt-12 mb-6 tracking-wide"
+>
+  Top People You Interacted With
+</h3>
 
-  /* Top People Section */
-  .top-people-container {
-    max-width: 600px;
-    margin: 2em auto 4em;
-    padding: 1.5em 2em;
-    border-radius: 16px;
-    background: #fff;
-    box-shadow: 0 3px 20px rgba(0, 0, 0, 0.12);
-    color: #28304a;
-  }
+<ul class="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-6">
+  {% for person in top_people %}
+  <li
+    class="flex justify-between items-center bg-blue-50 border border-blue-200 rounded-xl p-4 mb-3 hover:shadow-md transition-shadow"
+  >
+    <div>
+      <p class="font-semibold text-sky-900">{{ person.name }}</p>
+      <p class="text-sm text-slate-600">
+        {{ person.interact_times }} interactions
+      </p>
+    </div>
+    <a
+      href="{% url 'send_mail_and_increment' person.pk %}"
+      target="_blank"
+      class="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors"
+    >
+      Send Email
+    </a>
+  </li>
+  {% empty %}
+  <li class="italic text-center text-slate-500 py-4">No interactions yet.</li>
+  {% endfor %}
+</ul>
 
-  .top-people-heading {
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin-bottom: 1.5em;
-    color: #091638;
-    text-align: center;
-    letter-spacing: 0.05em;
-  }
-
-  .top-people-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .top-person-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #f5faff;
-    border: 1px solid #d1e4ff;
-    border-radius: 12px;
-    padding: 12px 18px;
-    margin-bottom: 12px;
-    transition: box-shadow 0.25s ease;
-  }
-
-  .top-person-item:hover {
-    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.25);
-  }
-
-  .person-info {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .person-name {
-    font-weight: 700;
-    color: #091638;
-  }
-
-  .person-interactions {
-    font-size: 0.9rem;
-    color: #606c80;
-  }
-
-  .email-button {
-    background-color: #1976d2;
-    color: #fff;
-    text-decoration: none;
-    padding: 8px 14px;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    transition: background-color 0.3s ease;
-  }
-
-  .email-button:hover {
-    background-color: #115293;
-  }
-
-  .no-interactions {
-    color: #999;
-    font-style: italic;
-    text-align: center;
-    padding: 1em 0;
-  }
-</style>
-
-<div class="cards-container">
-
-  <div class="card">
-    <h2>Task Completion</h2>
-    <h3>You have completed {{ completed_percentage }}% tasks</h3>
-    <canvas id="taskChart" width="100" height="100"></canvas>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
-    <script>
-      const completed = Number("{{ completed_percentage }}");
-      const remaining = 100 - completed;
-
-      new Chart(document.getElementById("taskChart"), {
-        type: "pie",
-        data: {
-          labels: ["Completed", "Remaining"],
-          datasets: [{
-            data: [completed, remaining],
-            backgroundColor: ["#4CAF50", "#F44336"]
-          }]
+<!-- Scripts for charts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+<script>
+  const completed = Number('{{ completed_percentage }}')
+  const remaining = 100 - completed
+  new Chart(document.getElementById('taskChart'), {
+    type: 'pie',
+    data: {
+      labels: ['Completed', 'Remaining'],
+      datasets: [
+        {
+          data: [completed, remaining],
+          backgroundColor: ['#4CAF50', '#F44336']
+        }
+      ]
+    },
+    options: {
+      plugins: {
+        datalabels: {
+          formatter: (value) => value + '%',
+          color: '#fff',
+          font: { weight: 'bold', size: 14 }
         },
-        options: {
-          plugins: {
-            datalabels: {
-              formatter: value => value + '%',
-              color: '#fff',
-              font: { weight: 'bold', size: 14 }
-            },
-            title: {
-              display: true,
-              text: "Task Completion",
-              color: '#091638',
-              font: { weight: '700', size: 18 }
+        title: {
+          display: true,
+          text: 'Task Completion',
+          color: '#091638',
+          font: { weight: '700', size: 18 }
+        }
+      }
+    },
+    plugins: [ChartDataLabels]
+  })
+
+  document.addEventListener('DOMContentLoaded', function () {
+    fetch("{% url 'get_expense' %}")
+      .then((res) => res.json())
+      .then((data) => {
+        const sortedData = data.data.sort((a, b) => b.amount - a.amount)
+        const points = sortedData.map((e, i) => ({ x: i + 1, y: e.amount }))
+        new Chart(document.getElementById('expenseChart'), {
+          type: 'scatter',
+          data: {
+            datasets: [
+              {
+                label: 'Expenses (BD)',
+                data: points,
+                backgroundColor: '#f44336'
+              }
+            ]
+          },
+          options: {
+            scales: { y: { beginAtZero: true } },
+            plugins: { legend: { labels: { color: '#28304a' } } }
+          }
+        })
+      })
+
+    fetch("{% url 'get_groceries_top' %}")
+      .then((res) => res.json())
+      .then((data) => {
+        const labels = data.grocery.map((e) => e.name)
+        const counts = data.grocery.map((e) => e.restock_count)
+        new Chart(document.getElementById('groceryChart'), {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [
+              { label: 'Restocked', data: counts, backgroundColor: '#1de9b6' }
+            ]
+          },
+          options: {
+            scales: { y: { beginAtZero: true, precision: 0 } },
+            plugins: {
+              legend: { labels: { color: '#28304a' } },
+              title: {
+                display: true,
+                text: 'Grocery Restock Count',
+                color: '#091638',
+                font: { weight: '700', size: 18 }
+              }
             }
           }
-        },
-        plugins: [ChartDataLabels]
-      });
-    </script>
-  </div>
-
-  <div class="card">
-    <h2>Saving and Expense Summary</h2>
-    <p><strong>Total Savings:</strong> {{ total_saving }}</p>
-    <p><strong>Total Expenses:</strong> {{ total_expenses }}</p>
-    <p style="font-weight: 700;">{{ saving_message }}</p>
-    <canvas id="expenseChart" width="300" height="200"></canvas>
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        fetch("{% url 'get_expense' %}")
-          .then(res => res.json())
-          .then(data => {
-            const sortedData = data.data.sort((a, b) => b.amount - a.amount);
-            const points = sortedData.map((e, i) => ({ x: i + 1, y: e.amount }));
-
-            new Chart(document.getElementById("expenseChart"), {
-              type: 'scatter',
-              data: {
-                datasets: [{
-                  label: 'Expenses (BD)',
-                  data: points,
-                  backgroundColor: '#f44336'
-                }]
-              },
-              options: {
-                scales: {
-                  y: { beginAtZero: true }
-                },
-                plugins: {
-                  legend: {
-                    labels: { color: '#28304a' }
-                  }
-                }
-              }
-            });
-          });
-      });
-    </script>
-  </div>
-
-  <div class="card">
-    <h2>Grocery Restock Summary</h2>
-    <p style="font-weight: 700;">You have restocked {{ percentage }}% during this year!</p>
-    <canvas id="groceryChart" width="400" height="200"></canvas>
-    <script>
-      fetch("{% url 'get_groceries_top' %}")
-        .then(res => res.json())
-        .then(data => {
-          const labels = data.grocery.map(e => e.name);
-          const counts = data.grocery.map(e => e.restock_count);
-
-          new Chart(document.getElementById('groceryChart'), {
-            type: 'bar',
-            data: {
-              labels: labels,
-              datasets: [{
-                label: 'Restocked',
-                data: counts,
-                backgroundColor: '#1de9b6'
-              }]
-            },
-            options: {
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  precision: 0
-                }
-              },
-              plugins: {
-                legend: { labels: { color: '#28304a' } },
-                title: {
-                  display: true,
-                  text: 'Grocery Restock Count',
-                  color: '#091638',
-                  font: { weight: '700', size: 18 }
-                }
-              }
-            }
-          });
         })
-        .catch(console.error);
-    </script>
-  </div>
+      })
 
-  <div class="card">
-    <h2>Voice Journaling Summary</h2>
-    <p>Total voice notes recorded: {{ voice_note_count }}</p>
-    <p>Voice journaling completion: {{ voice_note_percentage }}%</p>
-    <canvas id="emotionChart" width="400" height="200"></canvas>
-    <script>
-      fetch("{% url 'get_voice_emotion_counts' %}")
-        .then(res => res.json())
-        .then(data => {
-          const emotions = data.voice_emotions.map(e => e.emotion);
-          const counts = data.voice_emotions.map(e => e.count);
-
-          new Chart(document.getElementById('emotionChart'), {
-            type: 'bar',
-            data: {
-              labels: emotions,
-              datasets: [{
+    fetch("{% url 'get_voice_emotion_counts' %}")
+      .then((res) => res.json())
+      .then((data) => {
+        const emotions = data.voice_emotions.map((e) => e.emotion)
+        const counts = data.voice_emotions.map((e) => e.count)
+        new Chart(document.getElementById('emotionChart'), {
+          type: 'bar',
+          data: {
+            labels: emotions,
+            datasets: [
+              {
                 label: 'Number of Voice Notes',
                 data: counts,
                 backgroundColor: '#1de9b6'
-              }]
-            },
-            options: {
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  precision: 0
-                }
-              },
-              plugins: {
-                title: {
-                  display: true,
-                  text: 'Voice Notes by Emotion',
-                  color: '#091638',
-                  font: { weight: '700', size: 18 }
-                },
-                legend: {
-                  display: false
-                }
               }
+            ]
+          },
+          options: {
+            scales: { y: { beginAtZero: true, precision: 0 } },
+            plugins: {
+              title: {
+                display: true,
+                text: 'Voice Notes by Emotion',
+                color: '#091638',
+                font: { weight: '700', size: 18 }
+              },
+              legend: { display: false }
             }
-          });
+          }
         })
-        .catch(err => console.error('Error loading emotion data:', err));
-    </script>
-  </div>
-
-</div>
-
-<h3 class="top-people-heading">Top People You Interacted With</h3>
-
-<ul class="top-people-list">
-  {% for person in top_people %}
-    <li class="top-person-item">
-      <div class="person-info">
-        <p class="person-name">{{ person.name }}</p>
-        <p class="person-interactions">{{ person.interact_times }} interactions</p>
-      </div>
-      <a href="{% url 'send_mail_and_increment' person.pk %}" 
-         target="_blank" 
-         class="email-button">
-        Send Email
-      </a>
-    </li>
-  {% empty %}
-    <li class="no-interactions">No interactions yet.</li>
-  {% endfor %}
-</ul>
+      })
+  })
+</script>
 
 {% endblock %}

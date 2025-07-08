@@ -1,52 +1,74 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+{% block content %}
 
-{% load static %}
-<link rel="stylesheet" href="{% static 'css/eb-style.css' %}" />
 <link
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 />
 
-<div class="detail-container">
-  <h1 class="form-title"><i class="fa fa-box"></i> {{ grocery.name }}</h1>
+<div class="max-w-3xl mx-auto mt-12 p-6 bg-white rounded-lg shadow-md">
 
-  <div class="detail-row">
-    <div class="detail-label"><i class="fa fa-calendar-check"></i> Purchase Date:</div>
-    <div class="detail-value">{{ grocery.purchase_date }}</div>
-  </div>
-  <div class="detail-row">
-    <div class="detail-label"><i class="fa fa-hourglass-start"></i> Duration (days):</div>
-    <div class="detail-value">{{ grocery.duration_days }}</div>
-  </div>
-  <div class="detail-row">
-    <div class="detail-label"><i class="fa fa-clock"></i> Next Restock:</div>
-    <div class="detail-value">{{ grocery.next_restock }}</div>
-  </div>
-  <div class="detail-row">
-    <div class="detail-label"><i class="fa fa-check-circle"></i> Restocked?</div>
-    <div class="detail-value">{{ grocery.is_restocked|yesno:"Yes,No" }}</div>
-  </div>
-  <div class="detail-row">
-    <div class="detail-label"><i class="fa fa-calendar-day"></i> Restock Date:</div>
-    <div class="detail-value">{{ grocery.restock_date }}</div>
-  </div>
-  {% if grocery.notes %}
-  <div class="detail-row">
-    <div class="detail-label"><i class="fa fa-pencil-alt"></i> Notes:</div>
-    <div class="detail-value">{{ grocery.notes }}</div>
-  </div>
-  {% endif %}
+  <h1 class="text-3xl font-bold mb-6 flex items-center gap-3 text-gray-800">
+    <i class="fa fa-box text-teal-600"></i> {{ grocery.name }}
+  </h1>
 
-  <div class="detail-actions">
-    <a href="{% url 'grocery_update' grocery.id %}" class="btn"
-      ><i class="fa fa-edit"></i> Edit</a
-    >
-    <a href="{% url 'grocery_delete' grocery.id %}" class="btn btn-secondary"
-      ><i class="fa fa-trash"></i> Delete</a
-    >
-    <a href="{% url 'grocery_index' %}" class="btn"
-      ><i class="fa fa-arrow-left"></i> Back to List</a
-    >
+  <div class="space-y-4 text-gray-700">
+    <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+      <div class="flex items-center gap-2 font-semibold">
+        <i class="fa fa-calendar-check text-teal-500"></i> Purchase Date:
+      </div>
+      <div>{{ grocery.purchase_date }}</div>
+    </div>
+
+    <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+      <div class="flex items-center gap-2 font-semibold">
+        <i class="fa fa-hourglass-start text-teal-500"></i> Duration (days):
+      </div>
+      <div>{{ grocery.duration_days }}</div>
+    </div>
+
+    <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+      <div class="flex items-center gap-2 font-semibold">
+        <i class="fa fa-clock text-teal-500"></i> Next Restock:
+      </div>
+      <div>{{ grocery.next_restock }}</div>
+    </div>
+
+    <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+      <div class="flex items-center gap-2 font-semibold">
+        <i class="fa fa-check-circle text-teal-500"></i> Restocked?
+      </div>
+      <div>{{ grocery.is_restocked|yesno:"Yes,No" }}</div>
+    </div>
+
+    <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+      <div class="flex items-center gap-2 font-semibold">
+        <i class="fa fa-calendar-day text-teal-500"></i> Restock Date:
+      </div>
+      <div>{{ grocery.restock_date }}</div>
+    </div>
+
+    {% if grocery.notes %}
+    <div class="flex justify-between items-start border-b border-gray-200 pb-2">
+      <div class="flex items-center gap-2 font-semibold">
+        <i class="fa fa-pencil-alt text-teal-500"></i> Notes:
+      </div>
+      <div class="whitespace-pre-wrap">{{ grocery.notes }}</div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="mt-8 flex gap-4">
+    <a href="{% url 'grocery_update' grocery.id %}" class="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold px-4 py-2 rounded-md transition">
+      <i class="fa fa-edit"></i> Edit
+    </a>
+    <a href="{% url 'grocery_delete' grocery.id %}" class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-md transition">
+      <i class="fa fa-trash"></i> Delete
+    </a>
+    <a href="{% url 'grocery_index' %}" class="flex items-center gap-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-4 py-2 rounded-md transition">
+      <i class="fa fa-arrow-left"></i> Back to List
+    </a>
   </div>
 </div>
-{% endblock content %}
+
+{% endblock %}

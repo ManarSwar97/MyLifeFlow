@@ -1,105 +1,81 @@
-{% extends 'base.html' %}{% block content %}
+{% extends 'base.html' %}
+{% block content %}
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/eb-style.css' %}" />
 <link
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 />
-<style>
-  
-.search-bar-container {
-    max-width: 500px;
-    margin: 2em auto 1em;
-    text-align: center;
-  }
 
-  .search-form {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5em;
-  }
+<div class="max-w-5xl mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6">People List</h1>
 
-  .search-form input[type="text"] {
-    padding: 0.6em 1em;
-    width: 100%;
-    max-width: 350px;
-    border: 1px solid #1976d2;
-    border-radius: 6px;
-    outline: none;
-    font-size: 1em;
-  }
-
-  .search-form button {
-    background: #1976d2;
-    color: white;
-    border: none;
-    padding: 0.6em 1.2em;
-    border-radius: 6px;
-    font-size: 1em;
-    cursor: pointer;
-    transition: background 0.2s ease;
-  }
-
-  .search-form button:hover {
-    background: #115293;
-  }
-
-</style>
-<div class="table-container">
-  <h1>People List</h1>
-    <div class="search-bar-container">
-    <form method="GET" action="{% url 'person_list_search' %}" class="search-form">
-      <input type="text" name="q" placeholder="Search person by name..." value="{{ query }}">
-      <button type="submit"><i class="fas fa-search"></i></button>
+  <div class="max-w-md mx-auto mb-8">
+    <form method="GET" action="{% url 'person_list_search' %}" class="flex items-center gap-3">
+      <input
+        type="text"
+        name="q"
+        placeholder="Search person by name..."
+        value="{{ query }}"
+        class="flex-grow border border-blue-600 rounded-md px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <button
+        type="submit"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition"
+      >
+        <i class="fas fa-search"></i>
+      </button>
     </form>
   </div>
-  <h1><i class="fa fa-users"></i> People</h1>
-  <table>
-    <thead>
-      <tr>
-        <th><i class="fa fa-user"></i> Name</th>
-        <th><i class="fa fa-envelope"></i> Email</th>
-        <th><i class="fa fa-users"></i> Relationship</th>
-        <th><i class="fa fa-calendar-alt"></i> Next Contact</th>
-        <th><i class="fa fa-eye"></i> View Details</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for person in person_list %}
-      <tr>
-        <td>{{ person.name }}</td>
-        <td>
-          {{ person.email }} {% if person.is_registered_user %}
-          <a href="{% url 'send_message' person.id %}" target="_blank"
-            >Send Message</a
-          >
-          {% else %}
-          <a
-            href="{% url 'send_mail_and_increment' person.id %}"
-            target="_blank"
-            >Send Mail</a
-          >
-          {% endif %} >
-        </td>
-        <td>{{ person.relationship }}</td>
-        <td>{{ person.contact_date }}</td>
-        <td>
-          <a href="{% url 'person_detail' person.id %}" class="btn"
-            ><i class="fa fa-eye"></i> View</a
-          >
-        </td>
-      </tr>
-      {% empty %}
-      <tr>
-        <td colspan="5">No people found.</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  <a href="{% url 'person_create' %}" class="btn"
-    ><i class="fa fa-plus"></i> Add Person</a
-  >
-</div>
 
+  <h2 class="text-2xl font-semibold mb-4 flex items-center gap-2">
+    <i class="fa fa-users"></i> People
+  </h2>
+
+  <div class="overflow-x-auto">
+    <table class="min-w-full border border-gray-300 rounded-md divide-y divide-gray-200">
+      <thead class="bg-blue-600 text-white">
+        <tr>
+          <th class="px-4 py-2 text-left"><i class="fa fa-user mr-2"></i> Name</th>
+          <th class="px-4 py-2 text-left"><i class="fa fa-envelope mr-2"></i> Email</th>
+          <th class="px-4 py-2 text-left"><i class="fa fa-users mr-2"></i> Relationship</th>
+          <th class="px-4 py-2 text-left"><i class="fa fa-calendar-alt mr-2"></i> Next Contact</th>
+          <th class="px-4 py-2 text-left"><i class="fa fa-eye mr-2"></i> View Details</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        {% for person in person_list %}
+        <tr class="hover:bg-gray-50">
+          <td class="px-4 py-3">{{ person.name }}</td>
+          <td class="px-4 py-3">
+            {{ person.email }}
+            {% if person.is_registered_user %}
+              <a href="{% url 'send_message' person.id %}" target="_blank" class="text-blue-600 hover:underline ml-2">Send Message</a>
+            {% else %}
+              <a href="{% url 'send_mail_and_increment' person.id %}" target="_blank" class="text-blue-600 hover:underline ml-2">Send Mail</a>
+            {% endif %}
+          </td>
+          <td class="px-4 py-3">{{ person.relationship }}</td>
+          <td class="px-4 py-3">{{ person.contact_date }}</td>
+          <td class="px-4 py-3">
+            <a href="{% url 'person_detail' person.id %}" class="inline-flex items-center gap-1 text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-md transition">
+              <i class="fa fa-eye"></i> View
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" class="text-center py-6 text-gray-500">No people found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-6 text-right">
+    <a href="{% url 'person_create' %}" class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-md transition">
+      <i class="fa fa-plus"></i> Add Person
+    </a>
+  </div>
+</div>
 {% endblock content %}
