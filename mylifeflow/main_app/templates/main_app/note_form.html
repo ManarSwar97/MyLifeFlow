@@ -1,156 +1,243 @@
-{% extends 'base.html' %} {% load static %} 
-{% load widget_tweaks %}
+{% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
 <!-- Include Material Icons -->
-<link
-  href="https://fonts.googleapis.com/icon?family=Material+Icons"
-  rel="stylesheet"
-/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-<body
-  class="bg-gradient-to-b from-[#bbe4ff] to-[#87cefd] font-sans text-[#091638] m-0 p-0"
->
-  <div class="bg-white rounded-2xl p-8 max-w-xl w-11/12 mx-auto mt-8 shadow-lg">
-    {% if object %}
-    <h1 class="text-[#091638] mb-6 text-3xl text-center font-semibold">
-      Edit <span class="text-teal-400">{{object.title}}</span>
-    </h1>
-    {% else %}
-    <h1 class="text-[#091638] mb-6 text-3xl text-center font-semibold">
-      Add Note
-    </h1>
+<style>
+  body {
+    background: linear-gradient(to bottom, #bbe4ff, #87cefd);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #091638;
+    margin: 0;
+    padding: 0;
+  }
+
+  .form-container {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2em;
+    max-width: 600px;
+    width: 90%;
+    margin: 2em auto;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  .form-title {
+    color: #091638;
+    margin-bottom: 1.5em;
+    font-size: 1.8em;
+    text-align: center;
+  }
+
+  .form-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5em;
+    width: 100%;
+  }
+
+  .form-wrapper label {
+    color: #091638;
+    font-weight: 500;
+    margin-bottom: 0.5em;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+  }
+
+  .form-wrapper input,
+  .form-wrapper textarea,
+  .form-wrapper select {
+    background: #fff;
+    color: #28304a;
+    border: 1px solid #28304a;
+    border-radius: 6px;
+    padding: 0.8em 1em;
+    font-size: 1em;
+    outline: none;
+    transition: border 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .form-wrapper textarea {
+    resize: none;
+    height: 120px;
+  }
+
+  .form-wrapper input:focus,
+  .form-wrapper textarea:focus,
+  .form-wrapper select:focus {
+    border: 1.5px solid #1976d2;
+  }
+
+  .btn {
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.8em 1.5em;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: block;
+    width: 100%;
+    margin-top: 1em;
+  }
+
+  .btn:hover {
+    background: #1565c0;
+  }
+
+  .btn-small {
+    padding: 0.5em 1em;
+    font-size: 0.9em;
+    width: auto;
+    margin: 0.5em 0.25em 0 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    border: none;
+    border-radius: 6px;
+    background: #fff;
+    border: 1px solid #1976d2;
+    color: #1976d2;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-small:hover {
+    background: #e3f2fd;
+  }
+
+  .btn-stop {
+    border-color: #e53935;
+    color: #e53935;
+  }
+
+  .btn-stop:hover {
+    background-color: #fce4ec;
+  }
+
+  .teal-text {
+    color: #1de9b6;
+  }
+
+  .mic-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+    margin-top: 1em;
+  }
+
+  .material-icons {
+    font-size: 20px;
+    vertical-align: middle;
+  }
+</style>
+
+<div class="form-container">
+  {% if object %}
+    <h1 class="form-title">Edit <span class="teal-text">{{ object.title }}</span></h1>
+  {% else %}
+    <h1 class="form-title">Add Note</h1>
+  {% endif %}
+
+  <form method="POST" enctype="multipart/form-data" id="noteForm">
+    {% csrf_token %}
+
+    <div class="form-wrapper">
+      <label for="{{ form.title.id_for_label }}">
+        <i class="material-icons">edit_note</i> {{ form.title.label }}
+      </label>
+      {{ form.title }}
+    </div>
+
+    <div class="form-wrapper">
+      <label for="{{ form.text.id_for_label }}">
+        <i class="material-icons">description</i> {{ form.text.label }}
+      </label>
+      {{ form.text }}
+    </div>
+    <div class="form-wrapper">
+      <label for="{{ form.image.id_for_label }}">
+        <i class="material-icons">image</i> {{ form.image.label }}
+      </label>
+      {{ form.image }}
+    </div>
+
+    {% if form.created_at %}
+      <div class="form-wrapper">
+        <label for="{{ form.created_at.id_for_label }}">
+          <i class="material-icons">calendar_today</i> {{ form.created_at.label }}
+        </label>
+        {{ form.created_at }}
+      </div>
     {% endif %}
 
-    <form
-      method="POST"
-      enctype="multipart/form-data"
-      id="noteForm"
-      class="space-y-6"
-    >
-      {% csrf_token %}
-
-      <div class="flex flex-col w-full">
-        <label
-          for="{{ form.title.id_for_label }}"
-          class="flex items-center gap-2 text-[#091638] font-medium mb-2 text-base"
-        >
-          <i class="material-icons text-lg">edit_note</i> {{ form.title.label }}
-        </label>
-        {{ form.title|add_class:"border border-[#28304a] rounded-md p-3
-        text-[#28304a] focus:outline-none focus:border-blue-600" }}
-      </div>
-
-      <div class="flex flex-col w-full">
-        <label
-          for="{{ form.text.id_for_label }}"
-          class="flex items-center gap-2 text-[#091638] font-medium mb-2 text-base"
-        >
-          <i class="material-icons text-lg">description</i> {{ form.text.label
-          }}
-        </label>
-        {{ form.text|add_class:"border border-[#28304a] rounded-md p-3
-        text-[#28304a] focus:outline-none focus:border-blue-600 resize-none
-        h-32" }}
-      </div>
-
-      <div class="flex flex-col w-full">
-        <label
-          for="{{ form.image.id_for_label }}"
-          class="flex items-center gap-2 text-[#091638] font-medium mb-2 text-base"
-        >
-          <i class="material-icons text-lg">image</i> {{ form.image.label }}
-        </label>
-        {{ form.image|add_class:"border border-[#28304a] rounded-md p-3
-        text-[#28304a] focus:outline-none focus:border-blue-600" }}
-      </div>
-
-      {% if form.created_at %}
-      <div class="flex flex-col w-full">
-        <label
-          for="{{ form.created_at.id_for_label }}"
-          class="flex items-center gap-2 text-[#091638] font-medium mb-2 text-base"
-        >
-          <i class="material-icons text-lg">calendar_today</i> {{
-          form.created_at.label }}
-        </label>
-        {{ form.created_at|add_class:"border border-[#28304a] rounded-md p-3
-        text-[#28304a] focus:outline-none focus:border-blue-600" }}
-      </div>
-      {% endif %}
-
-      <div class="flex justify-center gap-4 mt-4">
-        <button
-          type="button"
-          onclick="startRecognition()"
-          class="inline-flex items-center gap-1 border border-blue-600 text-blue-600 bg-white rounded-md px-4 py-2 text-sm hover:bg-blue-50"
-        >
-          <i class="material-icons">mic</i> Speak
-        </button>
-        <button
-          type="button"
-          onclick="stopRecognition()"
-          class="inline-flex items-center gap-1 border border-red-600 text-red-600 bg-white rounded-md px-4 py-2 text-sm hover:bg-red-50"
-        >
-          <i class="material-icons">stop</i> Stop
-        </button>
-      </div>
-
-      <button
-        type="submit"
-        class="w-full mt-6 bg-blue-700 hover:bg-blue-800 text-white rounded-md py-3 text-lg flex items-center justify-center gap-2 transition"
-      >
-        <i class="material-icons">save</i> Save Note
+    <div class="mic-buttons">
+      <button type="button" onclick="startRecognition()" class="btn-small">
+        <i class="material-icons">mic</i> Speak
       </button>
-    </form>
-  </div>
+      <button type="button" onclick="stopRecognition()" class="btn-small btn-stop">
+        <i class="material-icons">stop</i> Stop
+      </button>
+    </div>
 
-  <script>
-    window.SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition
-    const recognition = new SpeechRecognition()
-    recognition.interimResults = true
+    <button type="submit" class="btn">
+      <i class="material-icons" style="margin-right: 5px; margin-bottom: 5px;" >save</i> Save Note
+    </button>
+  </form>
+</div>
 
-    let finalTranscript = ''
-    let lastFinalTranscript = ''
+<script>
+  window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = new SpeechRecognition();
+  recognition.interimResults = true;
 
-    recognition.addEventListener('result', (e) => {
-      const transcript = Array.from(e.results)
-        .map((result) => result[0])
-        .map((result) => result.transcript)
-        .join('')
+  let finalTranscript = '';
+  let lastFinalTranscript = '';
 
-      if (e.results[0].isFinal) {
-        if (transcript !== lastFinalTranscript) {
-          finalTranscript += transcript + ' '
-          const textField = document.getElementById('text')
-          if (textField) {
-            textField.value = finalTranscript
-          }
-          lastFinalTranscript = transcript
+  recognition.addEventListener('result', e => {
+    const transcript = Array.from(e.results)
+      .map(result => result[0])
+      .map(result => result.transcript)
+      .join('');
+
+    if (e.results[0].isFinal) {
+      if (transcript !== lastFinalTranscript) {
+        finalTranscript += transcript + ' ';
+        const textField = document.getElementById('text');
+        if (textField) {
+          textField.value = finalTranscript;
         }
+        lastFinalTranscript = transcript;
       }
-    })
-
-    recognition.addEventListener('end', () => {
-      if (!recognition.stoppedManually) {
-        recognition.start()
-      }
-    })
-
-    const startRecognition = () => {
-      const textField = document.getElementById('text')
-      if (textField) {
-        finalTranscript = textField.value || ''
-      }
-      lastFinalTranscript = ''
-      recognition.stoppedManually = false
-      recognition.start()
     }
+  });
 
-    const stopRecognition = () => {
-      recognition.stoppedManually = true
-      recognition.stop()
+  recognition.addEventListener('end', () => {
+    if (!recognition.stoppedManually) {
+      recognition.start();
     }
-  </script>
-</body>
+  });
+
+  const startRecognition = () => {
+    const textField = document.getElementById('text');
+    if (textField) {
+      finalTranscript = textField.value || '';
+    }
+    lastFinalTranscript = '';
+    recognition.stoppedManually = false;
+    recognition.start();
+  }
+
+  const stopRecognition = () => {
+    recognition.stoppedManually = true;
+    recognition.stop();
+  }
+</script>
 {% endblock %}

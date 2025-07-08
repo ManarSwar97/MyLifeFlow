@@ -34,6 +34,7 @@
       author,
       pending,
       total_interacts,
+      restockCount
       
     ) {
       const now = new Date()
@@ -147,7 +148,7 @@
           <input type="text" name="title" id="new-task-title" placeholder="Enter task title" required
             class="w-full border px-3 py-2 rounded" />
           <div class="flex gap-2">
-            <button class="bg-green-600 text-white px-4 py-2 rounded" type="submit">Save</button>
+            <button class="bg-green-600 text-white px-4 py-2 rounded add-task-btn" type="submit">Save</button>
             <button type="button" id="cancel-task-btn" class="bg-gray-300 px-4 py-2 rounded">Cancel</button>
           </div>
         </form>
@@ -234,7 +235,7 @@
             <input type="text" name="title" placeholder="Expense Title" class="w-full mt-2 px-3 py-2 border rounded" required />
             <input type="number" name="amount" placeholder="Amount" step="0.01" class="w-full mt-2 px-3 py-2 border rounded" required />
             <div class="flex gap-2 mt-2">
-              <button class="bg-green-600 text-white px-4 py-2 rounded" type="submit">Add Expense</button>
+              <button class="bg-green-600 text-white px-4 py-2 rounded add-expense-btn-submit" type="submit">Add Expense</button>
               <button type="button" class="cancel-expense-btn bg-gray-300 px-4 py-2 rounded">Cancel</button>
             </div>
           </form>
