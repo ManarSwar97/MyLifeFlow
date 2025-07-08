@@ -42,42 +42,43 @@ MyLifeFlow is your all-in-one life companion — a personal dashboard that helps
 
 #### Home page 
 
-![Image](Add it later)
+![Image](https://i.imgur.com/r0YqLAN.jpeg)
 
 #### Sign-in page 
 
-![Image](Add it later)
+![Image](https://i.imgur.com/0Y9lnaR.png)
 
 #### Sign-up page 
 
-![Image](Add it later)
+![Image](https://i.imgur.com/ClbAiJS.png)
 
 #### Dashboard page 
 
-![Image](Add it later)
+![Image](https://i.imgur.com/72UlHRo.png)
 
 #### Tasks page 
 
-![Image](Add it later)
+![Image](https://i.imgur.com/ctSfIrB.png)
 
 #### Budget page 
 
-![Image](Add it later)
+![Image](https://i.imgur.com/E8Byo07.png)
 
 #### Grocery page 
-![Image](Add it later)
+![Image](https://i.imgur.com/ET0IPw8.pngr)
 
 #### Storage page 
-![Image](Add it later)
+![Image](https://i.imgur.com/Nb27vGe.png)
 
 #### Journal page 
-![Image](Add it later)
+##### Journal with voice-to-text
+![Image](https://i.imgur.com/jos4mNu.png)
+##### Journal with voice-only
+![Image](https://i.imgur.com/3M1Snfu.png)
 
 #### Achievements page 
-![Image](Add it later)
+![Image](https://i.imgur.com/hNtnDvp.png)
 
-#### Message & Calls page 
-![Image](Add it later)
 
 ---
 
@@ -89,9 +90,6 @@ MyLifeFlow is your all-in-one life companion — a personal dashboard that helps
 
 ---
 
-### **_ERD of the project_**
-
-- [LucidApp]()
 ### **_trello board_**
 
 - [Trello](https://trello.com/b/zIS551ll)
@@ -106,5 +104,7 @@ MyLifeFlow is your all-in-one life companion — a personal dashboard that helps
 ##### Markdown Cheatsheet: [GitHub](https://guides.github.com/pdfs/markdown-cheatsheet-online.pdf)
 
 ##### ChatGPT: [chat.openai.com](https://chat.openai.com)
+
+##### ChatAPP Repo: [GitHub](https://github.com/neszen/chat_app)
 
 ---
